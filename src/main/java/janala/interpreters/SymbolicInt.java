@@ -78,12 +78,6 @@ public final class SymbolicInt extends Constraint {
     this.op = op;
   }
 
-  private SymbolicInt() {
-    linear = new HashMap<Integer, Long>();
-    constant = 0;
-    op = COMPARISON_OPS.UN;
-  }
-
   private SymbolicInt(SymbolicInt e) {
     this.linear = new HashMap<Integer, Long>(e.linear);
     constant = e.constant;

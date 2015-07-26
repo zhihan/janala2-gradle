@@ -47,6 +47,25 @@ class SymbolicIntTest {
     }
 
     @Test
+    void testSymbolicIntSubtractFrom() {
+        SymbolicInt x1 = new SymbolicInt(1)
+        
+        SymbolicInt y = x1.negate().add(1)
+        SymbolicInt z = x1.subtractFrom(1)
+        assertEquals(y, z)
+    }
+
+    @Test
+    void testSymbolicIntMultiply() {
+        SymbolicInt x1 = new SymbolicInt(1)
+        SymbolicInt y = x1.add(1)
+        
+        SymbolicInt z = y.multiply(2)
+        assertEquals(2L, z.linear.get(1))
+        assertEquals(2L, z.constant)
+    }
+
+    @Test
     void testToString() {
         SymbolicInt x1 = new SymbolicInt(1)
         System.out.println(x1.toString())
