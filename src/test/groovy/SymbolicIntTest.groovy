@@ -1,6 +1,7 @@
 package janala.interpreters;
 
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue
 
 import org.junit.Test
@@ -52,4 +53,17 @@ class SymbolicIntTest {
         String s = x1.toString()
         assertTrue(s.contains("x1"))
     }
+
+    @Test
+    void testEquals() {
+        SymbolicInt x1 = new SymbolicInt(1)
+        SymbolicInt x2 = new SymbolicInt(2)
+        assertFalse(x1.equals(null))
+        assertFalse(x1.equals("a"))
+        assertTrue(x1.equals(x1))
+
+        assertFalse(x1.equals(x2))
+        assertFalse(x1.hashCode() == x2.hashCode())
+    }
+
 }

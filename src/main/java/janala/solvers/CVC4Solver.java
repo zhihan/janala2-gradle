@@ -4,7 +4,6 @@ package janala.solvers;
  * Author: Koushik Sen (ksen@cs.berkeley.edu)
  */
 
-import gnu.trove.iterator.TIntLongIterator;
 import janala.config.Config;
 import janala.interpreters.*;
 import janala.interpreters.StringValue;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.TreeMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,12 +48,11 @@ public class CVC4Solver implements Solver {
     if (con instanceof SymbolicInt) {
       SymbolicInt c = (SymbolicInt) con;
       boolean first2 = true;
-      for (TIntLongIterator it = c.linear.iterator(); it.hasNext(); ) {
-        it.advance();
-
-        int integer = it.key();
+      for (Map.Entry<Integer, Long> it : c.getLinear().entrySet() ) {
+        
+        int integer = it.getKey();
         freeVars.add("x" + integer);
-        long l = it.value();
+        long l = it.getValue();
         if (first2) {
           first2 = false;
         } else {
@@ -65,22 +64,22 @@ public class CVC4Solver implements Solver {
         out.print(l);
         out.print(')');
       }
-      if (c.constant != 0) {
+      if (c.getConstant() != 0) {
         out.print("+(");
-        out.print(c.constant);
+        out.print(c.getConstant());
         out.print(')');
       }
-      if (c.op == SymbolicInt.COMPARISON_OPS.EQ) {
+      if (c.getOp() == SymbolicInt.COMPARISON_OPS.EQ) {
         out.print(" = ");
-      } else if (c.op == SymbolicInt.COMPARISON_OPS.NE) {
+      } else if (c.getOp() == SymbolicInt.COMPARISON_OPS.NE) {
         out.print(" /= ");
-      } else if (c.op == SymbolicInt.COMPARISON_OPS.LE) {
+      } else if (c.getOp() == SymbolicInt.COMPARISON_OPS.LE) {
         out.print(" <= ");
-      } else if (c.op == SymbolicInt.COMPARISON_OPS.LT) {
+      } else if (c.getOp() == SymbolicInt.COMPARISON_OPS.LT) {
         out.print(" < ");
-      } else if (c.op == SymbolicInt.COMPARISON_OPS.GE) {
+      } else if (c.getOp() == SymbolicInt.COMPARISON_OPS.GE) {
         out.print(" >= ");
-      } else if (c.op == SymbolicInt.COMPARISON_OPS.GT) {
+      } else if (c.getOp() == SymbolicInt.COMPARISON_OPS.GT) {
         out.print(" > ");
       }
       out.print("0");

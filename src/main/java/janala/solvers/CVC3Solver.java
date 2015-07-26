@@ -1,6 +1,5 @@
 package janala.solvers;
 
-import gnu.trove.iterator.TIntLongIterator;
 import janala.config.Config;
 import janala.interpreters.*;
 import janala.interpreters.StringValue;
@@ -12,11 +11,6 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- * Date: 7/12/12
- * Time: 10:03 AM
- */
 public class CVC3Solver implements Solver {
   LinkedList<InputElement> inputs;
   ArrayList<Constraint> constraints;
@@ -62,12 +56,10 @@ public class CVC3Solver implements Solver {
     if (con instanceof SymbolicInt) {
       SymbolicInt c = (SymbolicInt) con;
       boolean first2 = true;
-      for (TIntLongIterator it = c.linear.iterator(); it.hasNext(); ) {
-        it.advance();
-
-        int integer = it.key();
+      for (Map.Entry<Integer, Long> it : c.getLinear().entrySet() ) {
+        int integer = it.getKey();
         freeVars.add("x" + integer);
-        long l = it.value();
+        long l = it.getValue();
         if (first2) {
           first2 = false;
         } else {
@@ -79,22 +71,22 @@ public class CVC3Solver implements Solver {
         out.print(l);
         out.print(')');
       }
-      if (c.constant != 0) {
+      if (c.getConstant() != 0) {
         out.print("+(");
-        out.print(c.constant);
+        out.print(c.getConstant());
         out.print(')');
       }
-      if (c.op == SymbolicInt.COMPARISON_OPS.EQ) {
+      if (c.getOp() == SymbolicInt.COMPARISON_OPS.EQ) {
         out.print(" = ");
-      } else if (c.op == SymbolicInt.COMPARISON_OPS.NE) {
+      } else if (c.getOp() == SymbolicInt.COMPARISON_OPS.NE) {
         out.print(" /= ");
-      } else if (c.op == SymbolicInt.COMPARISON_OPS.LE) {
+      } else if (c.getOp() == SymbolicInt.COMPARISON_OPS.LE) {
         out.print(" <= ");
-      } else if (c.op == SymbolicInt.COMPARISON_OPS.LT) {
+      } else if (c.getOp() == SymbolicInt.COMPARISON_OPS.LT) {
         out.print(" < ");
-      } else if (c.op == SymbolicInt.COMPARISON_OPS.GE) {
+      } else if (c.getOp() == SymbolicInt.COMPARISON_OPS.GE) {
         out.print(" >= ");
-      } else if (c.op == SymbolicInt.COMPARISON_OPS.GT) {
+      } else if (c.getOp() == SymbolicInt.COMPARISON_OPS.GT) {
         out.print(" > ");
       }
       out.print("0");
@@ -246,13 +238,6 @@ public class CVC3Solver implements Solver {
       PrintStream out =
           new PrintStream(
               new BufferedOutputStream(new FileOutputStream(Config.instance.formulaFile + ".tmp")));
-      //            int nInputs = inputs.size();
-      //            for (int i = 0; i < nInputs; i++) {
-      //                out.print("x");
-      //                out.print(i+1);
-      //                out.println(" : INT;");
-      //            }
-      //
       if (quickUnsatCheck(type)) {
         return RESULT_TYPE.FALSE;
       }
@@ -296,28 +281,6 @@ public class CVC3Solver implements Solver {
       return RESULT_TYPE.UNKNOWN;
     }
   }
-
-  //    for (var key in input) {
-  //        if (HOP(input, key) && key.indexOf("x")===0) {
-  //            if (HOP(newInputs,key)) {
-  //                fs.writeSync(fd,PREFIX1+".setInput(\""+key +"\","+newInputs[key]+");\n");
-  //            } else {
-  //                if (typeof input[key].concrete === 'string' && (len = input[key].symbolic.getField("length").symbolic.substitute(newInputs)) !== undefined ) {
-  //                    newInputs[key] = "";
-  //                    for (i=0; i<len; i++) {
-  //                        if ((c = newInputs[key+"__"+i]) !== undefined) {
-  //                            newInputs[key] += String.fromCharCode(c);
-  //                        } else {
-  //                            newInputs[key] += "a";
-  //                        }
-  //                    }
-  //                    fs.writeSync(fd,PREFIX1+".setInput(\""+key +"\",\""+newInputs[key].replace('"','\\"')+"\");\n");
-  //                } else {
-  //                    fs.writeSync(fd,PREFIX1+".setInput(\""+key +"\","+input[key].concrete+");\n");
-  //                }
-  //            }
-  //        }
-  //    }
 
   private void writeInputs(TreeMap<String, Long> soln) {
     try {
@@ -370,23 +333,6 @@ public class CVC3Solver implements Solver {
         }
       }
 
-      //            int len = inputs.size();
-      //            for(int i=0; i<len; i++) {
-      //                Long l = soln.get("x"+(i+1));
-      //                Value input = inputs.get(i+1);
-      //                if (l!=null) {
-      //                    if (input instanceof janala.interpreters.StringValue) {
-      //                        //tester.log(Level.INFO, StringConstants.instance.get((int)(long)l));
-      //                        out.println(StringConstants.instance.get((int)(long)l));
-      //                    } else {
-      //                        //tester.log(Level.INFO,l+"");
-      //                        out.println(l);
-      //                    }
-      //                } else {
-      //                    //tester.log(Level.INFO,input.getConcrete().toString());
-      //                    out.println(input.getConcrete());
-      //                }
-      //            }
       out.close();
     } catch (IOException ioe) {
       ioe.printStackTrace();

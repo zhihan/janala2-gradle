@@ -19,7 +19,7 @@ public class InterpreterTest {
         IntValue i = new IntValue(0)
         def b = i.MAKE_SYMBOLIC(null)
         assertEquals(1, b)
-        assertEquals(1, i.getSymbolicInt().linear.size())
+        assertEquals(1, i.getSymbolicInt().getLinear().size())
         assertEquals(b, i.getSymbol())
     }
 

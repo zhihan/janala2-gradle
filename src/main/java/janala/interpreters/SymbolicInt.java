@@ -4,6 +4,7 @@ import gnu.trove.iterator.TIntLongIterator;
 import gnu.trove.map.hash.TIntLongHashMap;
 import gnu.trove.map.TIntLongMap;
 import java.util.Map;
+import java.util.HashMap;
 
 public final class SymbolicInt extends Constraint {
   public enum COMPARISON_OPS {
@@ -16,9 +17,19 @@ public final class SymbolicInt extends Constraint {
     UN
   };
 
-  public COMPARISON_OPS op;
-  public TIntLongMap linear; // coefficients
-  public long constant; // nominal value
+  private COMPARISON_OPS op;
+  public COMPARISON_OPS getOp() {
+    return op;
+  }
+  
+  private final Map<Integer, Long> linear; // coefficients
+  public Map<Integer, Long> getLinear() {
+    return linear;
+  }
+  private final long constant; // nominal value
+  public long getConstant() {
+    return constant;
+  }
 
   @Override
   public void accept(ConstraintVisitor v) {
@@ -49,32 +60,42 @@ public final class SymbolicInt extends Constraint {
 
   // Construct a symbolic int i := x
   public SymbolicInt(int i) {
-    linear = new TIntLongHashMap();
+    linear = new HashMap<Integer, Long>();
     linear.put(i, 1L);
     constant = 0;
     op = COMPARISON_OPS.UN;
   }
 
+  public SymbolicInt(Map<Integer, Long> linear, long constant) {
+    this.linear = linear;
+    this.constant = constant;
+    op = COMPARISON_OPS.UN;
+  }
+
+  public SymbolicInt(Map<Integer, Long> linear, long constant, COMPARISON_OPS op) {
+    this.linear = linear;
+    this.constant = constant;
+    this.op = op;
+  }
+
   private SymbolicInt() {
-    linear = new TIntLongHashMap();
+    linear = new HashMap<Integer, Long>();
     constant = 0;
     op = COMPARISON_OPS.UN;
   }
 
   private SymbolicInt(SymbolicInt e) {
-    this.linear = new TIntLongHashMap(e.linear);
+    this.linear = new HashMap<Integer, Long>(e.linear);
     constant = e.constant;
     op = e.op;
   }
 
   public SymbolicInt negate() {
-    SymbolicInt tmp = new SymbolicInt(this);
-    for (TIntLongIterator it = tmp.linear.iterator(); it.hasNext(); ) {
-      it.advance();
-      it.setValue(-it.value());
+    Map<Integer, Long> tmpMap = new HashMap<Integer, Long>(getLinear());
+    for (Map.Entry<Integer, Long> it : tmpMap.entrySet()) {
+      it.setValue(-it.getValue());
     }
-    tmp.constant = -constant;
-    return tmp;
+    return new SymbolicInt(tmpMap, -constant);
   }
 
   public SymbolicInt add(long l) {
@@ -82,13 +103,13 @@ public final class SymbolicInt extends Constraint {
   }
 
   private SymbolicInt add(long l, boolean add) {
-    SymbolicInt tmp = new SymbolicInt(this);
+    long tmpConstant;
     if (add) {
-      tmp.constant = constant + l;
+      tmpConstant = constant + l;
     } else {  
-      tmp.constant = constant - l;
+      tmpConstant = constant - l;
     } 
-    return tmp;
+    return new SymbolicInt(linear, tmpConstant);
   }
 
   public SymbolicInt add(SymbolicInt l) {
@@ -96,41 +117,31 @@ public final class SymbolicInt extends Constraint {
   }
 
   private SymbolicInt add(SymbolicInt l, boolean add) {
-    SymbolicInt tmp = new SymbolicInt(this);
+    Map<Integer, Long> tmpLinear = new HashMap<Integer, Long>(linear);
     SymbolicInt e = (SymbolicInt) l;
-    for (TIntLongIterator it = e.linear.iterator(); it.hasNext(); ) {
-      it.advance();
-
-      int integer = it.key();
-      long coeff = linear.get(integer); // 0 is default value
-      long toadd;
-      if (add) {
-        toadd = coeff + it.value();
-      } else {
-        toadd = coeff - it.value();
+    for (Map.Entry<Integer, Long> it : e.linear.entrySet()) {
+      int integer = it.getKey();
+      Long coeff = linear.get(integer); // 0 is default value
+      if (coeff == null) {
+        coeff = 0L;
       }
-      if (toadd == 0) {
-        tmp.linear.remove(integer);
+      long toadd = add ? coeff + it.getValue() : coeff - it.getValue();
+      if (toadd == 0L) {
+        tmpLinear.remove(integer);
       } else {
-        tmp.linear.put(integer, toadd);
+        tmpLinear.put(integer, toadd);
       }
     }
-    if (tmp.linear.isEmpty()) {
+    if (tmpLinear.isEmpty()) {
       return null; // Shouldn't this returns the constant value?
     }
-
-    if (add) {
-      tmp.constant = this.constant + e.constant;
-    } else {
-      tmp.constant = this.constant - e.constant;
-    }
-    return tmp;
+    long tmpConstant = add ? (constant + e.constant) : (constant - e.constant);
+    return new SymbolicInt(tmpLinear, tmpConstant);
   }
 
   public SymbolicInt subtractFrom(long l) {
     SymbolicInt e = (SymbolicInt) negate();
-    e.constant = l + e.constant;
-    return e;
+    return new SymbolicInt(e.linear, l + e.constant);
   }
 
   public SymbolicInt subtract(long l) {
@@ -144,15 +155,12 @@ public final class SymbolicInt extends Constraint {
   public SymbolicInt multiply(long l) {
     if (l == 0) return null;
     if (l == 1) return this;
-    SymbolicInt tmp = new SymbolicInt();
-    for (TIntLongIterator it = linear.iterator(); it.hasNext(); ) {
-      it.advance();
-
-      int integer = it.key();
-      tmp.linear.put(integer, l * it.value());
+    Map<Integer, Long> tmpMap = new HashMap<Integer, Long>();
+    for (Map.Entry<Integer, Long> it : linear.entrySet()) {
+      int integer = it.getKey();
+      tmpMap.put(integer, l * it.getValue());
     }
-    tmp.constant = l * constant;
-    return tmp;
+    return new SymbolicInt(tmpMap, l * constant);
   }
 
   public SymbolicInt setop(COMPARISON_OPS op) {
@@ -180,28 +188,27 @@ public final class SymbolicInt extends Constraint {
 
   public Constraint substitute(Map<String, Long> assignments) {
     long val = 0;
-    SymbolicInt ret = null;
+    Map<Integer, Long> retLinear = null;
+    long retConstant = 0L;
     boolean isSymbolic = false;
     Constraint ret2 = null;
 
-    for (TIntLongIterator it = linear.iterator(); it.hasNext(); ) {
-      it.advance();
-
-      int key = it.key();
-      long l = it.value();
+    for (Map.Entry<Integer, Long> it : linear.entrySet()) {
+      int key = it.getKey();
+      long l = it.getValue();
       if (assignments.containsKey("x" + key)) {
         val += assignments.get("x" + key) * l;
       } else {
         isSymbolic = true;
-        if (ret == null) {
-          ret = new SymbolicInt();
+        if (retLinear == null) {
+          retLinear = new HashMap<Integer, Long>(); 
         }
-        ret.linear.put(key, l);
+        retLinear.put(key, l);
       }
     }
-    //val += this.constant;
-    if (ret != null) {
-      ret.constant = val + this.constant;
+    
+    if (retLinear != null) {
+      retConstant = val + constant;
     }
     if (!isSymbolic) {
       if (this.op == COMPARISON_OPS.EQ) {
@@ -239,19 +246,16 @@ public final class SymbolicInt extends Constraint {
       }
       return ret2;
     } else {
-      ret.op = this.op;
-      return ret;
+      return new SymbolicInt(retLinear, retConstant, op);
     }
   }
 
   public String toString() {
     StringBuilder sb = new StringBuilder();
     boolean first = true;
-    for (TIntLongIterator it = linear.iterator(); it.hasNext(); ) {
-      it.advance();
-
-      int integer = it.key(); // Index of variable
-      long l = it.value();
+    for (Map.Entry<Integer, Long> it : linear.entrySet()) {
+      int integer = it.getKey(); // Index of variable
+      long l = it.getValue();
       if (first) {
         first = false;
       } else {

@@ -1,8 +1,7 @@
 package janala.interpreters;
 
-import gnu.trove.iterator.TIntLongIterator;
-import janala.solvers.History;
 
+import janala.solvers.History;
 import java.util.Map;
 
 public class IntValue extends Value {
@@ -37,7 +36,8 @@ public class IntValue extends Value {
     if (symbolic == null) {
       throw new RuntimeException("No symbols created.");
     }
-    return symbolic.linear.keys()[0];
+    Integer[] result = symbolic.getLinear().keySet().toArray(new Integer[0]);
+    return result[0];
   }
 
   @Override
@@ -53,18 +53,16 @@ public class IntValue extends Value {
     if (symbolic == null) {
       return concrete;
     }
-    for (TIntLongIterator it = symbolic.linear.iterator(); it.hasNext(); ) {
-      it.advance();
-
-      int key = it.key();
-      long l = it.value();
+    for (Map.Entry<Integer, Long> it : symbolic.getLinear().entrySet()) {
+      int key = it.getKey();
+      long l = it.getValue();
       if (assignments.containsKey("x" + key)) {
         val += assignments.get("x" + key) * l;
       } else {
         return this.concrete;
       }
     }
-    val += symbolic.constant;
+    val += symbolic.getConstant();
     return val;
   }
 
@@ -81,7 +79,7 @@ public class IntValue extends Value {
     if (symbolic == null && nonIntConstraint == null) {
       return result ? IntValue.TRUE : IntValue.FALSE;
     } else if (symbolic != null) {
-      if (symbolic.op == SymbolicInt.COMPARISON_OPS.UN)
+      if (symbolic.getOp() == SymbolicInt.COMPARISON_OPS.UN)
         return new IntValue(
             result ? 1 : 0,
             result
@@ -98,7 +96,7 @@ public class IntValue extends Value {
     if (symbolic == null && nonIntConstraint == null) {
       return (concrete != 0) ? IntValue.TRUE : IntValue.FALSE;
     } else if (symbolic != null) {
-      if (symbolic.op == SymbolicInt.COMPARISON_OPS.UN)
+      if (symbolic.getOp() == SymbolicInt.COMPARISON_OPS.UN)
         return new IntValue(
             result ? 1 : 0,
             result
