@@ -68,9 +68,24 @@ class SymbolicIntTest {
     @Test
     void testToString() {
         SymbolicInt x1 = new SymbolicInt(1)
+        SymbolicInt y = x1.multiply(2)
+        SymbolicInt z = y.negate()
+        SymbolicInt x2 = new SymbolicInt(2)
+        SymbolicInt w = x1.add(x2)
         System.out.println(x1.toString())
+        System.out.println(y.toString())
+        System.out.println(z.toString())
+        System.out.println(w.toString())
+
         String s = x1.toString()
         assertTrue(s.contains("x1"))
+        s = y.toString()
+        assertTrue(s.contains("x1") && s.contains("2"))
+        s = z.toString()
+        assertTrue(s.contains("x1") && s.contains("-2"))
+
+        s = w.toString()
+        assertTrue(s.contains("x1") && s.contains("x2"))
     }
 
     @Test
@@ -83,6 +98,71 @@ class SymbolicIntTest {
 
         assertFalse(x1.equals(x2))
         assertFalse(x1.hashCode() == x2.hashCode())
+    }
+
+    @Test
+    void testNot() {
+        SymbolicInt x1 = new SymbolicInt(1)
+        x1.setOp(SymbolicInt.COMPARISON_OPS.EQ)
+        SymbolicInt y = x1.not()
+        assertEquals(y.getOp(), SymbolicInt.COMPARISON_OPS.NE)
+
+        x1.setOp(SymbolicInt.COMPARISON_OPS.NE)
+        y = x1.not()
+        assertEquals(y.getOp(), SymbolicInt.COMPARISON_OPS.EQ)   
+
+        x1.setOp(SymbolicInt.COMPARISON_OPS.LT)
+        y = x1.not()
+        assertEquals(y.getOp(), SymbolicInt.COMPARISON_OPS.GE)   
+
+        x1.setOp(SymbolicInt.COMPARISON_OPS.GE)
+        y = x1.not()
+        assertEquals(y.getOp(), SymbolicInt.COMPARISON_OPS.LT)
+
+        x1.setOp(SymbolicInt.COMPARISON_OPS.LE)
+        y = x1.not()
+        assertEquals(y.getOp(), SymbolicInt.COMPARISON_OPS.GT)   
+
+        x1.setOp(SymbolicInt.COMPARISON_OPS.GT)
+        y = x1.not()
+        assertEquals(y.getOp(), SymbolicInt.COMPARISON_OPS.LE)
+
+        x1.setOp(SymbolicInt.COMPARISON_OPS.UN)
+        y = x1.not()
+        assertEquals(y.getOp(), SymbolicInt.COMPARISON_OPS.UN)
+    }
+
+    @Test
+    void testSetop() {
+        SymbolicInt x1 = new SymbolicInt(1)
+        x1.setOp(SymbolicInt.COMPARISON_OPS.EQ)
+        SymbolicInt y = x1.setop(SymbolicInt.COMPARISON_OPS.EQ)
+        assertEquals(SymbolicInt.COMPARISON_OPS.NE, y.getOp())
+    }
+
+    @Test
+    void testSubstitue() {
+        SymbolicInt x1 = new SymbolicInt(1)
+        SymbolicInt y = x1.add(1)
+        y.setOp(SymbolicInt.COMPARISON_OPS.LE) // x1 + 1 <= 0
+        Constraint z = y.substitute(["x1": 1L])
+        assertTrue(z == SymbolicFalseConstraint.instance)
+
+        Constraint z2 = y.substitute(["x1": -2L])
+        assertTrue(z2 == SymbolicTrueConstraint.instance)
+
+        SymbolicInt a = x1.add(new SymbolicInt(2))
+        a.setOp(SymbolicInt.COMPARISON_OPS.GE) // x1 + x2 >= 0
+        Constraint b = a.substitute(["x1": 1L])
+        System.out.println(b)
+        assertTrue(b instanceof SymbolicInt)
+        SymbolicInt b2 = (SymbolicInt) b
+        assertEquals(1, b2.linear.size())
+        assertEquals(1, b2.constant)
+        assertTrue(b2.linear.containsKey(2))
+
+        Constraint c = a.substitute(["x1": 1L, "x2": 1L])
+        assertTrue(c == SymbolicTrueConstraint.instance)
     }
 
 }

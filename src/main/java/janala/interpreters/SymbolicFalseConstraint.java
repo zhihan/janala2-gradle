@@ -6,7 +6,7 @@ import java.util.Map;
  * Author: Koushik Sen (ksen@cs.berkeley.edu)
  */
 public class SymbolicFalseConstraint extends Constraint {
-  public static SymbolicFalseConstraint instance = new SymbolicFalseConstraint();
+  public static final SymbolicFalseConstraint instance = new SymbolicFalseConstraint();
 
   public SymbolicFalseConstraint() {}
 

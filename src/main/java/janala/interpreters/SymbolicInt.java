@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 public final class SymbolicInt extends Constraint {
-  public enum COMPARISON_OPS {
+  public static enum COMPARISON_OPS {
     EQ,
     NE,
     GT,
@@ -20,6 +20,10 @@ public final class SymbolicInt extends Constraint {
   private COMPARISON_OPS op;
   public COMPARISON_OPS getOp() {
     return op;
+  }
+
+  public void setOp(COMPARISON_OPS op) {
+    this.op = op;
   }
   
   private final Map<Integer, Long> linear; // coefficients
@@ -158,10 +162,15 @@ public final class SymbolicInt extends Constraint {
   }
 
   public SymbolicInt setop(COMPARISON_OPS op) {
+    if (op == COMPARISON_OPS.UN) {
+      throw new RuntimeException("Cannot unset an operator");
+    }
     SymbolicInt ret = new SymbolicInt(this);
     if (ret.op != COMPARISON_OPS.UN) {
       if (op == COMPARISON_OPS.EQ) { // (x op 0)==0 is same as !(x op 0)
-        ret = (SymbolicInt) ret.not();
+        ret = ret.not();
+      } else if (op != COMPARISON_OPS.NE) {
+        throw new RuntimeException("Cannot process non-logical constraint.");
       }
     } else {
       ret.op = op;
@@ -169,15 +178,22 @@ public final class SymbolicInt extends Constraint {
     return ret;
   }
 
-  public Constraint not() {
-    SymbolicInt ret = new SymbolicInt(this);
-    if (ret.op == COMPARISON_OPS.EQ) ret.op = COMPARISON_OPS.NE;
-    else if (ret.op == COMPARISON_OPS.NE) ret.op = COMPARISON_OPS.EQ;
-    else if (ret.op == COMPARISON_OPS.GT) ret.op = COMPARISON_OPS.LE;
-    else if (ret.op == COMPARISON_OPS.GE) ret.op = COMPARISON_OPS.LT;
-    else if (ret.op == COMPARISON_OPS.LT) ret.op = COMPARISON_OPS.GE;
-    else if (ret.op == COMPARISON_OPS.LE) ret.op = COMPARISON_OPS.GT;
-    return ret;
+  public SymbolicInt not() {
+    COMPARISON_OPS retOp = COMPARISON_OPS.UN;
+    if (op == COMPARISON_OPS.EQ) {
+      retOp = COMPARISON_OPS.NE;
+    } else if (op == COMPARISON_OPS.NE) {
+      retOp = COMPARISON_OPS.EQ;
+    } else if (op == COMPARISON_OPS.GT) {
+      retOp = COMPARISON_OPS.LE;
+    } else if (op == COMPARISON_OPS.GE) {
+      retOp = COMPARISON_OPS.LT;
+    } else if (op == COMPARISON_OPS.LT) {
+      retOp = COMPARISON_OPS.GE;
+    } else if (op == COMPARISON_OPS.LE) {
+      retOp = COMPARISON_OPS.GT;
+    }
+    return new SymbolicInt(linear, constant, retOp);
   }
 
   public Constraint substitute(Map<String, Long> assignments) {
@@ -185,7 +201,7 @@ public final class SymbolicInt extends Constraint {
     Map<Integer, Long> retLinear = null;
     long retConstant = 0L;
     boolean isSymbolic = false;
-    Constraint ret2 = null;
+    
 
     for (Map.Entry<Integer, Long> it : linear.entrySet()) {
       int key = it.getKey();
@@ -204,6 +220,8 @@ public final class SymbolicInt extends Constraint {
     if (retLinear != null) {
       retConstant = val + constant;
     }
+
+    Constraint ret2 = null;
     if (!isSymbolic) {
       if (this.op == COMPARISON_OPS.EQ) {
         ret2 =

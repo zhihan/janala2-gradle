@@ -6,7 +6,7 @@ import java.util.Map;
  * Author: Koushik Sen (ksen@cs.berkeley.edu)
  */
 public class SymbolicTrueConstraint extends Constraint {
-  public static SymbolicTrueConstraint instance = new SymbolicTrueConstraint();
+  public static final SymbolicTrueConstraint instance = new SymbolicTrueConstraint();
 
   public SymbolicTrueConstraint() {}
 
