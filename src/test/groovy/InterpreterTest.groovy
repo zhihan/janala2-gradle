@@ -13,23 +13,4 @@ public class InterpreterTest {
         assertEquals(2, ct.nFields())
     }
 
-    @Test
-    void testNewId() {
-        Value.reset()
-        IntValue i = new IntValue(0)
-        def b = i.MAKE_SYMBOLIC(null)
-        assertEquals(1, b)
-        assertEquals(1, i.getSymbolicInt().getLinear().size())
-        assertEquals(b, i.getSymbol())
-    }
-
-    @Test
-    void testSubstitute() {
-        Value.reset()
-        IntValue i = new IntValue(0)
-        def b = i.MAKE_SYMBOLIC(null)
-        def m = ["x1": 1L]
-        assertEquals(1, i.substituteInLinear(m))
-    }
-
 }

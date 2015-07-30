@@ -2,11 +2,6 @@ package janala.interpreters;
 
 import java.util.Map;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- * Date: 1/2/13
- * Time: 10:52 PM
- */
 public class SymbolicNotConstraint extends Constraint {
   public Constraint constraint;
 
