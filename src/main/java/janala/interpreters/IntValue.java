@@ -4,9 +4,14 @@ package janala.interpreters;
 import janala.solvers.History;
 import java.util.Map;
 
+/** 
+ IntValue contains a pair of concrete value and a path constraint.  
+ Note that the path constraint flip the boolean signs according to the 
+ evaluated concrete value.
+*/
 public class IntValue extends Value {
   public SymbolicInt symbolic;
-  public Constraint nonIntConstraint;
+  public Constraint nonIntConstraint; 
   public int concrete;
 
   final public static IntValue TRUE = new IntValue(1);

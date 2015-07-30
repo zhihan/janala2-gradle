@@ -104,4 +104,41 @@ class IntValueTest {
         assertEquals(SymbolicTrueConstraint.instance, r.symbolic)
     }
 
+    @Test
+    public void testIFNENoConstraint() {
+        IntValue i = new IntValue(0)
+        assertEquals(IntValue.FALSE, i.IFNE())
+        IntValue j = new IntValue(1)
+        assertEquals(IntValue.TRUE, j.IFNE())
+    }
+
+    @Test
+    public void testIFNESymbolicInt() {
+        // (0, x) != 0 
+        // -> (0, x == 0)
+        IntValue i = new IntValue(0)
+        int b = i.MAKE_SYMBOLIC(null)
+        IntValue r = i.IFNE()
+        assertEquals(0, r.concrete)
+        assertEquals(SymbolicInt.COMPARISON_OPS.EQ, r.symbolicInt.op)
+
+        // (0, x == 0) != 0 
+        // -> (0, x == 0)
+        SymbolicInt x = new SymbolicInt(1)
+        x.setOp(SymbolicInt.COMPARISON_OPS.EQ)
+        IntValue j = new IntValue(0, x)
+        r = j.IFNE()
+        assertEquals(0, r.concrete)
+        assertEquals(SymbolicInt.COMPARISON_OPS.NE, r.symbolicInt.op)
+    }
+
+    @Test
+    public void testIFNEConstraint() {
+        // (0, FALSE) != 0
+        // -> (0, TRUE)
+        IntValue i = new IntValue(0, SymbolicFalseConstraint.instance)
+        def r = i.IFNE()
+        assertEquals(0, r.concrete)
+        assertEquals(SymbolicTrueConstraint.instance, r.symbolic)
+    }
 }
