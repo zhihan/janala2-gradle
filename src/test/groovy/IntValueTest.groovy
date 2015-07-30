@@ -141,4 +141,31 @@ class IntValueTest {
         assertEquals(0, r.concrete)
         assertEquals(SymbolicTrueConstraint.instance, r.symbolic)
     }
+    @Test
+    public void testIFLTNoConstraint() {
+        IntValue i = new IntValue(-1)
+        assertEquals(IntValue.TRUE, i.IFLT())
+        IntValue j = new IntValue(0)
+        assertEquals(IntValue.FALSE, j.IFLT())
+    }
+
+    @Test
+    public void testIFLTSymbolicInt() {
+        // (0, x) < 0 
+        // -> (false, x >= 0)
+        IntValue i = new IntValue(0)
+        int b = i.MAKE_SYMBOLIC(null)
+        IntValue r = i.IFLT()
+        assertEquals(0, r.concrete)
+        assertEquals(SymbolicInt.COMPARISON_OPS.GE, r.symbolicInt.op)
+
+        // (-1, x) < 0 
+        // -> (true, x < 0)
+        SymbolicInt x = new SymbolicInt(1)
+        IntValue j = new IntValue(-1, x)
+        r = j.IFLT()
+        assertEquals(1, r.concrete)
+        assertEquals(SymbolicInt.COMPARISON_OPS.LT, r.symbolicInt.op)
+    }
+
 }
