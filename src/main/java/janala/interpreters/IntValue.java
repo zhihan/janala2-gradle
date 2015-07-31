@@ -173,17 +173,14 @@ public class IntValue extends Value {
       return result ? IntValue.TRUE : IntValue.FALSE;
     } else if (symbolic != null && i2.symbolic != null) {
       SymbolicInt tmp = symbolic.subtract(i2.symbolic);
-      if (tmp != null) tmp = tmp.setop(op);
-      else tmp = null;
-      IntValue ret = new IntValue(result ? 1 : 0, tmp);
-
-      return ret;
+      if (tmp != null) {
+        tmp = tmp.setop(op);
+      } 
+      return new IntValue(result ? 1 : 0, tmp);
     } else if (symbolic != null) {
-      IntValue ret = new IntValue(result ? 1 : 0, symbolic.subtract(i2.concrete).setop(op));
-      return ret;
+      return new IntValue(result ? 1 : 0, symbolic.subtract(i2.concrete).setop(op));
     } else {
-      IntValue ret = new IntValue(result ? 1 : 0, i2.symbolic.subtractFrom(concrete).setop(op));
-      return ret;
+      return new IntValue(result ? 1 : 0, i2.symbolic.subtractFrom(concrete).setop(op));
     }
   }
 
@@ -195,16 +192,14 @@ public class IntValue extends Value {
       return result ? IntValue.TRUE : IntValue.FALSE;
     } else if (symbolic != null && i2.symbolic != null) {
       SymbolicInt tmp = symbolic.subtract(i2.symbolic);
-      if (tmp != null) tmp = tmp.setop(op);
-      else tmp = null;
-      IntValue ret = new IntValue(result ? 1 : 0, tmp);
-      return ret;
+      if (tmp != null) {
+        tmp = tmp.setop(op);
+      }
+      return new IntValue(result ? 1 : 0, tmp);
     } else if (symbolic != null) {
-      IntValue ret = new IntValue(result ? 1 : 0, symbolic.subtract(i2.concrete).setop(op));
-      return ret;
+      return new IntValue(result ? 1 : 0, symbolic.subtract(i2.concrete).setop(op));
     } else {
-      IntValue ret = new IntValue(result ? 1 : 0, i2.symbolic.subtractFrom(concrete).setop(op));
-      return ret;
+      return new IntValue(result ? 1 : 0, i2.symbolic.subtractFrom(concrete).setop(op));
     }
   }
 
@@ -216,16 +211,14 @@ public class IntValue extends Value {
       return result ? IntValue.TRUE : IntValue.FALSE;
     } else if (symbolic != null && i2.symbolic != null) {
       SymbolicInt tmp = symbolic.subtract(i2.symbolic);
-      if (tmp != null) tmp = tmp.setop(op);
-      else tmp = null;
-      IntValue ret = new IntValue(result ? 1 : 0, tmp);
-      return ret;
+      if (tmp != null) {
+        tmp = tmp.setop(op);
+      }
+      return new IntValue(result ? 1 : 0, tmp);
     } else if (symbolic != null) {
-      IntValue ret = new IntValue(result ? 1 : 0, symbolic.subtract(i2.concrete).setop(op));
-      return ret;
+      return new IntValue(result ? 1 : 0, symbolic.subtract(i2.concrete).setop(op));
     } else {
-      IntValue ret = new IntValue(result ? 1 : 0, i2.symbolic.subtractFrom(concrete).setop(op));
-      return ret;
+      return new IntValue(result ? 1 : 0, i2.symbolic.subtractFrom(concrete).setop(op));
     }
   }
 
