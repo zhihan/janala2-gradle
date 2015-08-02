@@ -5,10 +5,10 @@ import janala.solvers.History;
 import java.util.Map;
 
 /** 
- IntValue contains a pair of concrete value and a path constraint.  
- Note that the path constraint flip the boolean signs according to the 
- evaluated concrete value.
-*/
+ * IntValue contains a pair of concrete value and a path constraint.  
+ * Note that the path constraint flip the boolean signs according to the 
+ * evaluated concrete value.
+ */
 public class IntValue extends Value {
   public SymbolicInt symbolic;
   public Constraint nonIntConstraint; 
@@ -230,16 +230,14 @@ public class IntValue extends Value {
       return result ? IntValue.TRUE : IntValue.FALSE;
     } else if (symbolic != null && i2.symbolic != null) {
       SymbolicInt tmp = symbolic.subtract(i2.symbolic);
-      if (tmp != null) tmp = tmp.setop(op);
-      else tmp = null;
-      IntValue ret = new IntValue(result ? 1 : 0, tmp);
-      return ret;
+      if (tmp != null) {
+        tmp = tmp.setop(op);
+      } 
+      return new IntValue(result ? 1 : 0, tmp);
     } else if (symbolic != null) {
-      IntValue ret = new IntValue(result ? 1 : 0, symbolic.subtract(i2.concrete).setop(op));
-      return ret;
+      return new IntValue(result ? 1 : 0, symbolic.subtract(i2.concrete).setop(op));
     } else {
-      IntValue ret = new IntValue(result ? 1 : 0, i2.symbolic.subtractFrom(concrete).setop(op));
-      return ret;
+      return new IntValue(result ? 1 : 0, i2.symbolic.subtractFrom(concrete).setop(op));
     }
   }
 
@@ -251,16 +249,14 @@ public class IntValue extends Value {
       return result ? IntValue.TRUE : IntValue.FALSE;
     } else if (symbolic != null && i2.symbolic != null) {
       SymbolicInt tmp = symbolic.subtract(i2.symbolic);
-      if (tmp != null) tmp = tmp.setop(op);
-      else tmp = null;
-      IntValue ret = new IntValue(result ? 1 : 0, tmp);
-      return ret;
+      if (tmp != null) {
+        tmp = tmp.setop(op);
+      }
+      return new IntValue(result ? 1 : 0, tmp);
     } else if (symbolic != null) {
-      IntValue ret = new IntValue(result ? 1 : 0, symbolic.subtract(i2.concrete).setop(op));
-      return ret;
+      return new IntValue(result ? 1 : 0, symbolic.subtract(i2.concrete).setop(op));
     } else {
-      IntValue ret = new IntValue(result ? 1 : 0, i2.symbolic.subtractFrom(concrete).setop(op));
-      return ret;
+      return new IntValue(result ? 1 : 0, i2.symbolic.subtractFrom(concrete).setop(op));
     }
   }
 
@@ -272,16 +268,14 @@ public class IntValue extends Value {
       return result ? IntValue.TRUE : IntValue.FALSE;
     } else if (symbolic != null && i2.symbolic != null) {
       SymbolicInt tmp = symbolic.subtract(i2.symbolic);
-      if (tmp != null) tmp = tmp.setop(op);
-      else tmp = null;
-      IntValue ret = new IntValue(result ? 1 : 0, tmp);
-      return ret;
+      if (tmp != null) {
+        tmp = tmp.setop(op);
+      }
+      return new IntValue(result ? 1 : 0, tmp);
     } else if (symbolic != null) {
-      IntValue ret = new IntValue(result ? 1 : 0, symbolic.subtract(i2.concrete).setop(op));
-      return ret;
+      return new IntValue(result ? 1 : 0, symbolic.subtract(i2.concrete).setop(op));
     } else {
-      IntValue ret = new IntValue(result ? 1 : 0, i2.symbolic.subtractFrom(concrete).setop(op));
-      return ret;
+      return new IntValue(result ? 1 : 0, i2.symbolic.subtractFrom(concrete).setop(op));
     }
   }
 
@@ -289,17 +283,11 @@ public class IntValue extends Value {
     if (symbolic == null && i.symbolic == null) {
       return new IntValue(concrete + i.concrete);
     } else if (symbolic != null && i.symbolic != null) {
-      IntValue ret = new IntValue(concrete + i.concrete);
-      ret.symbolic = symbolic.add(i.symbolic);
-      return ret;
+      return new IntValue(concrete + i.concrete, symbolic.add(i.symbolic));
     } else if (symbolic != null) {
-      IntValue ret = new IntValue(concrete + i.concrete);
-      ret.symbolic = symbolic.add(i.concrete);
-      return ret;
+      return new IntValue(concrete + i.concrete, symbolic.add(i.concrete));
     } else {
-      IntValue ret = new IntValue(concrete + i.concrete);
-      ret.symbolic = i.symbolic.add(concrete);
-      return ret;
+      return new IntValue(concrete + i.concrete, i.symbolic.add(concrete));
     }
   }
 
@@ -307,17 +295,11 @@ public class IntValue extends Value {
     if (symbolic == null && i.symbolic == null) {
       return new IntValue(concrete - i.concrete);
     } else if (symbolic != null && i.symbolic != null) {
-      IntValue ret = new IntValue(concrete - i.concrete);
-      ret.symbolic = symbolic.subtract(i.symbolic);
-      return ret;
+      return new IntValue(concrete - i.concrete, symbolic.subtract(i.symbolic));
     } else if (symbolic != null) {
-      IntValue ret = new IntValue(concrete - i.concrete);
-      ret.symbolic = symbolic.subtract(i.concrete);
-      return ret;
+      return new IntValue(concrete - i.concrete, symbolic.subtract(i.concrete));
     } else {
-      IntValue ret = new IntValue(concrete - i.concrete);
-      ret.symbolic = i.symbolic.subtractFrom(concrete);
-      return ret;
+      return new IntValue(concrete - i.concrete, i.symbolic.subtractFrom(concrete));
     }
   }
 

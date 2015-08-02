@@ -373,7 +373,7 @@ class IntValueTest {
     @Test
     public void testIFICMPLTSymbolOneSymbol() {
         // (0, x1) < (1, null)
-        // -> (0, x1 - 1< 0)
+        // -> (1, x1 - 1< 0)
         SymbolicInt x1 = new SymbolicInt(1)
         IntValue a = new IntValue(0, x1)
         IntValue b = new IntValue(1)
@@ -393,4 +393,182 @@ class IntValueTest {
         assertEquals(1, r.symbolic.constant)
         assertEquals(SymbolicInt.COMPARISON_OPS.GE, r.symbolic.op)
     }
+ 
+    @Test
+    public void testIF_ICMPGENoSymbol() {
+        IntValue i = new IntValue(0)
+        assertEquals(IntValue.TRUE, i.IF_ICMPGE(i))
+        IntValue j = new IntValue(1)
+        assertEquals(IntValue.FALSE, i.IF_ICMPGE(j))
+    }
+
+    @Test
+    public void testIF_ICMPGESymbolTwoSymbols() {
+        // (0, x1) >= (0, x2)
+        // -> (1, x1 - x2 >= 0)
+        SymbolicInt x1 = new SymbolicInt(1)
+        SymbolicInt x2 = new SymbolicInt(2)
+        IntValue a = new IntValue(0, x1)
+        IntValue b = new IntValue(0, x2)
+        IntValue r = a.IF_ICMPGE(b)
+
+        assertEquals(1, r.concrete)
+        assertEquals(2, r.symbolic.linear.size())
+        assertEquals(SymbolicInt.COMPARISON_OPS.GE, r.symbolic.op)
+    }
+
+    @Test
+    public void testIFICMPGESymbolOneSymbol() {
+        // (0, x1) >= (1, null)
+        // -> (0, x1 - 1< 0)
+        SymbolicInt x1 = new SymbolicInt(1)
+        IntValue a = new IntValue(0, x1)
+        IntValue b = new IntValue(1)
+
+        IntValue r = a.IF_ICMPGE(b)
+        assertEquals(0, r.concrete)
+        assertEquals(1, r.symbolic.linear.size())
+        assertEquals(-1, r.symbolic.constant)
+        assertEquals(SymbolicInt.COMPARISON_OPS.LT, r.symbolic.op)
+
+        // (1, null) >= (0, x1) 
+        // -> (1, 1 - x1 >= 0)
+        r = b.IF_ICMPGE(a)
+        println(r)
+        assertEquals(1, r.concrete)
+        assertEquals(1, r.symbolic.linear.size())
+        assertEquals(1, r.symbolic.constant)
+        assertEquals(SymbolicInt.COMPARISON_OPS.GE, r.symbolic.op)
+    }
+ 
+    @Test
+    public void testIF_ICMPGTNoSymbol() {
+        IntValue i = new IntValue(0)
+        assertEquals(IntValue.FALSE, i.IF_ICMPGT(i))
+        IntValue j = new IntValue(1)
+        assertEquals(IntValue.TRUE, j.IF_ICMPGT(i))
+    }
+
+    @Test
+    public void testIF_ICMPGTSymbolTwoSymbols() {
+        // (0, x1) > (0, x2)
+        // -> (0, x1 - x2 <= 0)
+        SymbolicInt x1 = new SymbolicInt(1)
+        SymbolicInt x2 = new SymbolicInt(2)
+        IntValue a = new IntValue(0, x1)
+        IntValue b = new IntValue(0, x2)
+        IntValue r = a.IF_ICMPGT(b)
+
+        assertEquals(0, r.concrete)
+        assertEquals(2, r.symbolic.linear.size())
+        assertEquals(SymbolicInt.COMPARISON_OPS.LE, r.symbolic.op)
+    }
+
+    @Test
+    public void testIFICMPGTSymbolOneSymbol() {
+        // (0, x1) > (1, null)
+        // -> (0, x1 - 1 <= 0)
+        SymbolicInt x1 = new SymbolicInt(1)
+        IntValue a = new IntValue(0, x1)
+        IntValue b = new IntValue(1)
+
+        IntValue r = a.IF_ICMPGT(b)
+        assertEquals(0, r.concrete)
+        assertEquals(1, r.symbolic.linear.size())
+        assertEquals(-1, r.symbolic.constant)
+        assertEquals(SymbolicInt.COMPARISON_OPS.LE, r.symbolic.op)
+
+        // (1, null) > (0, x1) 
+        // -> (1, 1 - x1 > 0)
+        r = b.IF_ICMPGT(a)
+        println(r)
+        assertEquals(1, r.concrete)
+        assertEquals(1, r.symbolic.linear.size())
+        assertEquals(1, r.symbolic.constant)
+        assertEquals(SymbolicInt.COMPARISON_OPS.GT, r.symbolic.op)
+    }
+
+    @Test
+    public void testIF_ICMPLENoSymbol() {
+        IntValue i = new IntValue(0)
+        assertEquals(IntValue.TRUE, i.IF_ICMPLE(i))
+        IntValue j = new IntValue(1)
+        assertEquals(IntValue.FALSE, j.IF_ICMPLE(i))
+    }
+
+    @Test
+    public void testIF_ICMPLESymbolTwoSymbols() {
+        // (0, x1) <= (0, x2)
+        // -> (1, x1 - x2 <= 0)
+        SymbolicInt x1 = new SymbolicInt(1)
+        SymbolicInt x2 = new SymbolicInt(2)
+        IntValue a = new IntValue(0, x1)
+        IntValue b = new IntValue(0, x2)
+        IntValue r = a.IF_ICMPLE(b)
+
+        assertEquals(1, r.concrete)
+        assertEquals(2, r.symbolic.linear.size())
+        assertEquals(SymbolicInt.COMPARISON_OPS.LE, r.symbolic.op)
+    }
+
+    @Test
+    public void testIFICMPLESymbolOneSymbol() {
+        // (0, x1) <= (1, null)
+        // -> (1, x1 - 1 <= 0)
+        SymbolicInt x1 = new SymbolicInt(1)
+        IntValue a = new IntValue(0, x1)
+        IntValue b = new IntValue(1)
+
+        IntValue r = a.IF_ICMPLE(b)
+        assertEquals(1, r.concrete)
+        assertEquals(1, r.symbolic.linear.size())
+        assertEquals(-1, r.symbolic.constant)
+        assertEquals(SymbolicInt.COMPARISON_OPS.LE, r.symbolic.op)
+
+        // (1, null) <= (0, x1) 
+        // -> (0, 1 - x1 > 0)
+        r = b.IF_ICMPLE(a)
+        println(r)
+        assertEquals(0, r.concrete)
+        assertEquals(1, r.symbolic.linear.size())
+        assertEquals(1, r.symbolic.constant)
+        assertEquals(SymbolicInt.COMPARISON_OPS.GT, r.symbolic.op)
+    }
+
+    @Test
+    public void testIADDNoSymbols() {
+        IntValue a = new IntValue(1)
+        IntValue b = a.IADD(a)
+        assertEquals(2, b.concrete)
+        assertNull(b.symbolic)
+    }   
+ 
+    @Test
+    public void testIADDTwoSymbols() {
+        // (1, x1) + (1, x2) = (2, x1 + x2)
+        // -> (1, x1 - x2 <= 0)
+        SymbolicInt x1 = new SymbolicInt(1)
+        SymbolicInt x2 = new SymbolicInt(2)
+        IntValue a = new IntValue(1, x1)
+        IntValue b = new IntValue(1, x2)
+        IntValue r = a.IADD(b)
+
+        assertEquals(2, r.concrete)
+        assertEquals(2, r.symbolic.linear.size())
+    }
+
+  @Test
+    public void testIADDOneSymbol() {
+        SymbolicInt x1 = new SymbolicInt(1)
+        IntValue a = new IntValue(1, x1)
+        IntValue b = new IntValue(1)
+
+        IntValue r = a.IADD(b)
+        assertEquals(2, r.concrete)
+        assertEquals(1, r.symbolic.linear.size())
+        
+        r = b.IADD(a)
+        assertEquals(2, r.concrete)
+        assertEquals(1, r.symbolic.linear.size())
+    } 
 }
