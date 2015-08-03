@@ -546,7 +546,6 @@ class IntValueTest {
     @Test
     public void testIADDTwoSymbols() {
         // (1, x1) + (1, x2) = (2, x1 + x2)
-        // -> (1, x1 - x2 <= 0)
         SymbolicInt x1 = new SymbolicInt(1)
         SymbolicInt x2 = new SymbolicInt(2)
         IntValue a = new IntValue(1, x1)
@@ -557,7 +556,7 @@ class IntValueTest {
         assertEquals(2, r.symbolic.linear.size())
     }
 
-  @Test
+   @Test
     public void testIADDOneSymbol() {
         SymbolicInt x1 = new SymbolicInt(1)
         IntValue a = new IntValue(1, x1)
@@ -570,5 +569,79 @@ class IntValueTest {
         r = b.IADD(a)
         assertEquals(2, r.concrete)
         assertEquals(1, r.symbolic.linear.size())
+    }
+
+    @Test
+    public void testISUBNoSymbols() {
+        IntValue a = new IntValue(1)
+        IntValue b = a.ISUB(a)
+        assertEquals(0, b.concrete)
+        assertNull(b.symbolic)
     } 
+
+    @Test
+    public void testISUBTwoSymbols() {
+        // (1, x1) - (1, x2) = (0, x1 - x2)
+        SymbolicInt x1 = new SymbolicInt(1)
+        SymbolicInt x2 = new SymbolicInt(2)
+        IntValue a = new IntValue(1, x1)
+        IntValue b = new IntValue(1, x2)
+        IntValue r = a.ISUB(b)
+
+        assertEquals(0, r.concrete)
+        assertEquals(2, r.symbolic.linear.size())
+    }          
+ 
+    @Test
+    public void testISUBOneSymbol() {
+        SymbolicInt x1 = new SymbolicInt(1)
+        IntValue a = new IntValue(1, x1)
+        IntValue b = new IntValue(1)
+
+        IntValue r = a.ISUB(b)
+        assertEquals(0, r.concrete)
+        assertEquals(1, r.symbolic.linear.size())
+        
+        r = b.ISUB(a)
+        assertEquals(0, r.concrete)
+        assertEquals(1, r.symbolic.linear.size())
+    }
+
+   @Test
+    public void testIMULNoSymbols() {
+        IntValue a = new IntValue(1)
+        IntValue b = a.IMUL(a)
+        assertEquals(1, b.concrete)
+        assertNull(b.symbolic)
+    } 
+
+    @Test
+    public void testIMULTwoSymbols() {
+        // (1, x1) * (1, x2) = (0, x1 )
+        SymbolicInt x1 = new SymbolicInt(1)
+        SymbolicInt x2 = new SymbolicInt(2)
+        IntValue a = new IntValue(1, x1)
+        IntValue b = new IntValue(1, x2)
+        IntValue r = a.IMUL(b)
+
+        assertEquals(1, r.concrete)
+        assertEquals(1, r.symbolic.linear.size())
+    }          
+ 
+    @Test
+    public void testIMULOneSymbol() {
+        SymbolicInt x1 = new SymbolicInt(1)
+        IntValue a = new IntValue(1, x1)
+        IntValue b = new IntValue(1)
+
+        IntValue r = a.IMUL(b)
+        assertEquals(1, r.concrete)
+        assertEquals(1, r.symbolic.linear.size())
+        
+        r = b.IMUL(a)
+        assertEquals(1, r.concrete)
+        assertEquals(1, r.symbolic.linear.size())
+    }    
+
+ 
 }

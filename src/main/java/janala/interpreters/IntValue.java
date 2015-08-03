@@ -307,17 +307,11 @@ public class IntValue extends Value {
     if (symbolic == null && i.symbolic == null) {
       return new IntValue(concrete * i.concrete);
     } else if (symbolic != null && i.symbolic != null) {
-      IntValue ret = new IntValue(concrete * i.concrete);
-      ret.symbolic = symbolic.multiply(i.concrete);
-      return ret;
+      return new IntValue(concrete * i.concrete, symbolic.multiply(i.concrete));
     } else if (symbolic != null) {
-      IntValue ret = new IntValue(concrete * i.concrete);
-      ret.symbolic = symbolic.multiply(i.concrete);
-      return ret;
+      return new IntValue(concrete * i.concrete, symbolic.multiply(i.concrete));
     } else {
-      IntValue ret = new IntValue(concrete * i.concrete);
-      ret.symbolic = i.symbolic.multiply(concrete);
-      return ret;
+      return new IntValue(concrete * i.concrete, i.symbolic.multiply(concrete));
     }
   }
 
