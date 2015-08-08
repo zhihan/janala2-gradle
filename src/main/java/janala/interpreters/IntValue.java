@@ -315,6 +315,7 @@ public class IntValue extends Value {
     }
   }
 
+  // TODO: this does not look like properly supported.
   public IntValue IDIV(IntValue i) {
     return new IntValue(concrete / i.concrete);
   }

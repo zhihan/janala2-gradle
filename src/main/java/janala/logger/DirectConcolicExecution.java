@@ -12,7 +12,7 @@ public class DirectConcolicExecution extends Thread implements Logger {
   IVisitor intp = null;
 
   public DirectConcolicExecution() {
-    intp = new ConcolicInterpreter(ClassNames.instance);
+    intp = new ConcolicInterpreter(ClassNames.getInstance());
     Runtime.getRuntime().addShutdownHook(this);
   }
 

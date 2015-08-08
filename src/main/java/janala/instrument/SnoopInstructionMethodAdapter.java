@@ -627,7 +627,7 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
         addBipushInsn(mv, GlobalStateForInstrumentation.instance.incAndGetId());
         addBipushInsn(mv, GlobalStateForInstrumentation.instance.getMid());
         mv.visitLdcInsn(type);
-        int cIdx = ClassNames.instance.get(type);
+        int cIdx = ClassNames.getInstance().get(type);
         addBipushInsn(mv, cIdx);
         mv.visitMethodInsn(
             INVOKESTATIC, Config.instance.analysisClass, "NEW", "(IILjava/lang/String;I)V");
@@ -676,8 +676,8 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
   public void visitFieldInsn(int opcode, String owner, String name, String desc) {
     addBipushInsn(mv, GlobalStateForInstrumentation.instance.incAndGetId());
     addBipushInsn(mv, GlobalStateForInstrumentation.instance.getMid());
-    int cIdx = ClassNames.instance.get(owner);
-    ObjectInfo tmp = ClassNames.instance.get(cIdx);
+    int cIdx = ClassNames.getInstance().get(owner);
+    ObjectInfo tmp = ClassNames.getInstance().get(cIdx);
     addBipushInsn(mv, cIdx);
     switch (opcode) {
       case GETSTATIC:

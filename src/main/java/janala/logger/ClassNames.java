@@ -2,19 +2,24 @@ package janala.logger;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- * Date: 6/3/12
- * Time: 5:50 PM
- */
+
 public class ClassNames implements Serializable {
   Map<String, Integer> nameToIndex;
-  ArrayList<ObjectInfo> classList;
+  List<ObjectInfo> classList;
 
-  public final static ClassNames instance = new ClassNames();
+  private final static ClassNames instance = new ClassNames();
+  public static ClassNames getInstance() {
+    return instance;
+  }
+
+  @VisibleForTesting
+  public static void setInstance(ClassNames c) {
+    instance = c;
+  }
 
   public int get(String className) {
     if (nameToIndex == null) {

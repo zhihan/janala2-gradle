@@ -643,5 +643,69 @@ class IntValueTest {
         assertEquals(1, r.symbolic.linear.size())
     }    
 
- 
+    @Test
+    public void testIDIVNoSymbols() {
+        IntValue a = new IntValue(4)
+        IntValue b = new IntValue(2)
+        IntValue r = a.IDIV(b)
+        assertEquals(2, r.concrete)
+        assertNull(r.symbolic)
+    } 
+
+    @Test
+    public void testIREMNoSymbols() {
+        IntValue a = new IntValue(3)
+        IntValue b = new IntValue(2)
+        IntValue r = a.IREM(b)
+        assertEquals(1, r.concrete)
+        assertNull(r.symbolic)
+    }
+
+    @Test
+    public void testINEGNoSymbols() {
+        IntValue a = new IntValue(3)
+        IntValue r = a.INEG()
+        assertEquals(-3, r.concrete)
+        assertNull(r.symbolic)
+    }
+
+    @Test
+    public void testINEGOneSymbol() {
+        SymbolicInt x1 = new SymbolicInt(1)
+        IntValue a = new IntValue(1, x1)
+
+        IntValue r = a.INEG()
+        assertEquals(-1, r.concrete)
+        assertEquals(1, r.symbolic.linear.size())
+    } 
+
+    @Test
+    public void testSimpleFcns() {
+        testFcnNoSymbol({IntValue v -> v.I2B()}, {x -> x}, 1)
+        testFcnNoSymbol({IntValue v -> v.I2C()}, {x -> x}, 1)
+        testFcnNoSymbol({IntValue v -> v.I2S()}, {x -> x}, 1)
+
+        testFcn2NoSymbol({x, y -> x.ISHL(y)}, {a, b -> a << b}, 2, 1)
+        testFcn2NoSymbol({x, y -> x.ISHR(y)}, {a, b -> a >> b}, 2, 1)
+        testFcn2NoSymbol({x, y -> x.IUSHR(y)}, {a, b -> a >>> b}, 2, 1)
+        testFcn2NoSymbol({x, y -> x.IAND(y)}, {a, b -> a & b}, 1, 1)
+        testFcn2NoSymbol({x, y -> x.IOR(y)}, {a, b -> a | b}, 1, 1)
+        testFcn2NoSymbol({x, y -> x.IXOR(y)}, {a, b -> a ^ b}, 1, 1)
+    }
+
+    private testFcnNoSymbol(Closure intValClosure, Closure nativeClosure, int value) {
+        int expected = nativeClosure(value)
+        IntValue wrapped = new IntValue(value)
+        IntValue actual = intValClosure(wrapped)
+        assertEquals(expected, actual.concrete)
+    }
+
+    private testFcn2NoSymbol(Closure intValClosure, Closure nativeClosure, 
+                            int x, int y) {
+        int expected = nativeClosure(x, y)
+        IntValue wrappedX = new IntValue(x)
+        IntValue wrappedY = new IntValue(y)
+        IntValue actual = intValClosure(wrappedX, wrappedY)
+        assertEquals(expected, actual.concrete)
+    }
 }

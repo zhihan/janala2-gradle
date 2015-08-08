@@ -10,11 +10,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- * Date: 6/3/12
- * Time: 5:53 PM
- */
 public class ObjectInfo implements Serializable {
   Map<String, Integer> fieldNameToIndex;
   ArrayList<FieldInfo> fieldList;

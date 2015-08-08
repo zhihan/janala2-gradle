@@ -17,7 +17,7 @@ public class FileLogger extends AbstractLogger {
       try {
         outputStream.close();
         outputStream = new ObjectOutputStream(new FileOutputStream(Config.instance.traceAuxFileName));
-        outputStream.writeObject(ClassNames.instance);
+        outputStream.writeObject(ClassNames.getInstance());
         outputStream.close();
       } catch (IOException e) {
         e.printStackTrace();
