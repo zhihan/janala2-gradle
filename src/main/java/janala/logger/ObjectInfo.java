@@ -21,7 +21,10 @@ public class ObjectInfo implements Serializable {
   private int nFields;
   public Value[] statics;
 
-  public String className;
+  private String className;
+  public String getClassName() {
+    return className;
+  }
 
   public ObjectInfo(String className) {
     this.className = className.replace('/', '.');
@@ -78,11 +81,11 @@ public class ObjectInfo implements Serializable {
       nStaticFields = ClassDepot.instance.nStaticFields(className);
       if (fieldList != null)
         for (FieldInfo fieldInfo : fieldList) {
-          fieldInfo.init();
+          fieldInfo.init(ClassDepot.instance);
         }
       if (staticFieldList != null)
         for (FieldInfo fieldInfo : staticFieldList) {
-          fieldInfo.init();
+          fieldInfo.init(ClassDepot.instance);
         }
     }
     statics = new Value[nStaticFields];

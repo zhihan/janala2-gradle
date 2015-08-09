@@ -10,9 +10,9 @@ import java.io.Serializable;
  * Time: 5:46 PM
  */
 public class FieldInfo implements Serializable {
-  String className;
-  String fieldName;
-  boolean isStatic;
+  private final String className;
+  private final String fieldName;
+  private final boolean isStatic;
 
   private int fieldId;
 
@@ -23,12 +23,12 @@ public class FieldInfo implements Serializable {
     fieldId = -1;
   }
 
-  public FieldInfo init() {
+  public FieldInfo init(ClassDepot classDepot) {
     if (fieldId == -1) {
       if (isStatic) {
-        fieldId = ClassDepot.instance.getStaticFieldIndex(className, fieldName);
+        fieldId = classDepot.getStaticFieldIndex(className, fieldName);
       } else {
-        fieldId = ClassDepot.instance.getFieldIndex(className, fieldName);
+        fieldId = classDepot.getFieldIndex(className, fieldName);
       }
     }
     return this;
@@ -51,13 +51,7 @@ public class FieldInfo implements Serializable {
   }
 
   public int getFieldId() {
-    if (fieldId == -1) {
-      if (isStatic) {
-        fieldId = ClassDepot.instance.getStaticFieldIndex(className, fieldName);
-      } else {
-        fieldId = ClassDepot.instance.getFieldIndex(className, fieldName);
-      }
-    }
+    // init(ClassDepot.instance);
     return fieldId;
   }
 }

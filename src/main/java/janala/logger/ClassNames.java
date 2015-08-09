@@ -11,12 +11,12 @@ public class ClassNames implements Serializable {
   Map<String, Integer> nameToIndex;
   List<ObjectInfo> classList;
 
-  private final static ClassNames instance = new ClassNames();
+  private static ClassNames instance = new ClassNames();
   public static ClassNames getInstance() {
     return instance;
   }
 
-  @VisibleForTesting
+  //VisibleForTesting
   public static void setInstance(ClassNames c) {
     instance = c;
   }

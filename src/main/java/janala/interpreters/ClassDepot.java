@@ -11,10 +11,18 @@ public class ClassDepot {
 
   private Map<String, ClassTemplate> templates;
 
-  public final static ClassDepot instance = new ClassDepot();
+  public static ClassDepot instance = new ClassDepot();
+  public static void setInstance(ClassDepot i) {
+    instance = i;
+  }
+  public static ClassDepot getInstance() {
+    return instance;
+  }
+
   private final static Logger logger = MyLogger.getLogger(ClassDepot.class.getName());
 
-  private ClassDepot() {
+  // VisibleForTesting
+  public ClassDepot() {
     templates = new TreeMap<String, ClassTemplate>();
   }
 
@@ -39,7 +47,6 @@ public class ClassDepot {
       return ct.getFieldIndex(field);
     } catch (ClassNotFoundException e) {
       logger.log(Level.SEVERE, "", e);
-      System.exit(-1);
     }
     return -1;
   }
@@ -51,7 +58,6 @@ public class ClassDepot {
       return ct.getStaticFieldIndex(field);
     } catch (ClassNotFoundException e) {
       logger.log(Level.SEVERE, "", e);
-      System.exit(-1);
     }
     return -1;
   }
@@ -62,8 +68,7 @@ public class ClassDepot {
       ClassTemplate ct = getOrCreateTemplate(cName, clazz);
       return ct.nFields();
     } catch (ClassNotFoundException e) {
-      logger.log(Level.SEVERE, "", e);
-      System.exit(-1);
+      logger.log(Level.SEVERE, "Class not found", e);
     }
     return -1;
   }
@@ -78,10 +83,6 @@ public class ClassDepot {
       System.exit(-1);
     }
     return -1;
-  }
-
-  public static void main(String[] args) {
-    System.out.println(instance.getFieldIndex("janala.scratchpad.B1", "x"));
   }
 
   public int getClassId(String className) {

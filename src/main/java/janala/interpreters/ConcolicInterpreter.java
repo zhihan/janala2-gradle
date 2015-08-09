@@ -1342,7 +1342,7 @@ public class ConcolicInterpreter implements IVisitor {
     try {
       ObjectInfo oi = cnames.get(inst.cIdx);
       //            currentFrame.push(new ObjectValue(oi.nFields));
-      currentFrame.push(ObjectFactory.create(oi.getNFields(), oi.className));
+      currentFrame.push(ObjectFactory.create(oi.getNFields(), oi.getClassName()));
     } catch (Exception e) {
       e.printStackTrace();
     }
