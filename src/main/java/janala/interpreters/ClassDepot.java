@@ -29,7 +29,6 @@ public class ClassDepot {
   private ClassTemplate getOrCreateTemplate(String cName, Class clazz) {
     ClassTemplate ct = templates.get(cName);
     if (ct != null) return ct;
-    //System.out.println("Adding to parents of "+cName);
     ct = new ClassTemplate(clazz);
     templates.put(cName, ct);
     Class parent = clazz.getSuperclass();
@@ -47,8 +46,8 @@ public class ClassDepot {
       return ct.getFieldIndex(field);
     } catch (ClassNotFoundException e) {
       logger.log(Level.SEVERE, "", e);
+      return -1;
     }
-    return -1;
   }
 
   public int getStaticFieldIndex(String cName, String field) {
@@ -58,8 +57,8 @@ public class ClassDepot {
       return ct.getStaticFieldIndex(field);
     } catch (ClassNotFoundException e) {
       logger.log(Level.SEVERE, "", e);
+      return -1;
     }
-    return -1;
   }
 
   public int nFields(String cName) {
@@ -69,8 +68,8 @@ public class ClassDepot {
       return ct.nFields();
     } catch (ClassNotFoundException e) {
       logger.log(Level.SEVERE, "Class not found", e);
+      return -1;
     }
-    return -1;
   }
 
   public int nStaticFields(String cName) {
@@ -80,9 +79,8 @@ public class ClassDepot {
       return ct.nStaticFields();
     } catch (ClassNotFoundException e) {
       logger.log(Level.SEVERE, "", e);
-      System.exit(-1);
+      return -1;
     }
-    return -1;
   }
 
   public int getClassId(String className) {
