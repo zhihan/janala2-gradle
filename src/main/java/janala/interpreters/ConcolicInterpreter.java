@@ -1,6 +1,5 @@
 package janala.interpreters;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
 import janala.Main;
 import janala.config.Config;
 import janala.instrument.Coverage;
@@ -12,6 +11,8 @@ import janala.solvers.History;
 import janala.utils.MyLogger;
 import org.objectweb.asm.Type;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,7 +21,7 @@ public class ConcolicInterpreter implements IVisitor {
   private Stack<Frame> stack;
   private Frame currentFrame;
   private ClassNames cnames;
-  private TIntObjectHashMap<Value> objects;
+  private Map<Integer, Value> objects;
   private History history;
   private Instruction next;
   private final static Logger logger = MyLogger.getLogger(ConcolicInterpreter.class.getName());
@@ -29,7 +30,7 @@ public class ConcolicInterpreter implements IVisitor {
     stack = new Stack<Frame>();
     stack.add(currentFrame = new Frame(0));
     this.cnames = cnames;
-    objects = new TIntObjectHashMap<Value>();
+    objects = new HashMap<Integer, Value>();
     history = History.readHistory(Config.instance.getSolver());
   }
 
@@ -621,8 +622,6 @@ public class ConcolicInterpreter implements IVisitor {
     Value tmp;
     if (peek == PlaceHolder.instance
         || (((ObjectValue) peek).address != -1 && ((ObjectValue) peek).address != inst.v)) {
-      //if (peek != PlaceHolder.instance)
-      //    logger.log(Level.WARNING, "** Failed to match " + currentFrame.peek() + " and " + inst.v);
       logger.log(Level.FINE, "** Failed to match " + currentFrame.peek() + " and " + inst.v);
       currentFrame.pop();
       tmp = objects.get(inst.v);
@@ -648,7 +647,6 @@ public class ConcolicInterpreter implements IVisitor {
         objects.put(inst.v, peek);
       }
     }
-    //        throw new RuntimeException("Unimplemented instruction "+inst);
   }
 
   public void visitGETVALUE_boolean(GETVALUE_boolean inst) {
@@ -1399,7 +1397,7 @@ public class ConcolicInterpreter implements IVisitor {
       } else {
         value = currentFrame.pop();
       }
-      oi.setField(fi.getFieldId(), value);
+      oi.setStaticField(fi.getFieldId(), value);
     } catch (Exception e) {
       e.printStackTrace();
     }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Frame {
   private ArrayList<Value> locals = new ArrayList<Value>(8);
   private ArrayList<Value> stack = new ArrayList<Value>(8);
+
   public final int nReturnWords;
   public Value ret;
 
@@ -33,8 +34,10 @@ public class Frame {
   }
 
   public Value getLocal(int index) {
-    if (index < locals.size()) return locals.get(index);
-    else return PlaceHolder.instance;
+    if (index < locals.size()) {
+      return locals.get(index);
+    }
+    return PlaceHolder.instance;
   }
 
   public void setLocal2(int index, Value o) {
@@ -48,8 +51,10 @@ public class Frame {
   }
 
   public Value getLocal2(int index) {
-    if (index < locals.size()) return locals.get(index);
-    else return PlaceHolder.instance;
+    if (index < locals.size()) {
+      return locals.get(index);
+    }
+    return PlaceHolder.instance;
   }
 
   public void push(Value o) {

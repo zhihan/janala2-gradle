@@ -1,5 +1,7 @@
 package janala.logger;
 
+import janala.interpreters.ClassDepot;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,12 +10,21 @@ import java.util.TreeMap;
 
 
 public class ClassNames implements Serializable {
-  Map<String, Integer> nameToIndex;
-  List<ObjectInfo> classList;
+  private Map<String, Integer> nameToIndex;
+  private List<ObjectInfo> classList;
 
   private static ClassNames instance = new ClassNames();
   public static ClassNames getInstance() {
     return instance;
+  }
+
+  private final ClassDepot classDepot;
+  public ClassNames(ClassDepot classDepot) {
+    this.classDepot = classDepot;
+  }
+
+  public ClassNames() {
+    this.classDepot = ClassDepot.getInstance();
   }
 
   //VisibleForTesting
@@ -42,11 +53,16 @@ public class ClassNames implements Serializable {
   }
 
   public void init() {
+    init(classDepot);
+  }
+
+  public void init(ClassDepot classDepot) {
     if (classList != null)
       for (ObjectInfo objectInfo : classList) {
-        objectInfo.init();
+        objectInfo.init(classDepot);
       }
   }
+  
 
   @Override
   public String toString() {

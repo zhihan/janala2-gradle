@@ -10,6 +10,10 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
+/** 
+ * Containing the static info of a class and dynamic values of the
+ * static fields. 
+ */
 public class ObjectInfo implements Serializable {
   Map<String, Integer> fieldNameToIndex;
   ArrayList<FieldInfo> fieldList;
@@ -32,7 +36,6 @@ public class ObjectInfo implements Serializable {
   }
 
   private int get(
-      String className,
       String fieldName,
       boolean isStatic,
       Map<String, Integer> fieldNameToIndex,
@@ -62,12 +65,11 @@ public class ObjectInfo implements Serializable {
     return i;
   }
 
-  public int get(String className, String fieldName, boolean isStatic) {
+  public int getIdx(String fieldName, boolean isStatic) {
     if (isStatic) {
-      return get(className, 
-        fieldName, isStatic, staticFieldNameToIndex, staticFieldList);
+      return get(fieldName, isStatic, staticFieldNameToIndex, staticFieldList);
     }
-    return get(className, fieldName, isStatic, fieldNameToIndex, fieldList);
+    return get(fieldName, isStatic, fieldNameToIndex, fieldList);
   }
 
   public FieldInfo get(int i, boolean isStatic) {
@@ -78,24 +80,26 @@ public class ObjectInfo implements Serializable {
   }
 
   public ObjectInfo init() {
-    if (nFields == -1) {
-      nFields = ClassDepot.getInstance().nFields(className);
-      nStaticFields = ClassDepot.getInstance().nStaticFields(className);
-      if (fieldList != null)
-        for (FieldInfo fieldInfo : fieldList) {
-          fieldInfo.init(ClassDepot.instance);
-        }
-      if (staticFieldList != null)
-        for (FieldInfo fieldInfo : staticFieldList) {
-          fieldInfo.init(ClassDepot.getInstance());
-        }
+    return init(ClassDepot.getInstance());
+  }
+
+  public ObjectInfo init(ClassDepot classDepot) {
+    initialize(classDepot);
+    if (fieldList != null) {
+      for (FieldInfo fieldInfo : fieldList) {
+        fieldInfo.init(classDepot);
+      }
     }
-    statics = new Value[nStaticFields];
+    if (staticFieldList != null) {
+      for (FieldInfo fieldInfo : staticFieldList) {
+        fieldInfo.init(classDepot);
+      }
+    }
     return this;
   }
 
   public Value getStaticField(int fieldId) {
-    initialize();
+    initialize(ClassDepot.getInstance());
     Value v = statics[fieldId];
     if (v == null) {
       return PlaceHolder.instance;
@@ -103,8 +107,8 @@ public class ObjectInfo implements Serializable {
     return v;
   }
 
-  public void setField(int fieldId, Value value) {
-    initialize();
+  public void setStaticField(int fieldId, Value value) {
+    initialize(ClassDepot.getInstance());
     statics[fieldId] = value;
   }
 
@@ -131,16 +135,20 @@ public class ObjectInfo implements Serializable {
         + '}';
   }
 
-  private void initialize() {
+  private void initialize(ClassDepot classDepot) {
     if (nFields == -1) {
-      nFields = ClassDepot.getInstance().nFields(className);
-      nStaticFields = ClassDepot.getInstance().nStaticFields(className);
+      nFields = classDepot.nFields(className);
+      nStaticFields = classDepot.nStaticFields(className);
       statics = new Value[nStaticFields];
     }
   }
 
   public int getNFields() {
-    initialize();
+    return getNFields(ClassDepot.getInstance());
+  }
+
+  public int getNFields(ClassDepot classDepot) {
+    initialize(classDepot);
     return nFields;
   }
 }

@@ -681,7 +681,7 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
     addBipushInsn(mv, cIdx);
     switch (opcode) {
       case GETSTATIC:
-        int fIdx = tmp.get(owner, name, true);
+        int fIdx = tmp.getIdx(name, true);
         addBipushInsn(mv, fIdx);
         mv.visitLdcInsn(desc);
 
@@ -693,7 +693,7 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
         addValueReadInsn(mv, desc, "GETVALUE_");
         break;
       case PUTSTATIC:
-        fIdx = tmp.get(owner, name, true);
+        fIdx = tmp.getIdx(name, true);
         addBipushInsn(mv, fIdx);
         mv.visitLdcInsn(desc);
 
@@ -703,7 +703,7 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
         addSpecialInsn(mv, 0); // for non-exceptional path
         break;
       case GETFIELD:
-        fIdx = tmp.get(owner, name, false);
+        fIdx = tmp.getIdx(name, false);
         addBipushInsn(mv, fIdx);
         mv.visitLdcInsn(desc);
 
@@ -714,7 +714,7 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
         addValueReadInsn(mv, desc, "GETVALUE_");
         break;
       case PUTFIELD:
-        fIdx = tmp.get(owner, name, false);
+        fIdx = tmp.getIdx(name, false);
         addBipushInsn(mv, fIdx);
         mv.visitLdcInsn(desc);
 
