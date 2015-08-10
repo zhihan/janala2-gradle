@@ -37,8 +37,7 @@ public class ObjectInfo implements Serializable {
       boolean isStatic,
       Map<String, Integer> fieldNameToIndex,
       ArrayList<FieldInfo> fieldList) {
-    //System.out.println("******************* calling get *******************************");
-    if (fieldNameToIndex == null) {
+     if (fieldNameToIndex == null) {
       fieldNameToIndex = new TreeMap<String, Integer>();
       if (isStatic) {
         this.staticFieldNameToIndex = fieldNameToIndex;
@@ -60,32 +59,35 @@ public class ObjectInfo implements Serializable {
       fieldNameToIndex.put(fieldName, i);
       fieldList.add(new FieldInfo(className, fieldName, isStatic));
     }
-    //        System.out.println("ObjectInfo "+this);
     return i;
   }
 
   public int get(String className, String fieldName, boolean isStatic) {
-    if (isStatic)
-      return get(className, fieldName, isStatic, staticFieldNameToIndex, staticFieldList);
-    else return get(className, fieldName, isStatic, fieldNameToIndex, fieldList);
+    if (isStatic) {
+      return get(className, 
+        fieldName, isStatic, staticFieldNameToIndex, staticFieldList);
+    }
+    return get(className, fieldName, isStatic, fieldNameToIndex, fieldList);
   }
 
   public FieldInfo get(int i, boolean isStatic) {
-    if (isStatic) return staticFieldList.get(i);
-    else return fieldList.get(i);
+    if (isStatic) {
+      return staticFieldList.get(i);
+    }
+    return fieldList.get(i);
   }
 
   public ObjectInfo init() {
     if (nFields == -1) {
-      nFields = ClassDepot.instance.nFields(className);
-      nStaticFields = ClassDepot.instance.nStaticFields(className);
+      nFields = ClassDepot.getInstance().nFields(className);
+      nStaticFields = ClassDepot.getInstance().nStaticFields(className);
       if (fieldList != null)
         for (FieldInfo fieldInfo : fieldList) {
           fieldInfo.init(ClassDepot.instance);
         }
       if (staticFieldList != null)
         for (FieldInfo fieldInfo : staticFieldList) {
-          fieldInfo.init(ClassDepot.instance);
+          fieldInfo.init(ClassDepot.getInstance());
         }
     }
     statics = new Value[nStaticFields];
@@ -95,8 +97,10 @@ public class ObjectInfo implements Serializable {
   public Value getStaticField(int fieldId) {
     initialize();
     Value v = statics[fieldId];
-    if (v == null) return PlaceHolder.instance;
-    else return v;
+    if (v == null) {
+      return PlaceHolder.instance;
+    }
+    return v;
   }
 
   public void setField(int fieldId, Value value) {
@@ -129,8 +133,8 @@ public class ObjectInfo implements Serializable {
 
   private void initialize() {
     if (nFields == -1) {
-      nFields = ClassDepot.instance.nFields(className);
-      nStaticFields = ClassDepot.instance.nStaticFields(className);
+      nFields = ClassDepot.getInstance().nFields(className);
+      nStaticFields = ClassDepot.getInstance().nStaticFields(className);
       statics = new Value[nStaticFields];
     }
   }

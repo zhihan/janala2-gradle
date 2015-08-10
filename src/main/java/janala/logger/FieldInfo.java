@@ -4,11 +4,6 @@ import janala.interpreters.ClassDepot;
 
 import java.io.Serializable;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- * Date: 6/3/12
- * Time: 5:46 PM
- */
 public class FieldInfo implements Serializable {
   private final String className;
   private final String fieldName;
@@ -51,7 +46,6 @@ public class FieldInfo implements Serializable {
   }
 
   public int getFieldId() {
-    // init(ClassDepot.instance);
     return fieldId;
   }
 }
