@@ -2,7 +2,7 @@ package janala.solvers;
 
 import janala.utils.MyLogger;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,7 +13,7 @@ public class RandomPathStrategy extends Strategy {
   private final static Logger logger = MyLogger.getLogger(RandomPathStrategy.class.getName());
 
   @Override
-  public int solve(ArrayList<Element> history, int historySize, History solver) {
+  public int solve(List<Element> history, int historySize, History solver) {
     int begin = -1;
     for (int j = historySize - 1; j >= 0; j--) {
       Element tmp = history.get(j);

@@ -15,7 +15,7 @@ class NoopSolver implements Solver {
 
   public void setInputs(LinkedList<InputElement> inputs) {}
 
-  public void setPathConstraint(ArrayList<Constraint> pathConstraint) {}
+  public void setPathConstraint(List<Constraint> pathConstraint) {}
 
   public void setPathConstraintIndex(int pathConstraintIndex) {}
 

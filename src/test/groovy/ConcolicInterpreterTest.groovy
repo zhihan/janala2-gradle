@@ -25,5 +25,21 @@ class ConcoliInterpreterTest {
     interpreter.visitICONST_0(new ICONST_0(0, 0))
     Frame frame = interpreter.getCurrentFrame()
     assertEquals(new IntValue(0), frame.peek())
-  }	
+  }
+
+  @Test
+  void testICONST1() {
+    interpreter.visitICONST_1(new ICONST_1(0, 0))
+    Frame frame = interpreter.getCurrentFrame()
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testIADD() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    frame.push(new IntValue(1))
+    interpreter.visitIADD(new IADD(0, 0))
+    assertEquals(new IntValue(2), frame.peek())
+  }
 }

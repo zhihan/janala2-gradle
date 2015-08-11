@@ -15,7 +15,7 @@ import janala.utils.MyLogger;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Level;
@@ -35,7 +35,7 @@ public class ChocoSolver implements Solver {
     this.first = true;
   }
 
-  public void setPathConstraint(ArrayList<Constraint> pathConstraint) {
+  public void setPathConstraint(List<Constraint> pathConstraint) {
     //To change body of implemented methods use File | Settings | File Templates.
   }
 

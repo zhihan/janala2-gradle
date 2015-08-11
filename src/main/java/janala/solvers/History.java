@@ -20,9 +20,10 @@ public class History {
   private final static Logger tester =
       MyLogger.getTestLogger(Config.mainClass + "." + Config.iteration);
 
-  private ArrayList<Element> history; // A list of branches or scope begin/end
-  private ArrayList<Constraint> pathConstraint; // A list of nonempty constraints.
+  private List<Element> history; // A list of branches or scope begin/end
+  private List<Constraint> pathConstraint; // A list of nonempty constraints.
   private int index;  // Always point to the last entry inx the current path.
+  
   private final Solver solver;
   private boolean ignore;
   private boolean predictionFailed = false;

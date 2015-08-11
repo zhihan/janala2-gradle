@@ -3,7 +3,7 @@ package janala.solvers;
 import janala.Main;
 import janala.instrument.Coverage;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.LinkedList;
 
 /**
@@ -11,7 +11,7 @@ import java.util.LinkedList;
  */
 public class AbstractRefineStrategy extends Strategy {
   @Override
-  public int solve(ArrayList<Element> history, int historySize, History solver) {
+  public int solve(List<Element> history, int historySize, History solver) {
     int oldBeginIndex;
     int beginIndex = oldBeginIndex = findUnsatBeginScopeIndex(history, historySize);
     if (Main.skipPath) {
@@ -42,7 +42,7 @@ public class AbstractRefineStrategy extends Strategy {
   }
 
   private int findPreviousBeginScopeIndex(
-      ArrayList<Element> history, int historySize, int beginScopeIndex) {
+      List<Element> history, int historySize, int beginScopeIndex) {
     int ret = -1;
     for (int i = 0; i <= beginScopeIndex; i++) {
       Element tmp = history.get(i);
@@ -59,7 +59,7 @@ public class AbstractRefineStrategy extends Strategy {
         "Should not reach here beginScopeIndex =" + beginScopeIndex + " history " + history);
   }
 
-  private int findNextBeginScopeIndex(ArrayList<Element> history, int start, int end) {
+  private int findNextBeginScopeIndex(List<Element> history, int start, int end) {
     for (int i = start + 1; i < end; i++) {
       Element tmp = history.get(i);
       if (tmp instanceof MethodElement) {
@@ -83,7 +83,7 @@ public class AbstractRefineStrategy extends Strategy {
   }
 
   private void removeElements(
-      ArrayList<Element> history, int low, int high, int i, int historySize) {
+      List<Element> history, int low, int high, int i, int historySize) {
     int from = low;
     int bi, ei;
 
@@ -110,7 +110,7 @@ public class AbstractRefineStrategy extends Strategy {
     //        System.out.println(history);
   }
 
-  private int findUnsatBeginScopeIndex(ArrayList<Element> history, int historySize) {
+  private int findUnsatBeginScopeIndex(List<Element> history, int historySize) {
     for (int i = 0; i < historySize; i++) {
       Element tmp = history.get(i);
       if (tmp.isInvalidScopeBegin()) {
@@ -121,7 +121,7 @@ public class AbstractRefineStrategy extends Strategy {
   }
 
   private int findMatchingEndScopeIndex(
-      ArrayList<Element> history, int historySize, int beginScopeIndex) {
+      List<Element> history, int historySize, int beginScopeIndex) {
     int skip = 0;
     for (int i = beginScopeIndex + 1; i < historySize; i++) {
       Element tmp = history.get(i);
@@ -141,7 +141,7 @@ public class AbstractRefineStrategy extends Strategy {
   }
 
   public int searchWithIfPossibleAssert(
-      ArrayList<Element> history, int low, int high, int historySize, History solver) {
+      List<Element> history, int low, int high, int historySize, History solver) {
     int to, from = low, ret;
 
     for (to = low + 1; to < high; to++) {
@@ -164,7 +164,7 @@ public class AbstractRefineStrategy extends Strategy {
   }
 
   private int dfs(
-      ArrayList<Element> history, int low, int start, int high, int historySize, History solver) {
+      List<Element> history, int low, int start, int high, int historySize, History solver) {
     LinkedList<Integer> indices = new LinkedList<Integer>();
     int skip = 0;
     for (int i = start - 1; i > low; i--) {

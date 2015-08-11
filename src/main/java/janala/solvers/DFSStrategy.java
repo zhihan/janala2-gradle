@@ -1,15 +1,10 @@
 package janala.solvers;
 
-import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- * Date: 7/9/12
- * Time: 7:21 PM
- */
 public class DFSStrategy extends Strategy {
   @Override
-  public int solve(ArrayList<Element> history, int historySize, History solver) {
+  public int solve(List<Element> history, int historySize, History solver) {
     int j, to = -1, ret;
 
     for (j = 0; j < historySize; j++) {
@@ -35,7 +30,7 @@ public class DFSStrategy extends Strategy {
     return dfs(history, j, to, solver);
   }
 
-  private int dfs(ArrayList<Element> history, int from, int to, History solver) {
+  private int dfs(List<Element> history, int from, int to, History solver) {
     for (int i = from; i > to; i--) {
       Element tmp = history.get(i);
       if (tmp instanceof BranchElement) {

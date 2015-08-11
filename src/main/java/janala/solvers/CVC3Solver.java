@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 public class CVC3Solver implements Solver {
   LinkedList<InputElement> inputs;
-  ArrayList<Constraint> constraints;
+  List<Constraint> constraints;
   int pathConstraintIndex;
   private final static Logger logger = MyLogger.getLogger(CVC3Solver.class.getName());
   private final static Logger tester =
@@ -23,7 +23,7 @@ public class CVC3Solver implements Solver {
     this.inputs = inputs;
   }
 
-  public void setPathConstraint(ArrayList<Constraint> pathConstraint) {
+  public void setPathConstraint(List<Constraint> pathConstraint) {
     this.constraints = pathConstraint;
   }
 

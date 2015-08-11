@@ -11,7 +11,7 @@ import janala.utils.FileUtil;
 import janala.utils.MyLogger;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.TreeMap;
@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 
 public class CVC4Solver implements Solver {
   LinkedList<InputElement> inputs;
-  ArrayList<Constraint> constraints;
+  List<Constraint> constraints;
   int pathConstraintIndex;
   private final static Logger logger = MyLogger.getLogger(CVC4Solver.class.getName());
   private final static Logger tester =
@@ -31,7 +31,7 @@ public class CVC4Solver implements Solver {
     this.inputs = inputs;
   }
 
-  public void setPathConstraint(ArrayList<Constraint> pathConstraint) {
+  public void setPathConstraint(List<Constraint> pathConstraint) {
     this.constraints = pathConstraint;
   }
 
