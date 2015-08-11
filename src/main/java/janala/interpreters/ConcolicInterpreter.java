@@ -19,7 +19,12 @@ import java.util.logging.Logger;
 
 public class ConcolicInterpreter implements IVisitor {
   private Stack<Frame> stack;
+
   private Frame currentFrame;
+  public Frame getCurrentFrame() {
+    return currentFrame;
+  }
+
   private ClassNames cnames;
   private Map<Integer, Value> objects;
   private History history;
@@ -33,6 +38,14 @@ public class ConcolicInterpreter implements IVisitor {
     objects = new HashMap<Integer, Value>();
     history = History.readHistory(Config.instance.getSolver());
   }
+
+  public ConcolicInterpreter(ClassNames cnames, History history) {
+    stack = new Stack<Frame>();
+    stack.add(currentFrame = new Frame(0));
+    this.cnames = cnames;
+    objects = new HashMap<Integer, Value>();
+    history = history; // 
+  } 
 
   private void checkAndSetException() {
     if (!(next instanceof SPECIAL) || ((SPECIAL) next).i != 0) {

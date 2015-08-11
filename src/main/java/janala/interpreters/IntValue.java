@@ -37,6 +37,20 @@ public class IntValue extends Value {
     }
   }
 
+  public boolean equals(Object other) {
+    if (other == null ) {
+      return false;
+    } 
+    if (other instanceof IntValue) {
+      IntValue otherVal = (IntValue) other;
+      return (this.concrete == otherVal.concrete &&
+        this.symbolic == otherVal.symbolic && 
+        this.nonIntConstraint == otherVal.nonIntConstraint);
+    } else {
+      return false;
+    }
+  }
+
   public int getSymbol() {
     if (symbolic == null) {
       throw new RuntimeException("No symbols created.");
