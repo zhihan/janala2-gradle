@@ -157,6 +157,9 @@ public class Config {
   }
 
   public Strategy getStrategy() {
+    if (strategy == null || strategy.isEmpty()) {
+      return null;
+    }
     try {
       Class solverClass = Class.forName(strategy);
       Strategy ret = (Strategy) solverClass.newInstance();

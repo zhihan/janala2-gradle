@@ -31,7 +31,7 @@ public class History {
   private LinkedList<InputElement> inputs;
   private Strategy strategy = Config.instance.getStrategy();
 
-  private History(Solver solver) {
+  public History(Solver solver) {
     history = new ArrayList<Element>(1024);
     pathConstraint = new ArrayList<Constraint>(1024);
     inputs = new LinkedList<InputElement>();
