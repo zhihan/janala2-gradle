@@ -21,8 +21,17 @@ public class History {
       MyLogger.getTestLogger(Config.mainClass + "." + Config.iteration);
 
   private List<Element> history; // A list of branches or scope begin/end
+  public List<Element> getHistory() {
+    return history;
+  }
+
   private List<Constraint> pathConstraint; // A list of nonempty constraints.
-  private int index;  // Always point to the last entry inx the current path.
+  public List<Constraint> getPathConstraint() {
+    return pathConstraint;
+  }
+
+  private int index;  // Always point to the last entry in the current path.
+  public void setIndex(int index) { this.index = index; }
   
   private final Solver solver;
   private boolean ignore;
@@ -43,7 +52,9 @@ public class History {
   public SymbolicOrValue assumeOrBegin(IntValue arg) {
     Constraint last = this.removeLastBranch();
     boolean res = arg.concrete != 0;
-    if (!res && last != null) last = last.not();
+    if (!res && last != null) {
+      last = last.not();
+    }
     return new SymbolicOrValue(res, new SymbolicOrConstraint(last));
   }
 
@@ -147,7 +158,7 @@ public class History {
     }
   }
 
-  private boolean isEnd(Element tmp) {
+  private static boolean isEnd(Element tmp) {
     return tmp instanceof MethodElement && !((MethodElement) tmp).isBegin;
   }
 
@@ -185,7 +196,7 @@ public class History {
                 + index
                 + " history.size() "
                 + history.size());
-        logger.log(Level.WARNING, "At old iid " + tmp.iid + " at iid " + iid + " beginScope");
+        logger.log(Level.WARNING, "At old iid " + tmp.getIid() + " at iid " + iid + " beginScope");
         int len = history.size();
         for (int j = len - 1; j >= index; j--) {
           history.remove(j);
@@ -222,7 +233,7 @@ public class History {
                 + index
                 + " history.size() "
                 + history.size());
-        logger.log(Level.WARNING, "At old iid " + tmp.iid + " at iid " + iid + " endScope");
+        logger.log(Level.WARNING, "At old iid " + tmp.getIid() + " at iid " + iid + " endScope");
         int len = history.size();
         for (int j = len - 1; j >= index; j--) {
           history.remove(j);
@@ -264,7 +275,7 @@ public class History {
                 + history.size());
         logger.log(
             Level.WARNING,
-            "At old iid " + tmp.iid + " at iid " + iid + " constraint " + constraint);
+            "At old iid " + tmp.getIid() + " at iid " + iid + " constraint " + constraint);
         int len = history.size();
         for (int j = len - 1; j >= index; j--) {
           history.remove(j);

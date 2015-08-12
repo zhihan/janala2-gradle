@@ -2,6 +2,7 @@ package janala.solvers
 
 import static org.junit.Assert.assertEquals
 
+import janala.interpreters.IntValue
 import org.junit.Test
 import org.junit.Before
 
@@ -21,5 +22,6 @@ class HistoryTest {
 	void testInit() {
 		history.beginScope(0)
 		history.endScope(0)
-	}	
+	}
+
 }

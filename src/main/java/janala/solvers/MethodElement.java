@@ -1,8 +1,14 @@
 package janala.solvers;
 
 public class MethodElement extends Element {
-  boolean isBegin;
-  boolean isAbstracted;
+  final boolean isBegin;
+  final boolean isAbstracted;
+
+  int iid;
+
+  @Override
+  public int getIid() { return iid; }
+
   boolean isValidExpansion;
 
   public MethodElement(boolean isBegin, int iid) {

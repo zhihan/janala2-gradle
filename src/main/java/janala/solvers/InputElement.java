@@ -3,10 +3,10 @@ package janala.solvers;
 import janala.interpreters.Value;
 
 public class InputElement extends Element {
-  Integer symbol;
-  Value value;
+  final int symbol;
+  final Value value;
 
-  public InputElement(Integer symbol, Value value) {
+  public InputElement(int symbol, Value value) {
     this.symbol = symbol;
     this.value = value;
   }

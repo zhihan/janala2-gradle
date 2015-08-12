@@ -1,6 +1,10 @@
 package janala.solvers;
 
 public class BranchElement extends Element {
+  int iid;
+  @Override
+  public int getIid() { return iid; }
+  
   boolean branch;
   boolean done;
   int pathConstraintIndex; // -1 for no index
