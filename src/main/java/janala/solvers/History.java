@@ -30,7 +30,7 @@ public class History {
     return pathConstraint;
   }
 
-  private int index;  // Always point to the last entry in the current path.
+  private int index;  // Always point to the next entry in the current path.
   public void setIndex(int index) { this.index = index; }
   
   private final Solver solver;

@@ -11,11 +11,6 @@ public class SymbolicAndConstraint extends Constraint {
     if (c != null) constraints.add(c);
   }
 
-  private SymbolicAndConstraint(SymbolicOrConstraint c) {
-    constraints = new LinkedList<Constraint>();
-    constraints.addAll(c.constraints);
-  }
-
   private SymbolicAndConstraint() {
   }
 

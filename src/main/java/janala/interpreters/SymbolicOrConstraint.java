@@ -44,13 +44,14 @@ public class SymbolicOrConstraint extends Constraint {
 
   @Override
   public Constraint substitute(Map<String, Long> assignments) {
-    LinkedList<Constraint> tmp = new LinkedList<Constraint>();
-    Constraint c2;
+    
     if (constraints.isEmpty()) {
       return SymbolicTrueConstraint.instance;
     }
+
+    LinkedList<Constraint> tmp = new LinkedList<Constraint>();
     for (Constraint c : constraints) {
-      c2 = c.substitute(assignments);
+      Constraint c2 = c.substitute(assignments);
       if (c2 == SymbolicTrueConstraint.instance) {
         return SymbolicTrueConstraint.instance;
       } else if (c2 != SymbolicFalseConstraint.instance) {
