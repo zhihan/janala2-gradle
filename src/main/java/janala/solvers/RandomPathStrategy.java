@@ -19,7 +19,7 @@ public class RandomPathStrategy extends Strategy {
       Element tmp = history.get(j);
       if (tmp instanceof BranchElement) {
         BranchElement current = (BranchElement) tmp;
-        if (current.done) {
+        if (current.getDone()) {
           begin = j;
           break;
         }

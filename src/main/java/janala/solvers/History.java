@@ -32,6 +32,7 @@ public class History {
 
   private int index;  // Always point to the next entry in the current path.
   public void setIndex(int index) { this.index = index; }
+  public int getIndex() { return index; }
   
   private final Solver solver;
   private boolean ignore;
@@ -90,7 +91,7 @@ public class History {
       System.out.println("back up history 2");
       if (tmp instanceof ArrayList) {
         history = (ArrayList) tmp;
-        ((BranchElement) history.get(skipIndex)).done = true;
+        ((BranchElement) history.get(skipIndex)).setDone(true);
         System.out.println("back up history 3");
         ObjectOutputStream outputStream;
         try {
@@ -338,6 +339,7 @@ public class History {
     }
   }
 
+  /** Solve the path constraint using index in pathConstraints. */
   public boolean solveAt(int pathConstraintIndex) {
     solver.setInputs(inputs);
     solver.setPathConstraint(pathConstraint);
@@ -348,8 +350,14 @@ public class History {
     return solver.solve();
   }
 
-  public boolean solveAt(int head, int pathConstraintIndex) {
-    ArrayList<Constraint> pathConstraint = collectPathConstraints(head, pathConstraintIndex);
+
+  /**
+   * Solve the constraints between two indices in history.
+   *
+   * NOTE, the index is confusing. head is exclusive, n is inclusive
+   */
+  public boolean solveAt(int head, int n) {
+    ArrayList<Constraint> pathConstraint = collectPathConstraints(head, n);
     solver.setInputs(inputs);
     solver.setPathConstraint(pathConstraint);
     solver.setPathConstraintIndex(pathConstraint.size() - 1);
@@ -399,7 +407,7 @@ public class History {
   private void writeHistory(int i) {
     if (i != Integer.MAX_VALUE) {
       BranchElement current = (BranchElement) history.get(i);
-      current.done = true;
+      current.setDone (true);
       current.branch = !current.branch;
       int len = history.size();
       for (int j = len - 1; j > i; j--) {
@@ -422,7 +430,7 @@ public class History {
 
   public void setLastBranchDone() {
     if (index >= 1 && index - 1 < history.size()) {
-      ((BranchElement) history.get(index - 1)).done = true;
+      ((BranchElement) history.get(index - 1)).setDone(true);
     }
   }
 

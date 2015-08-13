@@ -35,7 +35,7 @@ public class DFSStrategy extends Strategy {
       Element tmp = history.get(i);
       if (tmp instanceof BranchElement) {
         BranchElement current = (BranchElement) tmp;
-        if (!current.done && current.pathConstraintIndex != -1) {
+        if (!current.getDone() && current.pathConstraintIndex != -1) {
           if (solver.solveAt(current.pathConstraintIndex)) {
             return i;
           }

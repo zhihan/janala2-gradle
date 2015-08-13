@@ -6,7 +6,11 @@ public class BranchElement extends Element {
   public int getIid() { return iid; }
   
   boolean branch;
-  boolean done;
+  
+  private boolean done;
+  public void setDone(boolean val) { done = val; }
+  public boolean getDone() { return done; }
+
   int pathConstraintIndex; // -1 for no index
   boolean isForceTruth;
 
