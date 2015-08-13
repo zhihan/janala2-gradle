@@ -378,20 +378,20 @@ public class History {
         }
       }
     }
-    int skip = 0;  // scope level
+    int scopeLevel = 0;  // scope level
     for (int i = head + 1; i <= n; i++) {
       Element tmp = history.get(i);
       if (tmp instanceof BranchElement) {
         BranchElement current = (BranchElement) tmp;
-        if (skip == 0 && current.pathConstraintIndex != -1) {
+        if (scopeLevel == 0 && current.pathConstraintIndex != -1) {
           ret.add(pathConstraint.get(current.pathConstraintIndex));
         }
       } else if (tmp instanceof MethodElement) {
         MethodElement melem = (MethodElement) tmp;
         if (melem.isBegin) {
-          skip++;
+          scopeLevel++;
         } else {
-          skip--;
+          scopeLevel--;
         }
       }
     }
