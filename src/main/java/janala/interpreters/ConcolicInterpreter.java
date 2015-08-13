@@ -203,9 +203,6 @@ public class ConcolicInterpreter implements IVisitor {
     Coverage.write();
   }
 
-  //    Value val = ref.getField(i1.concrete);
-  //  currentFrame.push(getArrayElementObject(inst.iid, ref, i1, val));
-
   public void visitAALOAD(AALOAD inst) {
     try {
       IntValue i1 = (IntValue) currentFrame.pop();
@@ -781,37 +778,6 @@ public class ConcolicInterpreter implements IVisitor {
       ObjectValue ref = (ObjectValue) currentFrame.pop();
       Value val = ref.getField(i1.concrete);
       currentFrame.push(getArrayElementInt(inst.iid, ref, i1, val));
-      //            val = ref.getField(i1.concrete);
-      //            if (i1.symbolic != null) {
-      //                IntValue sval = new IntValue(((IntValue)val).concrete);
-      //                sval.MAKE_SYMBOLIC(history);
-      //                SymbolicOrConstraint or1 = null;
-      //                SymbolicAndConstraint and1;
-      //
-      //                for (int i=0; i<ref.concrete.length; i++) {
-      //                    IntValue int1 = i1.IF_ICMPEQ(new IntValue(i));
-      //                    Constraint c = int1.symbolic;
-      //                    if (int1.concrete == 0) {
-      //                        c = int1.symbolic.not();
-      //                    }
-      //                    and1 = new SymbolicAndConstraint(c);
-      //                    int1 = sval.IF_ICMPEQ((IntValue)ref.getField(i));
-      //                    c = int1.symbolic;
-      //                    if (int1.concrete == 0) {
-      //                        c = int1.symbolic.not();
-      //                    }
-      //                    and1 = and1.AND(c);
-      //                    if (or1 == null) {
-      //                        or1 = new SymbolicOrConstraint(and1);
-      //                    } else {
-      //                        or1 = or1.OR(and1);
-      //                    }
-      //                }
-      //                history.checkAndSetBranch(true, or1, inst.iid);
-      //                history.setLastBranchDone();
-      //                val = sval;
-      //            }
-      //            currentFrame.push(val);
     } catch (Exception e) {
       e.printStackTrace();
     }

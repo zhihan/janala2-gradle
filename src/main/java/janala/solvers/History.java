@@ -338,11 +338,22 @@ public class History {
     }
   }
 
-  boolean solveAt(int pathConstraintIndex) {
+  public boolean solveAt(int pathConstraintIndex) {
     solver.setInputs(inputs);
     solver.setPathConstraint(pathConstraint);
     solver.setPathConstraintIndex(pathConstraintIndex);
     for (int i = pathConstraintIndex; i >= 0; i--) {
+      pathConstraint.get(i).accept(solver);
+    }
+    return solver.solve();
+  }
+
+  public boolean solveAt(int head, int pathConstraintIndex) {
+    ArrayList<Constraint> pathConstraint = collectPathConstraints(head, pathConstraintIndex);
+    solver.setInputs(inputs);
+    solver.setPathConstraint(pathConstraint);
+    solver.setPathConstraintIndex(pathConstraint.size() - 1);
+    for (int i = pathConstraint.size() - 1; i >= 0; i--) {
       pathConstraint.get(i).accept(solver);
     }
     return solver.solve();
@@ -359,7 +370,7 @@ public class History {
         }
       }
     }
-    int skip = 0;
+    int skip = 0;  // scope level
     for (int i = head + 1; i <= n; i++) {
       Element tmp = history.get(i);
       if (tmp instanceof BranchElement) {
@@ -377,17 +388,6 @@ public class History {
       }
     }
     return ret;
-  }
-
-  boolean solveAt(int head, int pathConstraintIndex) {
-    ArrayList<Constraint> pathConstraint;
-    solver.setInputs(inputs);
-    solver.setPathConstraint(pathConstraint = collectPathConstraints(head, pathConstraintIndex));
-    solver.setPathConstraintIndex(pathConstraint.size() - 1);
-    for (int i = pathConstraint.size() - 1; i >= 0; i--) {
-      pathConstraint.get(i).accept(solver);
-    }
-    return solver.solve();
   }
 
   private void removeHistory() {
