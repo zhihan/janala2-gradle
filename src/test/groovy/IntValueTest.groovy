@@ -6,9 +6,15 @@ import static org.junit.Assert.assertNull
 import static org.junit.Assert.assertTrue
 
 import org.junit.Test
+import org.junit.Before
 import java.util.HashMap
 
 class IntValueTest {
+    @Before
+    void setup() {
+        Value.reset()
+    }
+
     @Test
     void testNewId() {
         Value.reset()
@@ -261,7 +267,8 @@ class IntValueTest {
 
     @Test
     public void testIFICMPEQSymbol() {
-        IntValue i = new IntValue(0)
+        SymbolicInt x1 = new SymbolicInt(1)
+        IntValue i = new IntValue(0, x1)
         // (0, x) == (0, x)
         // -> (1, null)
         IntValue r = i.IF_ICMPEQ(i);
@@ -305,7 +312,8 @@ class IntValueTest {
 
     @Test
     public void testIFICMPNESymbol() {
-        IntValue i = new IntValue(0)
+        SymbolicInt x1 = new SymbolicInt(1)
+        IntValue i = new IntValue(0, x1)
         // (0, x) != (0, x)
         // -> (0, null)
         IntValue r = i.IF_ICMPNE(i);

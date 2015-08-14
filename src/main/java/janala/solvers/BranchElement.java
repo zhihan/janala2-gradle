@@ -6,6 +6,7 @@ public class BranchElement extends Element {
   public int getIid() { return iid; }
   
   boolean branch;
+  public boolean getBranch() { return branch; }
   
   private boolean done;
   public void setDone(boolean val) { done = val; }

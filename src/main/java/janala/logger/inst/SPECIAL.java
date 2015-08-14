@@ -1,10 +1,8 @@
 package janala.logger.inst;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- * Date: 6/25/12
- * Time: 10:44 AM
- */
+/** A special probe instruction added by the instrumentation. 
+  * The int value identifies which branch does the instruction correspond to. 
+  */
 public class SPECIAL extends Instruction {
   public int i;
 
