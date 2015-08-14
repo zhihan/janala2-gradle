@@ -33,6 +33,24 @@ class HistoryTest {
   void testInit() {
     history.beginScope(0)
     history.endScope(0)
+
+    history.setIndex(1)
+    history.beginScope(1)
+    assertEquals(1, history.skip)
+    history.endScope(1)
+    assertEquals(0, history.skip)
+    assertEquals(4, history.getHistory().size())
+  }
+
+  @Test
+  void testInitRepeat() {
+    history.beginScope(0)
+    history.endScope(0)
+
+    history.setIndex(0)
+    history.beginScope(1)
+    history.endScope(1)
+    assertEquals(2, history.getHistory().size())
   }
 
   @Test
@@ -120,4 +138,41 @@ class HistoryTest {
     assertTrue(last.done)
   }
 
+  @Test
+  void testSetLastForceTruth() {
+    Constraint c = new SymbolicInt(1)
+    history.checkAndSetBranch(true, c, 0) 
+    history.setLastForceTruth()
+
+    List<Element> h = history.getHistory()
+    BranchElement last = (BranchElement) h.get(h.size() - 1)
+    assertTrue(last.isForceTruth)
+  }
+
+  @Test
+  void testCleanup() {
+    // The first constraint will be included since it has a path constraint.
+    Constraint c = new SymbolicInt(1)
+    history.checkAndSetBranch(true, c, 0) 
+    history.checkAndSetBranch(true, c, 0)
+    history.cleanup(0)
+
+    assertEquals(1, history.getHistory().size())
+  }
+
+  @Test
+  void testSerialization() {
+    Constraint c = new SymbolicInt(1)
+    history.checkAndSetBranch(true, c, 0) 
+
+    def os = new ByteArrayOutputStream()
+    history.writeHistory(os)
+    assertTrue(os.size() > 10)
+
+    def istream = new ByteArrayInputStream(os.toByteArray())
+    def readHistory = History.readHistory(solver, istream)
+
+    assertEquals(history.getHistory().toString(), 
+      readHistory.getHistory().toString())
+  }
 }

@@ -13,6 +13,8 @@ public class BranchElement extends Element {
 
   int pathConstraintIndex; // -1 for no index
   boolean isForceTruth;
+  public void setIsForceTruth(boolean val) { isForceTruth = val; }
+  public boolean getIsForceTruth() { return isForceTruth; }
 
   public BranchElement(boolean branch, boolean done, int pathConstraintIndex, int iid) {
     this.branch = branch;

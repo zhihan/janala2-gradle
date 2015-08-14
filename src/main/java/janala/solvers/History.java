@@ -14,7 +14,7 @@ import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** A collection of path constraints? */
+/** A collection of import check points (element) and the corresponding constraints */
 public class History {
   private final static Logger logger = MyLogger.getLogger(History.class.getName());
   private final static Logger tester =
@@ -124,24 +124,30 @@ public class History {
   }
 
   public static History readHistory(Solver solver) {
-    ObjectInputStream inputStream = null;
-    History ret = new History(solver);
-
     try {
-      inputStream = new ObjectInputStream(new FileInputStream(Config.instance.history));
-      Object tmp = inputStream.readObject();
-      if (tmp instanceof ArrayList) {
-        ret.history = (ArrayList) tmp;
-      }
-    } catch (Exception e) {
-    } finally {
+      return readHistory(solver, new FileInputStream(Config.instance.history));
+    } catch (Exception ex) {
+      logger.log(Level.WARNING, "", ex);
+      return null;
+    }
+  }
+
+  public static History readHistory(Solver solver, InputStream is) {
+    History ret = new History(solver);
+    
+    try {
+      ObjectInputStream inputStream = new ObjectInputStream(is);
       try {
-        if (inputStream != null) {
-          inputStream.close();
+        Object tmp = inputStream.readObject();
+        if (tmp instanceof ArrayList) {
+          ret.history = (ArrayList) tmp;
         }
-      } catch (IOException ex) {
+      } catch (Exception ex) {
         logger.log(Level.WARNING, "", ex);
+        inputStream.close();
       }
+    } catch (IOException ex) {
+        logger.log(Level.WARNING, "", ex);
     }
     ret.print();
     return ret;
@@ -165,7 +171,8 @@ public class History {
 
   Stack<MethodElement> scopeStack = new Stack<MethodElement>();
   MethodElement lastScope;
-  int skip = 0;
+  private int skip = 0;
+  public int getSkip() { return skip; }
 
   private void setInPrefix() {
     if (index < history.size()) {
@@ -404,36 +411,45 @@ public class History {
     logger.log(Level.INFO, "Done with search.");
   }
 
-  private void writeHistory(int i) {
+  public void cleanup(int i) {
     if (i != Integer.MAX_VALUE) {
       BranchElement current = (BranchElement) history.get(i);
+      // Set the last branch to done.
       current.setDone (true);
       current.branch = !current.branch;
+
       int len = history.size();
       for (int j = len - 1; j > i; j--) {
         history.remove(j);
       }
     }
-    FileUtil.moveFile(Config.instance.history, Config.instance.history + ".bak");
+  }
 
+  private void writeHistory(int i) {
+    cleanup(i);
+    FileUtil.moveFile(Config.instance.history, Config.instance.history + ".bak");
+    try {
+      OutputStream ostream = new FileOutputStream(Config.instance.history);
+      writeHistory(ostream);
+    } catch (IOException ex) {
+      logger.log(Level.SEVERE, "", ex);
+    }
+  }
+
+  public void writeHistory(OutputStream os) {
     ObjectOutputStream outputStream;
     try {
-      outputStream = new ObjectOutputStream(new FileOutputStream(Config.instance.history));
+      outputStream = new ObjectOutputStream(os);
       outputStream.writeObject(history);
       outputStream.close();
 
     } catch (IOException e) {
       logger.log(Level.SEVERE, "", e);
-      System.exit(1);
+      throw new RuntimeException("fail");
     }
   }
 
-  public void setLastBranchDone() {
-    if (index >= 1 && index - 1 < history.size()) {
-      ((BranchElement) history.get(index - 1)).setDone(true);
-    }
-  }
-
+ 
   public Constraint removeLastBranch() {
     index--;
     BranchElement current = (BranchElement) history.get(index);
@@ -454,6 +470,12 @@ public class History {
 
   public void addInput(int symbol, Value value) {
     inputs.addLast(new InputElement(symbol, value));
+  }
+
+  public void setLastBranchDone() {
+    if (index >= 1 && index - 1 < history.size()) {
+      ((BranchElement) history.get(index - 1)).setDone(true);
+    }
   }
 
   public void setLastForceTruth() {
