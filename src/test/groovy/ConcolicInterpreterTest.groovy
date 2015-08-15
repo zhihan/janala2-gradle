@@ -18,7 +18,7 @@ import org.junit.Test
 import groovy.transform.CompileStatic
 
 @CompileStatic
-class ConcoliInterpreterTest {
+class ConcolicInterpreterTest {
   private ClassNames classNames
   private ConcolicInterpreter interpreter
   private Solver solver
@@ -83,6 +83,15 @@ class ConcoliInterpreterTest {
     frame.push(new IntValue(1))
     interpreter.visitIADD(new IADD(0, 0))
     assertEquals(new IntValue(2), frame.peek())
+  }
+
+  @Test
+  void testISUB() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(2))
+    frame.push(new IntValue(1))
+    interpreter.visitISUB(new ISUB(0, 0))
+    assertEquals(new IntValue(1), frame.peek())
   }
 
   @Test
@@ -163,5 +172,165 @@ class ConcoliInterpreterTest {
     def branch = (BranchElement) history.getHistory().get(0)
     assertFalse(branch.branch)
     verify(coverage).visitBranch(0, false)
-  }    
+  }
+
+  @Test
+  void testIFGE_true() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.setNext(new SPECIAL(1)) 
+    interpreter.visitIFGE(new IFGE(0, 0, 1))
+    // For the true branch, see SnoopInstructionMethodAdapter
+    assertEquals(1, history.getHistory().size())
+    def branch = (BranchElement) history.getHistory().get(0)
+    assertTrue(branch.branch)
+    verify(coverage).visitBranch(0, true)
+  }
+
+  @Test
+  void testIFGE_false() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(-1))
+    // If evaluate to false, the next should not be SPECIAL
+    interpreter.visitIFGE(new IFGE(0, 0, 1))
+    // For the true branch, see SnoopInstructionMethodAdapter
+    assertEquals(1, history.getHistory().size())
+    def branch = (BranchElement) history.getHistory().get(0)
+    assertFalse(branch.branch)
+    verify(coverage).visitBranch(0, false)
+  }
+
+  @Test
+  void testIFGT_true() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.setNext(new SPECIAL(1)) 
+    interpreter.visitIFGT(new IFGT(0, 0, 1))
+    // For the true branch, see SnoopInstructionMethodAdapter
+    assertEquals(1, history.getHistory().size())
+    def branch = (BranchElement) history.getHistory().get(0)
+    assertTrue(branch.branch)
+    verify(coverage).visitBranch(0, true)
+  }
+
+  @Test
+  void testIFGT_false() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(0))
+    // If evaluate to false, the next should not be SPECIAL
+    interpreter.visitIFGT(new IFGT(0, 0, 1))
+    // For the true branch, see SnoopInstructionMethodAdapter
+    assertEquals(1, history.getHistory().size())
+    def branch = (BranchElement) history.getHistory().get(0)
+    assertFalse(branch.branch)
+    verify(coverage).visitBranch(0, false)
+  }
+
+  @Test
+  void testIFLE_true() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(0))
+    interpreter.setNext(new SPECIAL(1)) 
+    interpreter.visitIFLE(new IFLE(0, 0, 1))
+    // For the true branch, see SnoopInstructionMethodAdapter
+    assertEquals(1, history.getHistory().size())
+    def branch = (BranchElement) history.getHistory().get(0)
+    assertTrue(branch.branch)
+    verify(coverage).visitBranch(0, true)
+  }
+
+  @Test
+  void testIFLE_false() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(-1))
+    // If evaluate to false, the next should not be SPECIAL
+    interpreter.visitIFLE(new IFLE(0, 0, 1))
+    // For the true branch, see SnoopInstructionMethodAdapter
+    assertEquals(1, history.getHistory().size())
+    def branch = (BranchElement) history.getHistory().get(0)
+    assertFalse(branch.branch)
+    verify(coverage).visitBranch(0, false)
+  }       
+  
+  @Test
+  void testIFLT_true() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(-1))
+    interpreter.setNext(new SPECIAL(1)) 
+    interpreter.visitIFLT(new IFLT(0, 0, 1))
+    // For the true branch, see SnoopInstructionMethodAdapter
+    assertEquals(1, history.getHistory().size())
+    def branch = (BranchElement) history.getHistory().get(0)
+    assertTrue(branch.branch)
+    verify(coverage).visitBranch(0, true)
+  }
+
+  @Test
+  void testIFLT_false() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(0))
+    // If evaluate to false, the next should not be SPECIAL
+    interpreter.visitIFLT(new IFLT(0, 0, 1))
+    // For the true branch, see SnoopInstructionMethodAdapter
+    assertEquals(1, history.getHistory().size())
+    def branch = (BranchElement) history.getHistory().get(0)
+    assertFalse(branch.branch)
+    verify(coverage).visitBranch(0, false)
+  } 
+
+  @Test
+  void testIFICMEQ_true() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    frame.push(new IntValue(1))
+    interpreter.setNext(new SPECIAL(1)) 
+    interpreter.visitIF_ICMPEQ(new IF_ICMPEQ(0, 0, 1))
+    // For the true branch, see SnoopInstructionMethodAdapter
+    assertEquals(1, history.getHistory().size())
+    def branch = (BranchElement) history.getHistory().get(0)
+    assertTrue(branch.branch)
+    verify(coverage).visitBranch(0, true)
+  }
+
+  @Test
+  void testIFICMPEQ_false() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(0))
+    frame.push(new IntValue(1))
+    // If evaluate to false, the next should not be SPECIAL
+    interpreter.visitIF_ICMPEQ(new IF_ICMPEQ(0, 0, 1))
+    // For the true branch, see SnoopInstructionMethodAdapter
+    assertEquals(1, history.getHistory().size())
+    def branch = (BranchElement) history.getHistory().get(0)
+    assertFalse(branch.branch)
+    verify(coverage).visitBranch(0, false)
+  } 
+
+  @Test
+  void testIFICMNE_true() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    frame.push(new IntValue(0))
+    interpreter.setNext(new SPECIAL(1)) 
+    interpreter.visitIF_ICMPNE(new IF_ICMPNE(0, 0, 1))
+    // For the true branch, see SnoopInstructionMethodAdapter
+    assertEquals(1, history.getHistory().size())
+    def branch = (BranchElement) history.getHistory().get(0)
+    assertTrue(branch.branch)
+    verify(coverage).visitBranch(0, true)
+  }
+
+  @Test
+  void testIFICMPNE_false() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    frame.push(new IntValue(1))
+    // If evaluate to false, the next should not be SPECIAL
+    interpreter.visitIF_ICMPNE(new IF_ICMPNE(0, 0, 1))
+    // For the true branch, see SnoopInstructionMethodAdapter
+    assertEquals(1, history.getHistory().size())
+    def branch = (BranchElement) history.getHistory().get(0)
+    assertFalse(branch.branch)
+    verify(coverage).visitBranch(0, false)
+  }
 }
