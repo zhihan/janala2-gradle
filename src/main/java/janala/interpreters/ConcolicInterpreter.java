@@ -87,7 +87,7 @@ public class ConcolicInterpreter implements IVisitor {
 
       for (Pair<Constraint, ObjectValue> pair : sref.guards) {
         ref = pair.snd;
-        for (int i = 0; i < ref.concrete.length; i++) {
+        for (int i = 0; i < ref.getFields().length; i++) {
           IntValue int1 = i1.IF_ICMPEQ(new IntValue(i));
           Constraint c = int1.symbolic;
           if (int1.concrete == 0) {
@@ -124,7 +124,7 @@ public class ConcolicInterpreter implements IVisitor {
 
       for (Pair<Constraint, ObjectValue> pair : sref.guards) {
         ref = pair.snd;
-        for (int i = 0; i < ref.concrete.length; i++) {
+        for (int i = 0; i < ref.getFields().length; i++) {
           IntValue int1 = i1.IF_ICMPEQ(new IntValue(i));
           Constraint c = int1.symbolic;
           if (int1.concrete == 0) {
@@ -173,7 +173,7 @@ public class ConcolicInterpreter implements IVisitor {
 
       for (Pair<Constraint, ObjectValue> pair : sref.guards) {
         ref = pair.snd;
-        for (int i = 0; i < ref.concrete.length; i++) {
+        for (int i = 0; i < ref.getFields().length; i++) {
           IntValue int1 = i1.IF_ICMPEQ(new IntValue(i));
           Constraint c = int1.symbolic;
           if (int1.concrete == 0) {
@@ -261,10 +261,10 @@ public class ConcolicInterpreter implements IVisitor {
   public void visitARRAYLENGTH(ARRAYLENGTH inst) {
     try {
       ObjectValue ref = (ObjectValue) currentFrame.pop();
-      if (ref.concrete == null) {
+      if (ref.getFields() == null) {
         currentFrame.push(PlaceHolder.instance);
       } else {
-        currentFrame.push(new IntValue(ref.concrete.length));
+        currentFrame.push(new IntValue(ref.getFields().length));
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -1471,7 +1471,7 @@ public class ConcolicInterpreter implements IVisitor {
     ObjectValue tmp = new ObjectValue(dims[idx]);
     if (idx < dims.length - 1) {
       for (int i = 0; i < dims[idx]; i++) {
-        tmp.concrete[i] = initMultiArray(dims, idx + 1);
+        tmp.getFields()[i] = initMultiArray(dims, idx + 1);
       }
     }
     return tmp;

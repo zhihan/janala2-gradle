@@ -2,35 +2,36 @@ package janala.interpreters;
 
 import janala.solvers.History;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- * Date: 6/19/12
- * Time: 8:58 AM
- */
 public class ObjectValue extends Value {
   final public static ObjectValue NULL = new ObjectValue(0, 0);
-  Value[] concrete;
+  
+  private Value[] fields;
+  public Value[] getFields() {
+    return fields;
+  }
+
   SymbolicObject symbolic;
   int address; // address 0 is null, address -1 is uninitialized address
 
   @Override
-  public Object getConcrete() {
+  public Object getConcrete() { // (TODO): confusing
     return address;
   }
 
   public ObjectValue(int nFields) {
-    concrete = new Value[nFields];
+    fields = new Value[nFields];
     address = -1;
   }
 
-  public ObjectValue(int i, int v) {
-    concrete = null;
+  // Initialize 
+  // TODO: why is the first arg there?
+  public ObjectValue(int unused, int v) {
+    fields = null;
     address = v;
-    //        symbolic = (address==0?0:-1);
   }
 
   public ObjectValue(ObjectValue ov, SymbolicObject sym) {
-    concrete = ov.concrete;
+    fields = ov.getFields();
     address = ov.address;
     symbolic = sym;
   }
@@ -56,16 +57,27 @@ public class ObjectValue extends Value {
   }
 
   public Value getField(int fieldId) {
-    if (address == 0) throw new NullPointerException("User NullPointerException");
-    if (concrete == null) return PlaceHolder.instance;
-    Value v = concrete[fieldId];
-    if (v == null) return PlaceHolder.instance;
-    else return v;
+    if (address == 0) {
+      throw new NullPointerException("User NullPointerException");
+    }
+    if (fields == null) {
+      return PlaceHolder.instance;
+    } else {
+      Value v = fields[fieldId];
+      if (v == null) {
+        return PlaceHolder.instance;
+      }
+      return v;
+    }
   }
 
   public void setField(int fieldId, Value value) {
-    if (address == 0) throw new NullPointerException("User NullPointerException");
-    if (concrete != null) concrete[fieldId] = value;
+    if (address == 0) {
+      throw new NullPointerException("User NullPointerException");
+    }
+    if (fields != null) {
+      fields[fieldId] = value;
+    }
   }
 
   public void setAddress(int address) {
