@@ -1444,14 +1444,6 @@ public class ConcolicInterpreter implements IVisitor {
   }
 
   public void visitMAKE_SYMBOLIC(MAKE_SYMBOLIC inst) {
-    //        int symbol;
-    //        if (currentFrame.peek()==PlaceHolder.instance) {
-    //            symbol = currentFrame.peek2().MAKE_SYMBOLIC(history);
-    //            history.addInput(symbol, currentFrame.peek2());
-    //        } else {
-    //            symbol = currentFrame.peek().MAKE_SYMBOLIC(history);
-    //            history.addInput(symbol, currentFrame.peek());
-    //        }
   }
 
   public void visitSPECIAL(SPECIAL inst) {
