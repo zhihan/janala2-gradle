@@ -492,5 +492,57 @@ class ConcolicInterpreterTest {
     frame.push(PlaceHolder.instance)
     interpreter.visitGETVALUE_int(new GETVALUE_int(1))
     assertEquals(new IntValue(1), frame.peek())
-  } 
+  }
+
+  @Test
+  void testIFNULL_pass() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1, 0)
+    frame.push(v)
+    interpreter.setNext(new SPECIAL(1)) 
+    interpreter.visitIFNULL( new IFNULL(0, 0, 1))
+    assertEquals(1, history.getHistory().size())
+    def branch = (BranchElement) history.getHistory().get(0)
+    assertTrue(branch.branch)
+    verify(coverage).visitBranch(0, true)
+  }
+
+  @Test
+  void testIFNULL_fail() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1, 0)
+    v.setAddress(10)
+    frame.push(v)
+    interpreter.visitIFNULL( new IFNULL(0, 0, 1))
+    assertEquals(1, history.getHistory().size())
+    def branch = (BranchElement) history.getHistory().get(0)
+    assertFalse(branch.branch)
+    verify(coverage).visitBranch(0, false)
+  }
+
+  @Test
+  void testIFNONNULL_pass() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1, 0)
+    v.setAddress(10)
+    frame.push(v)
+    interpreter.setNext(new SPECIAL(1)) 
+    interpreter.visitIFNONNULL( new IFNONNULL(0, 0, 1))
+    assertEquals(1, history.getHistory().size())
+    def branch = (BranchElement) history.getHistory().get(0)
+    assertTrue(branch.branch)
+    verify(coverage).visitBranch(0, true)
+  }
+
+  @Test
+  void testIFNONNULL_fail() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1, 0)
+    frame.push(v)
+    interpreter.visitIFNONNULL( new IFNONNULL(0, 0, 1))
+    assertEquals(1, history.getHistory().size())
+    def branch = (BranchElement) history.getHistory().get(0)
+    assertFalse(branch.branch)
+    verify(coverage).visitBranch(0, false)
+  }    
 }

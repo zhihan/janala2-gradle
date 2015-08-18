@@ -71,7 +71,8 @@ public class ConcolicInterpreter implements IVisitor {
     } 
   }
 
-  private Value getArrayElementObject(int iid, ObjectValue ref, IntValue i1, Value val) {
+  private Value getArrayElementObject(int iid, 
+    final ObjectValue ref, final IntValue i1, final Value val) {
     if (i1.symbolic != null) {
       SymbolicObject tmp = new SymbolicObject();
       SymbolicAndConstraint and1;
@@ -86,8 +87,8 @@ public class ConcolicInterpreter implements IVisitor {
       }
 
       for (Pair<Constraint, ObjectValue> pair : sref.guards) {
-        ref = pair.snd;
-        for (int i = 0; i < ref.getFields().length; i++) {
+        ObjectValue reference = pair.snd;
+        for (int i = 0; i < reference.getFields().length; i++) {
           IntValue int1 = i1.IF_ICMPEQ(new IntValue(i));
           Constraint c = int1.symbolic;
           if (int1.concrete == 0) {
@@ -97,16 +98,17 @@ public class ConcolicInterpreter implements IVisitor {
             and1 = new SymbolicAndConstraint(c);
             c = and1.AND(pair.fst);
           }
-          tmp.addGuardedObjectValue(c, (ObjectValue) ref.getField(i));
+          tmp.addGuardedObjectValue(c, (ObjectValue) reference.getField(i));
         }
       }
 
-      val = new ObjectValue((ObjectValue) val, tmp);
+      return new ObjectValue((ObjectValue) val, tmp);
     }
     return val;
   }
 
-  private Value getArrayElementInt(int iid, ObjectValue ref, IntValue i1, Value val) {
+  private Value getArrayElementInt(int iid, 
+    final ObjectValue ref, final IntValue i1, final Value val) {
     if (i1.symbolic != null) {
       IntValue sval = new IntValue(((IntValue) val).concrete);
       sval.MAKE_SYMBOLIC(history);
@@ -123,8 +125,8 @@ public class ConcolicInterpreter implements IVisitor {
       }
 
       for (Pair<Constraint, ObjectValue> pair : sref.guards) {
-        ref = pair.snd;
-        for (int i = 0; i < ref.getFields().length; i++) {
+        ObjectValue reference = pair.snd;
+        for (int i = 0; i < reference.getFields().length; i++) {
           IntValue int1 = i1.IF_ICMPEQ(new IntValue(i));
           Constraint c = int1.symbolic;
           if (int1.concrete == 0) {
@@ -150,7 +152,7 @@ public class ConcolicInterpreter implements IVisitor {
       }
       history.checkAndSetBranch(true, or1, iid);
       history.setLastBranchDone();
-      val = sval;
+      return sval;
     }
     return val;
   }

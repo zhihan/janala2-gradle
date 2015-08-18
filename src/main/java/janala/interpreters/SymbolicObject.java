@@ -1,14 +1,11 @@
 package janala.interpreters;
 
 import java.util.LinkedList;
-
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- */
+import java.util.List;
 
 class Pair<T1, T2> {
-  public T1 fst;
-  public T2 snd;
+  public final T1 fst;
+  public final T2 snd;
 
   Pair(T1 fst, T2 snd) {
     this.fst = fst;
@@ -17,7 +14,7 @@ class Pair<T1, T2> {
 }
 
 public class SymbolicObject {
-  LinkedList<Pair<Constraint, ObjectValue>> guards;
+  List<Pair<Constraint, ObjectValue>> guards;
 
   public SymbolicObject() {
     guards = new LinkedList<Pair<Constraint, ObjectValue>>();
