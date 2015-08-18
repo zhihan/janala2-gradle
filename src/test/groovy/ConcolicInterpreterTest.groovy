@@ -495,6 +495,53 @@ class ConcolicInterpreterTest {
   }
 
   @Test
+  void testGetValueShort_pass() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.visitGETVALUE_short(new GETVALUE_short((short)1))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testGetValueShort_fail() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(PlaceHolder.instance)
+    interpreter.visitGETVALUE_short(new GETVALUE_short((short)1))
+    assertEquals(new IntValue(1), frame.peek())
+  }  
+
+  @Test
+  void testGetValueChar_pass() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.visitGETVALUE_char(new GETVALUE_char((char)1))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testGetValueChar_fail() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(PlaceHolder.instance)
+    interpreter.visitGETVALUE_char(new GETVALUE_char((char)1))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testGetValueBoolean_pass() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.visitGETVALUE_boolean(new GETVALUE_boolean(true))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testGetValueBoolean_fail() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(PlaceHolder.instance)
+    interpreter.visitGETVALUE_boolean(new GETVALUE_boolean(true))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+  @Test
   void testIFNULL_pass() {
     Frame frame = interpreter.getCurrentFrame()
     def v = new ObjectValue(1, 0)
