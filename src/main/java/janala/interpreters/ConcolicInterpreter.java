@@ -71,13 +71,8 @@ public class ConcolicInterpreter implements IVisitor {
     } 
   }
 
-  private Value getArrayElementObject(int iid, 
-    final ObjectValue ref, final IntValue i1, final Value val) {
-    if (i1.symbolic != null) {
-      SymbolicObject tmp = new SymbolicObject();
-      SymbolicAndConstraint and1;
-
-      SymbolicObject sref;
+  private static SymbolicObject getSymbolicObject(final ObjectValue ref) {
+    SymbolicObject sref;
 
       if (ref.symbolic != null) {
         sref = ref.symbolic;
@@ -85,6 +80,15 @@ public class ConcolicInterpreter implements IVisitor {
         sref = new SymbolicObject();
         sref.addGuardedObjectValue(null, ref);
       }
+    return sref;    
+  }
+
+  private Value getArrayElementObject(int iid, 
+    final ObjectValue ref, final IntValue i1, final Value val) {
+    if (i1.symbolic != null) {
+      SymbolicObject tmp = new SymbolicObject();
+      SymbolicAndConstraint and1;
+      final SymbolicObject sref = getSymbolicObject(ref);
 
       for (Pair<Constraint, ObjectValue> pair : sref.guards) {
         ObjectValue reference = pair.snd;
@@ -110,23 +114,18 @@ public class ConcolicInterpreter implements IVisitor {
   private Value getArrayElementInt(int iid, 
     final ObjectValue ref, final IntValue i1, final Value val) {
     if (i1.symbolic != null) {
-      IntValue sval = new IntValue(((IntValue) val).concrete);
-      sval.MAKE_SYMBOLIC(history);
       SymbolicOrConstraint or1 = null;
       SymbolicAndConstraint and1;
 
-      SymbolicObject sref;
+      final SymbolicObject sref = getSymbolicObject(ref);
 
-      if (ref.symbolic != null) {
-        sref = ref.symbolic;
-      } else {
-        sref = new SymbolicObject();
-        sref.addGuardedObjectValue(null, ref);
-      }
+      IntValue sval = new IntValue(((IntValue) val).concrete);
+      sval.MAKE_SYMBOLIC(history);
 
       for (Pair<Constraint, ObjectValue> pair : sref.guards) {
         ObjectValue reference = pair.snd;
         for (int i = 0; i < reference.getFields().length; i++) {
+          // Check index
           IntValue int1 = i1.IF_ICMPEQ(new IntValue(i));
           Constraint c = int1.symbolic;
           if (int1.concrete == 0) {
@@ -136,8 +135,8 @@ public class ConcolicInterpreter implements IVisitor {
           if (pair.fst != null) {
             and1 = and1.AND(pair.fst);
           }
-
-          int1 = sval.IF_ICMPEQ((IntValue) ref.getField(i));
+          // Check the value of the element in the array.
+          int1 = sval.IF_ICMPEQ((IntValue) reference.getField(i));
           c = int1.symbolic;
           if (int1.concrete == 0) {
             c = int1.symbolic.not();
@@ -164,15 +163,7 @@ public class ConcolicInterpreter implements IVisitor {
       SymbolicOrConstraint or1 = null;
       SymbolicAndConstraint and1;
 
-      SymbolicObject sref;
-
-      if (ref.symbolic != null) {
-        sref = ref.symbolic;
-      } else {
-        sref = new SymbolicObject();
-        sref.addGuardedObjectValue(null, ref);
-      }
-
+      final SymbolicObject sref = getSymbolicObject(ref);
       for (Pair<Constraint, ObjectValue> pair : sref.guards) {
         ref = pair.snd;
         for (int i = 0; i < ref.getFields().length; i++) {
@@ -219,7 +210,8 @@ public class ConcolicInterpreter implements IVisitor {
       ObjectValue ref = (ObjectValue) currentFrame.pop();
 
       Value val = ref.getField(i1.concrete);
-      currentFrame.push(getArrayElementObject(inst.iid, ref, i1, val));
+      Value v = getArrayElementObject(inst.iid, ref, i1, val);
+      currentFrame.push(v);
     } catch (Exception e) {
       e.printStackTrace();
     }

@@ -544,5 +544,54 @@ class ConcolicInterpreterTest {
     def branch = (BranchElement) history.getHistory().get(0)
     assertFalse(branch.branch)
     verify(coverage).visitBranch(0, false)
-  }    
+  }
+
+  @Test
+  void testCASTORE() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1)
+    v.setAddress(1) // Arbitrary address
+    frame.push(v)
+    frame.push(new IntValue(0)) // index
+    frame.push(new IntValue(1)) // value
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitCASTORE(new CASTORE(0, 0))
+    assertEquals(new IntValue(1), v.getFields()[0])
+  }
+
+  @Test
+  void testCALOAD() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1)
+    v.setAddress(1) // Arbitrary address
+    v.setField(0, new IntValue(2))
+    frame.push(v)
+    frame.push(new IntValue(0)) // index
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitCALOAD(new CALOAD(0, 0))
+    assertEquals(new IntValue(2), frame.peek())
+  }
+
+  @Test
+  void testCALOAD_Symbol() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1)
+    v.setAddress(1) // Arbitrary address
+    v.setField(0, new IntValue(2))
+    frame.push(v)
+
+    SymbolicInt x = new SymbolicInt(1)
+    IntValue idx = new IntValue(0, x)
+    frame.push(idx) // index
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitCALOAD(new CALOAD(0, 0))
+
+    IntValue result = (IntValue) frame.peek()
+    assertEquals(2, result.concrete)
+    println(result.getSymbolic()) // TODO: how to test this?
+
+    assertEquals(1, history.getHistory().size())
+    BranchElement branch = (BranchElement) history.getHistory().get(0)
+    assertTrue(branch.branch)
+  }
 }

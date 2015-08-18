@@ -94,4 +94,9 @@ public class Frame {
   public void clear() {
     stack.clear();
   }
+
+  @Override
+  public String toString() {
+    return "Stack: " + stack.toString();
+  }
 }
