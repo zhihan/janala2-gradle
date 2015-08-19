@@ -7,6 +7,7 @@ import janala.utils.MyLogger;
 import janala.utils.FileUtil;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -27,14 +28,20 @@ public class CVC4Solver implements Solver {
     STR
   };
 
-  LinkedList<InputElement> inputs;
+  public static enum SOLVER_STATUS {
+    SAT,
+    UNSAT,
+    FAIL
+  }
+
+  List<InputElement> inputs;
   List<Constraint> constraints;
   int pathConstraintIndex;
   private final static Logger logger = MyLogger.getLogger(CVC4Solver.class.getName());
   private final static Logger tester =
       MyLogger.getTestLogger(Config.mainClass + "." + Config.iteration);
 
-  public void setInputs(LinkedList<InputElement> inputs) {
+  public void setInputs(List<InputElement> inputs) {
     this.inputs = inputs;
   }
 
@@ -379,12 +386,12 @@ public class CVC4Solver implements Solver {
 
   public boolean solve() {
     int count = 0, MAX_COUNT = 100;
-    String extra = null, negatedSolution, negatedSolution2;
+    String extra = null;
     while (count < MAX_COUNT) {
       TreeMap<String, Long> soln = new TreeMap<String, Long>();
-      negatedSolution = solve(extra, CONSTRAINT_TYPE.INT, soln);
+      String negatedSolution = solve(extra, CONSTRAINT_TYPE.INT, soln);
       if (negatedSolution != null) {
-        negatedSolution2 = solve(null, CONSTRAINT_TYPE.STR, soln);
+        String negatedSolution2 = solve(null, CONSTRAINT_TYPE.STR, soln);
         if (negatedSolution2 != null) {
           writeInputs(soln);
           tester.log(Level.INFO, "Feasible = true at " + pathConstraintIndex);
@@ -422,6 +429,7 @@ public class CVC4Solver implements Solver {
               new String[] {
                 Config.instance.cvc4Command, "--lang", "cvc4", Config.instance.formulaFile
               });
+
       builder.redirectErrorStream(true);
       Process process = builder.start();
 
@@ -438,12 +446,12 @@ public class CVC4Solver implements Solver {
     } catch (IOException ioe) {
       ioe.printStackTrace();
       logger.log(Level.SEVERE, "{0}", ioe);
-      Runtime.getRuntime().halt(1);
+      //Runtime.getRuntime().halt(1);
       return null;
     } catch (InterruptedException ie) {
       ie.printStackTrace();
       logger.log(Level.SEVERE, "{0}", ie);
-      Runtime.getRuntime().halt(1);
+      //Runtime.getRuntime().halt(1);
       return null;
     }
   }
@@ -451,38 +459,34 @@ public class CVC4Solver implements Solver {
   static public void concatFile(
       LinkedHashSet<String> freeVars, String from, String to, boolean cvc4)
       throws java.io.IOException {
-    PrintStream pw = new PrintStream(new BufferedOutputStream(new FileOutputStream(to)));
+    List<PrintStream> ps = new ArrayList<PrintStream>();
 
-    //        System.out.println("Concat:");
+    PrintStream toStream = new PrintStream(new BufferedOutputStream(new FileOutputStream(to)));
+    ps.add(toStream);
+
     if (Config.instance.printFormulaAndSolutions) {
       System.out.println("-----------Formula-------------");
-    }
-    if (cvc4) {
-      pw.println("OPTION \"produce-models\";");
-      if (Config.instance.printFormulaAndSolutions) {
-        System.out.println("OPTION \"produce-models\";");
-      }
-    }
-    for (String var : freeVars) {
-      pw.print(var);
-      pw.println(" :INT;");
-      if (Config.instance.printFormulaAndSolutions) {
-        System.out.print(var);
-        System.out.println(" :INT;");
-      }
+      ps.add(System.out);
     }
 
-    BufferedReader br = new BufferedReader(new FileReader(from));
-    String line = br.readLine();
-    while (line != null) {
-      pw.println(line);
-      if (Config.instance.printFormulaAndSolutions) {
-        System.out.println(line);
+    for (PrintStream pw : ps) {
+      if (cvc4) {
+        pw.println("OPTION \"produce-models\";");
       }
-      //            System.out.println(line);
-      line = br.readLine();
+      for (String var : freeVars) {
+        pw.print(var);
+        pw.println(" :INT;");
+      }
+
+      BufferedReader br = new BufferedReader(new FileReader(from));
+      String line = br.readLine();
+      while (line != null) {
+        pw.println(line);
+        line = br.readLine();
+      }
+      br.close();
     }
-    br.close();
-    pw.close();
-  }  
+
+    toStream.close();
+  }
 }

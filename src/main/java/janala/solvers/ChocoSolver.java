@@ -15,7 +15,6 @@ import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.List;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,12 +23,12 @@ import static janala.interpreters.SymbolicInt.COMPARISON_OPS;
 
 public class ChocoSolver implements Solver {
   boolean first = true;
-  LinkedList<InputElement> inputs;
+  List<InputElement> inputs;
   IntegerVariable[] vars;
   CPModel m;
   private final static Logger logger = MyLogger.getLogger(ChocoSolver.class.getName());
 
-  public void setInputs(LinkedList<InputElement> inputs) {
+  public void setInputs(List<InputElement> inputs) {
     this.inputs = inputs;
     this.first = true;
   }

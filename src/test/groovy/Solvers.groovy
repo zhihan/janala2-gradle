@@ -13,7 +13,7 @@ import janala.interpreters.SymbolicIntCompareConstraint
 class NoopSolver implements Solver {
   public boolean solve() { 1 }
 
-  public void setInputs(LinkedList<InputElement> inputs) {}
+  public void setInputs(List<InputElement> inputs) {}
 
   public void setPathConstraint(List<Constraint> pathConstraint) {}
 

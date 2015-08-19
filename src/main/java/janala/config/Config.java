@@ -31,7 +31,7 @@ public class Config {
   public String formulaFile;
   public String testLog;
   public String cvc3Command;
-  public String cvc4Command;
+  public String cvc4Command = "cvc4";
   public String[] excludeList;
   public String[] includeList;
   private String loggerClass;
