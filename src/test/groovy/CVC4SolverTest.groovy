@@ -11,6 +11,7 @@ import janala.interpreters.IntValue;
 
 import org.junit.Test
 import org.junit.Before
+import org.junit.Ignore
 
 import groovy.transform.CompileStatic
 
@@ -23,6 +24,7 @@ class CVC4SolverTest {
     Config.instance.printFormulaAndSolutions = true
   }
 
+  @Ignore
   @Test
 	void testSolver() {
     SymbolicInt x1 = new SymbolicInt(1)
