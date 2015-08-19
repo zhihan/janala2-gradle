@@ -1,14 +1,10 @@
 package janala.solvers;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- */
-
 import janala.config.Config;
 import janala.interpreters.*;
 import janala.interpreters.StringValue;
-import janala.utils.FileUtil;
 import janala.utils.MyLogger;
+import janala.utils.FileUtil;
 
 import java.io.*;
 import java.util.List;
@@ -20,6 +16,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CVC4Solver implements Solver {
+  public static enum RESULT_TYPE {
+    TRUE,
+    FALSE,
+    UNKNOWN
+  };
+
+  public static enum CONSTRAINT_TYPE {
+    INT,
+    STR
+  };
+
   LinkedList<InputElement> inputs;
   List<Constraint> constraints;
   int pathConstraintIndex;
@@ -43,7 +50,7 @@ public class CVC4Solver implements Solver {
       Constraint con,
       PrintStream out,
       LinkedHashSet<String> freeVars,
-      CVC3Solver.CONSTRAINT_TYPE type,
+      CONSTRAINT_TYPE type,
       TreeMap<String, Long> soln) {
     if (con instanceof SymbolicInt) {
       SymbolicInt c = (SymbolicInt) con;
@@ -181,14 +188,8 @@ public class CVC4Solver implements Solver {
 
   public void visitSymbolicIntCompare(SymbolicIntCompareConstraint c) {}
 
-  public enum RESULT_TYPE {
-    TRUE,
-    FALSE,
-    UNKNOWN
-  };
-
-  private boolean quickUnsatCheck(CVC3Solver.CONSTRAINT_TYPE type) {
-    if (type == CVC3Solver.CONSTRAINT_TYPE.INT) {
+  private boolean quickUnsatCheck(CONSTRAINT_TYPE type) {
+    if (type == CONSTRAINT_TYPE.INT) {
       Constraint last = constraints.get(pathConstraintIndex);
       if (last instanceof SymbolicStringPredicate) {
         for (int i = 0; i < pathConstraintIndex; i++) {
@@ -203,7 +204,7 @@ public class CVC4Solver implements Solver {
   }
 
   private RESULT_TYPE writeFormula(
-      String extra, CVC3Solver.CONSTRAINT_TYPE type, TreeMap<String, Long> soln) {
+      String extra, CONSTRAINT_TYPE type, TreeMap<String, Long> soln) {
     try {
       boolean allTrue = true;
       Constraint tmp;
@@ -243,7 +244,7 @@ public class CVC4Solver implements Solver {
       out.println("COUNTERMODEL;");
       out.close();
 
-      CVC3Solver.concatFile(
+      concatFile(
           freeVars, Config.instance.formulaFile + ".tmp", Config.instance.formulaFile, true);
       return allTrue ? RESULT_TYPE.TRUE : RESULT_TYPE.UNKNOWN;
     } catch (IOException ioe) {
@@ -381,9 +382,9 @@ public class CVC4Solver implements Solver {
     String extra = null, negatedSolution, negatedSolution2;
     while (count < MAX_COUNT) {
       TreeMap<String, Long> soln = new TreeMap<String, Long>();
-      negatedSolution = solve(extra, CVC3Solver.CONSTRAINT_TYPE.INT, soln);
+      negatedSolution = solve(extra, CONSTRAINT_TYPE.INT, soln);
       if (negatedSolution != null) {
-        negatedSolution2 = solve(null, CVC3Solver.CONSTRAINT_TYPE.STR, soln);
+        negatedSolution2 = solve(null, CONSTRAINT_TYPE.STR, soln);
         if (negatedSolution2 != null) {
           writeInputs(soln);
           tester.log(Level.INFO, "Feasible = true at " + pathConstraintIndex);
@@ -405,7 +406,8 @@ public class CVC4Solver implements Solver {
     return false;
   }
 
-  public String solve(String extra, CVC3Solver.CONSTRAINT_TYPE type, TreeMap<String, Long> soln) {
+  
+  private String solve(String extra, CONSTRAINT_TYPE type, TreeMap<String, Long> soln) {
     try {
       RESULT_TYPE res;
       String negatedSolution;
@@ -445,4 +447,42 @@ public class CVC4Solver implements Solver {
       return null;
     }
   }
+
+  static public void concatFile(
+      LinkedHashSet<String> freeVars, String from, String to, boolean cvc4)
+      throws java.io.IOException {
+    PrintStream pw = new PrintStream(new BufferedOutputStream(new FileOutputStream(to)));
+
+    //        System.out.println("Concat:");
+    if (Config.instance.printFormulaAndSolutions) {
+      System.out.println("-----------Formula-------------");
+    }
+    if (cvc4) {
+      pw.println("OPTION \"produce-models\";");
+      if (Config.instance.printFormulaAndSolutions) {
+        System.out.println("OPTION \"produce-models\";");
+      }
+    }
+    for (String var : freeVars) {
+      pw.print(var);
+      pw.println(" :INT;");
+      if (Config.instance.printFormulaAndSolutions) {
+        System.out.print(var);
+        System.out.println(" :INT;");
+      }
+    }
+
+    BufferedReader br = new BufferedReader(new FileReader(from));
+    String line = br.readLine();
+    while (line != null) {
+      pw.println(line);
+      if (Config.instance.printFormulaAndSolutions) {
+        System.out.println(line);
+      }
+      //            System.out.println(line);
+      line = br.readLine();
+    }
+    br.close();
+    pw.close();
+  }  
 }

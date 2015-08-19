@@ -96,9 +96,10 @@ public class Config {
       //ex.printStackTrace();
       // If no property file is given, set up the bare minimum
       analysisClass = "janala/logger/DJVM";
-      loggerClass = "janala.logger.StringPrintLogger";
+      loggerClass = "janala.logger.FileLogger";
       traceFileName = "trace.dat";
       traceAuxFileName = "trace_aux.dat";
+      history = "history.dat";
     }
   }
 

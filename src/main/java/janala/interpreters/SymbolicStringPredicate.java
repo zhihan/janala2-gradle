@@ -4,7 +4,7 @@ package janala.interpreters;
  * Author: Koushik Sen (ksen@cs.berkeley.edu)
  */
 
-import janala.solvers.CVC3Solver;
+import janala.solvers.CVC4Solver.CONSTRAINT_TYPE;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -163,7 +163,7 @@ public class SymbolicStringPredicate extends Constraint {
 
   public Constraint getFormula(
       LinkedHashSet<String> freeVars,
-      CVC3Solver.CONSTRAINT_TYPE mode,
+      CONSTRAINT_TYPE mode,
       Map<String, Long> assignments) {
     StringBuilder sb = new StringBuilder();
     long length1, length2;
@@ -179,7 +179,7 @@ public class SymbolicStringPredicate extends Constraint {
             : ((SymbolicStringExpression) this.right).getField("length");
     IntValue formula;
 
-    if (mode == CVC3Solver.CONSTRAINT_TYPE.INT) {
+    if (mode == CONSTRAINT_TYPE.INT) {
       switch (this.op) {
         case EQ:
           formula = s1.ISUB(s2);
@@ -210,7 +210,7 @@ public class SymbolicStringPredicate extends Constraint {
           return RegexpEncoder.getLengthFormulaString(
               (String) this.right, "x", s1.getSymbol(), false);
       }
-    } else if (mode == CVC3Solver.CONSTRAINT_TYPE.STR) {
+    } else if (mode == CONSTRAINT_TYPE.STR) {
       switch (this.op) {
         case EQ:
           if (s1.symbolic != null) {

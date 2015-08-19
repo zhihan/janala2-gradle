@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# A convenient library to setup the tool.
+# A convenient library to build the tool.
 #
-# Required: SBT.
+# Required: Gradle.
 
 # Figure out script absolute path
 pushd `dirname $0` > /dev/null
@@ -14,7 +14,7 @@ ROOT=`dirname $SCRIPT_DIR`
 echo $ROOT
 cd ${ROOT}
 
-echo "Running SBT to build the library"
-sbt package
-cp -f target/scala-2.11/catg_2.11-0.0.jar lib/catg-dev.jar
+echo "Running Gradle to build the library"
+gradle jar
+cp -f build/libs/janala2-gradle-0.2.jar lib/catg-dev.jar
 

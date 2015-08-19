@@ -2,12 +2,14 @@ package janala.interpreters;
 
 import janala.utils.MyLogger;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ClassDepot {
+
+public class ClassDepot implements Serializable {
 
   private Map<String, ClassTemplate> templates;
 

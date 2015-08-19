@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-
 public class ClassNames implements Serializable {
   private Map<String, Integer> nameToIndex;
   private List<ObjectInfo> classList;

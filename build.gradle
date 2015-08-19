@@ -34,3 +34,10 @@ apply plugin: "jacoco"
 jacoco {
     toolVersion = "0.7.1.201405082137"
 }
+
+version = '0.2'
+jar {
+    manifest {
+        attributes 'Premain-Class': 'janala.instrument.SnoopInstructionTransformer'
+    }
+}
