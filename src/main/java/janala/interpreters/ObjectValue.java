@@ -5,13 +5,21 @@ import janala.solvers.History;
 public class ObjectValue extends Value {
   final public static ObjectValue NULL = new ObjectValue(0, 0);
   
+  // For array object, fields are the content of the array.
+  // For plain object, fields are the instance variables.
   private Value[] fields;
   public Value[] getFields() {
     return fields;
   }
 
   SymbolicObject symbolic;
+  public SymbolicObject getSymbolic() {
+    return symbolic;
+  }
   int address; // address 0 is null, address -1 is uninitialized address
+  public int getAddress() {
+    return address;
+  }
 
   @Override
   public Object getConcrete() { // (TODO): confusing

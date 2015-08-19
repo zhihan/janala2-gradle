@@ -28,7 +28,7 @@ public class StringValue extends ObjectValue {
     return string;
   }
 
-  public SymbolicStringExpression getSymbolic() {
+  public SymbolicStringExpression getSymbolicExp() {
     return symbolic;
   }
 

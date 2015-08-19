@@ -24,8 +24,6 @@ public class DirectConcolicExecution extends Thread implements Logger {
   }
 
   private void execute(Instruction insn) {
-    if (Config.instance.printTrace) System.out.println(insn);
-
     if (inst == null) {
       inst = insn;
     } else {

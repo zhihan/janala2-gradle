@@ -13,6 +13,7 @@ import java.io.ObjectInputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+// Main entry for the interpreter 
 public class LoadAndExecuteInstructions {
   private final static Logger logger =
       MyLogger.getLogger(LoadAndExecuteInstructions.class.getName());

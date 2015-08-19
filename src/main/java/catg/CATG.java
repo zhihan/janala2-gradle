@@ -6,11 +6,6 @@ import janala.interpreters.OrValue;
 
 import java.io.Serializable;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- * Date: 7/1/12
- * Time: 12:09 PM
- */
 public class CATG {
   public static int abstractInt(String test, int x) {
     if (Config.instance.testChecker.check(test)) {

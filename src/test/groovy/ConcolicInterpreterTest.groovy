@@ -19,6 +19,7 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 class ConcolicInterpreterTest {
+  private ClassDepot classDepot
   private ClassNames classNames
   private ConcolicInterpreter interpreter
   private Solver solver
@@ -27,7 +28,8 @@ class ConcolicInterpreterTest {
  
   @Before
   void setup() {
-    classNames = new ClassNames()
+    classDepot = mock(ClassDepot.class)
+    classNames = new ClassNames(classDepot)
     solver = mock(Solver.class)
     history = new History(solver)
     coverage = mock(Coverage.class)
@@ -641,4 +643,101 @@ class ConcolicInterpreterTest {
     BranchElement branch = (BranchElement) history.getHistory().get(0)
     assertTrue(branch.branch)
   }
+
+  @Test
+  void testIASTORE() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1)
+    v.setAddress(1) // Arbitrary address
+    frame.push(v)
+    frame.push(new IntValue(0)) // index
+    frame.push(new IntValue(1)) // value
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitIASTORE(new IASTORE(0, 0))
+    assertEquals(new IntValue(1), v.getFields()[0])
+  }
+
+  @Test
+  void testIALOAD() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1)
+    v.setAddress(1) // Arbitrary address
+    v.setField(0, new IntValue(2))
+    frame.push(v)
+    frame.push(new IntValue(0)) // index
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitIALOAD(new IALOAD(0, 0))
+    assertEquals(new IntValue(2), frame.peek())
+  }
+
+  @Test
+  void testIALOAD_Symbol() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1)
+    v.setAddress(1) // Arbitrary address
+    v.setField(0, new IntValue(2))
+    frame.push(v)
+
+    SymbolicInt x = new SymbolicInt(1)
+    IntValue idx = new IntValue(0, x)
+    frame.push(idx) // index
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitIALOAD(new IALOAD(0, 0))
+
+    IntValue result = (IntValue) frame.peek()
+    assertEquals(2, result.concrete)
+    println(result.getSymbolic()) // TODO: how to test this?
+
+    assertEquals(1, history.getHistory().size())
+    BranchElement branch = (BranchElement) history.getHistory().get(0)
+    assertTrue(branch.branch)
+  }
+
+  @Test
+  void testAASTORE() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1)
+    v.setAddress(1) // Arbitrary address
+    frame.push(v)
+    frame.push(new IntValue(0)) // index
+    frame.push(new IntValue(1)) // value
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitAASTORE(new AASTORE(0, 0))
+    assertEquals(new IntValue(1), v.getFields()[0])
+  }
+
+  @Test
+  void testAALOAD() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1)
+    v.setAddress(1) // Arbitrary address
+    ObjectValue val = new ObjectValue(0, 1)
+    v.setField(0, val)
+    frame.push(v)
+    frame.push(new IntValue(0)) // index
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitAALOAD(new AALOAD(0, 0))
+    assertEquals(val, frame.peek())
+  }
+
+  @Test
+  void testAALOAD_Symbol() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1)
+    v.setAddress(1) // Arbitrary address
+    ObjectValue val = new ObjectValue(0, 1)
+    v.setField(0, val)
+    frame.push(v)
+
+    SymbolicInt x = new SymbolicInt(1)
+    IntValue idx = new IntValue(0, x)
+    frame.push(idx) // index
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitAALOAD(new AALOAD(0, 0))
+
+    ObjectValue result = (ObjectValue) frame.peek()
+    assertEquals(val.address, result.address)
+    println(result.getSymbolic()) // TODO: how to test this?
+
+  }  
 }

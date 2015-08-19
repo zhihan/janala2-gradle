@@ -305,7 +305,7 @@ public class CVC3Solver implements Solver {
             if (val instanceof StringValue) {
               StringValue sval = (StringValue) val;
               String old = sval.getConcrete();
-              IntValue tmp = sval.getSymbolic().getField("length");
+              IntValue tmp = sval.getSymbolicExp().getField("length");
               int len = (int) (long) tmp.substituteInLinear(soln);
               StringBuilder ret = new StringBuilder();
               for (int i = 0; i < len; i++) {

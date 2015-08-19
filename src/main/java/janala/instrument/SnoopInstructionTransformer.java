@@ -44,25 +44,6 @@ public class SnoopInstructionTransformer implements ClassFileTransformer {
 
     boolean toInstrument = !shouldExclude(cname);
 
-    /*
-    String[] tmp = Config.instance.excludeList;
-    for (int i = 0; i < tmp.length; i++) {
-      String s = tmp[i];
-      if (cname.startsWith(s)) {
-        toInstrument = false;
-        break;
-      }
-    }
-
-    tmp = Config.instance.includeList;
-    for (int i = 0; i < tmp.length; i++) {
-      String s = tmp[i];
-      if (cname.startsWith(s)) {
-        toInstrument = true;
-        break;
-      }
-      } */
-
     if (toInstrument) {
       System.out.println("begin transform " + cname);
       Coverage.read();
