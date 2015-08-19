@@ -1,8 +1,5 @@
 package janala.interpreters;
 
-import gnu.trove.iterator.TIntLongIterator;
-import gnu.trove.map.hash.TIntLongHashMap;
-import gnu.trove.map.TIntLongMap;
 import java.util.Map;
 import java.util.HashMap;
 
