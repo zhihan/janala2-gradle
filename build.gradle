@@ -10,6 +10,27 @@ repositories {
     jcenter()
 }
 
+sourceSets {
+    main {
+        java {
+            exclude 'integration/**'
+        }
+    }
+
+    integration {
+        java {
+            compileClasspath += main.output
+            runtimeClasspath += main.output
+            include 'integration/**'
+        }
+    }
+}
+
+configurations {
+    integrationCompile.extendsFrom testCompile
+    integrationRuntime.extendsFrom testRuntime
+}
+
 // In this section you declare the dependencies for your production and test code
 dependencies {
     compile 'org.ow2.asm:asm-all:5.0.4'  // Bytecode manipulation
@@ -20,7 +41,7 @@ dependencies {
     testCompile 'org.mockito:mockito-core:1.10.19'
 }
 
-repositories {
+repositories { // Unmanaged dependencies
    flatDir {
        dirs 'lib'
    }
@@ -41,3 +62,9 @@ jar {
         attributes 'Premain-Class': 'janala.instrument.SnoopInstructionTransformer'
     }
 }
+
+task integrationTest (type: Test) {
+    testClassesDir = sourceSets.integration.output.classesDir
+    classpath = sourceSets.integration.runtimeClasspath
+}
+

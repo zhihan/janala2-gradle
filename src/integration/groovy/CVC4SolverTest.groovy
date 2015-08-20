@@ -24,7 +24,6 @@ class CVC4SolverTest {
     Config.instance.printFormulaAndSolutions = true
   }
 
-  @Ignore
   @Test
 	void testSolver() {
     SymbolicInt x1 = new SymbolicInt(1)
