@@ -68,7 +68,3 @@ task integrationTest (type: Test) {
     testClassesDir = sourceSets.integration.output.classesDir
     classpath = sourceSets.integration.runtimeClasspath
 }
-
-task debug(dependsOn: integrationClasses) {
-     println(sourceSets.integration.getAllSource().getSrcDirs())
-}

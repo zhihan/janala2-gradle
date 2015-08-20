@@ -26,18 +26,24 @@ In addition, the project has a number of unit tests written in Groovy. To see th
 And then look at the test coverage report in build/reports.
 
 ## Integration tests
-This is still largely a manual process.
+The integration tests from the original CATG repo are now included in this repo. To run these tests, 
+first download a copy of asm-all-5.0.4.jar and put it in /lib directory.
 
-First, get a copy of the main repository of CATG from https://github.com/ksen007/janala2
+At the root directory, invoke gradle to compile the test classes.
 
-Package the code in this repository by calling
+    gradle integrationClasses
 
-    gradle jar
+Go to /scripts directory and do the following.
 
-Replace ib/iagent.jar in the main repository with the jar file created in the build/libs/ directory.
+    ./setup.sh
+    
+Run the integration tests by invoking the following command from /scripts directory.
 
-In the main repository, replace the asm-all-3.3.1.jar with asm-all-5.0.4.jar
+    python testall.py
 
-Change the concolic.py script to use the updated asm library.
+Now a number of integration tests are failing. I am still investigating why.
 
-Manually compile some of the test classes in src/tests in the main repository. 
+## More integration tests
+More integration tests are being added. To run these tests, do the following.
+
+    gradle integrationTest
