@@ -1,4 +1,6 @@
 # janala2-gradle
+<img src="https://travis-ci.org/zhihan/janala2-gradle.svg?branch=master"></img>
+
 Migrate CATG (janala2) library to use Gradle and latest libraries (ASM, etc.) 
 
 This is a working repository to migrate CATG tool to use Gradle and update the dependencies. 
