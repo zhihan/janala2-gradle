@@ -12,7 +12,10 @@ Migrate CATG (janala2) library to use Gradle and upgrade some dependencies. Bran
 This is a working repository. I am still hoping to merge it back to the main repository once the code changes are stable.
 
 ## Requirements
-Gradle 2.
+* Gradle 2
+* Python 2
+* CVC4 (http://cvc4.cs.nyu.edu/web/)
+* Java 1.8
 
 ## How to compile
 In the root of the repository, do 
