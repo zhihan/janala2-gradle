@@ -52,7 +52,9 @@ public class LoadAndExecuteInstructions {
       while (inst != null) {
         intp.setNext(next);
         logger.log(Level.FINE, "{0}", inst);
+        System.out.println("Visiting " + inst);
         inst.visit(intp);
+
         inst = next;
         next = readInst(inputStream);
         i++;

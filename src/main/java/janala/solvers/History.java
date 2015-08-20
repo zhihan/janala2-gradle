@@ -128,7 +128,7 @@ public class History {
       return readHistory(solver, new FileInputStream(Config.instance.history));
     } catch (Exception ex) {
       logger.log(Level.WARNING, "", ex);
-      return null;
+      return new History(solver);
     }
   }
 

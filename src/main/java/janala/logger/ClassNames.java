@@ -56,10 +56,11 @@ public class ClassNames implements Serializable {
   }
 
   public void init(ClassDepot classDepot) {
-    if (classList != null)
+    if (classList != null) {
       for (ObjectInfo objectInfo : classList) {
         objectInfo.init(classDepot);
       }
+    }
   }
   
 

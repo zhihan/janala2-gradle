@@ -785,11 +785,9 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
     mv.visitJumpInsn(GOTO, end);
     mv.visitLabel(handler);
 
-    final Object[] stack1 = {"java/lang/Throwable"};
     mv.visitMethodInsn(
         INVOKESTATIC, Config.instance.analysisClass, "INVOKEMETHOD_EXCEPTION", "()V");
     mv.visitInsn(ATHROW);
-    final Object[] stack2 = {"java/lang/Object"};
     mv.visitLabel(end);
     mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "INVOKEMETHOD_END", "()V");
     addValueReadInsn(mv, desc, "GETVALUE_");

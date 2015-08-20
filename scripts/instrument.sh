@@ -8,9 +8,12 @@
 # Example
 #  ./instrument.sh MyClass
 
-SCRIPT_DIR=`dirname $0`
-PWD=`pwd`
-ROOT=$PWD
+# Figure out script absolute path
+pushd `dirname $0` > /dev/null
+SCRIPT_DIR=`pwd`
+popd > /dev/null
+
+ROOT=`dirname $SCRIPT_DIR`
 source "$SCRIPT_DIR/env.sh"
 
 java -cp $CLASSPATH:. -javaagent:${ROOT}/lib/catg-dev.jar $@

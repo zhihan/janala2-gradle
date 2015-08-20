@@ -446,12 +446,12 @@ public class CVC4Solver implements Solver {
     } catch (IOException ioe) {
       ioe.printStackTrace();
       logger.log(Level.SEVERE, "{0}", ioe);
-      //Runtime.getRuntime().halt(1);
+      Runtime.getRuntime().halt(1);
       return null;
     } catch (InterruptedException ie) {
       ie.printStackTrace();
       logger.log(Level.SEVERE, "{0}", ie);
-      //Runtime.getRuntime().halt(1);
+      Runtime.getRuntime().halt(1);
       return null;
     }
   }

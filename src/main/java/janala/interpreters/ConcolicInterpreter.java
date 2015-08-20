@@ -618,6 +618,7 @@ public class ConcolicInterpreter implements IVisitor {
     try {
       ObjectInfo oi = cnames.get(inst.cIdx);
       FieldInfo fi = oi.get(inst.fIdx, true);
+      
       if (inst.desc.startsWith("D") || inst.desc.startsWith("J")) {
         currentFrame.push2(oi.getStaticField(fi.getFieldId()));
       } else {

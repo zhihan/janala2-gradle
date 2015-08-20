@@ -46,6 +46,13 @@ public class FieldInfo implements Serializable {
   }
 
   public int getFieldId() {
-    return fieldId;
+    if (fieldId == -1) {
+      if (isStatic) {
+        fieldId = ClassDepot.instance.getStaticFieldIndex(className,fieldName);
+      } else {
+        fieldId = ClassDepot.instance.getFieldIndex(className,fieldName);
+      }
+    }
+    return fieldId;    
   }
 }
