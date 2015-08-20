@@ -1,5 +1,5 @@
 # janala2-gradle
-<img src="https://travis-ci.org/zhihan/janala2-gradle.svg?branch=master"></img>
+<a href="https://travis-ci.org/zhihan/janala2-gradle"><img src="https://travis-ci.org/zhihan/janala2-gradle.svg?branch=master"></img></a>
 
 Migrate CATG (janala2) library to use Gradle and upgrade some dependencies. Branched from https://github.com/ksen007/janala2
 
