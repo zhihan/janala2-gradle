@@ -13,7 +13,7 @@ repositories {
 sourceSets {
     main {
         java {
-            exclude 'integration/**'
+            exclude 'src/integration'
         }
     }
 
@@ -21,10 +21,11 @@ sourceSets {
         java {
             compileClasspath += main.output
             runtimeClasspath += main.output
-            include 'integration/**'
+            srcDir 'src/integration'
         }
     }
 }
+
 
 configurations {
     integrationCompile.extendsFrom testCompile
@@ -68,3 +69,6 @@ task integrationTest (type: Test) {
     classpath = sourceSets.integration.runtimeClasspath
 }
 
+task debug(dependsOn: integrationClasses) {
+     println(sourceSets.integration.getAllSource().getSrcDirs())
+}
