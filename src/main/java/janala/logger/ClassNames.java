@@ -42,7 +42,7 @@ public class ClassNames implements Serializable {
     if (i == null) {
       i = classList.size();
       nameToIndex.put(className, i);
-      classList.add(new ObjectInfo(className));
+      classList.add(new ObjectInfo(className, classDepot));
     }
     return i;
   }
@@ -50,19 +50,6 @@ public class ClassNames implements Serializable {
   public ObjectInfo get(int i) {
     return classList.get(i);
   }
-
-  public void init() {
-    init(classDepot);
-  }
-
-  public void init(ClassDepot classDepot) {
-    if (classList != null) {
-      for (ObjectInfo objectInfo : classList) {
-        objectInfo.init(classDepot);
-      }
-    }
-  }
-  
 
   @Override
   public String toString() {

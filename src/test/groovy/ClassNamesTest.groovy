@@ -31,7 +31,7 @@ class ClassNamesTest {
     int i = cn.get("MyTestClass")
     assertEquals(0, i)
     
-    cn.init()
+    // cn.init(classDepot)
     ObjectInfo oi = cn.get(0)
     assertEquals(1, oi.getNFields())
 

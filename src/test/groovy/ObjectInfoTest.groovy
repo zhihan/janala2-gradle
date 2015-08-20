@@ -32,16 +32,16 @@ class ObjectInfoTest {
   @Test
   void testInit() {
     ClassDepot classDepot = new FakeClassDepot()
-    ObjectInfo info = new ObjectInfo("testClass").init(classDepot)
+    ObjectInfo info = new ObjectInfo("testClass", classDepot)
     assertEquals(info.className, "testClass")
     assertEquals(0, info.getIdx("field", true))
     assertEquals(0, info.getIdx("field", false))
     
     // This is really weird.
-    info.init(classDepot)
+    // info.init(classDepot)
     assertEquals(1, info.getNFields())
-    assertEquals(0, info.get(0, true).fieldId)
-    assertEquals(0, info.get(0, false).fieldId)
+    assertEquals(0, info.get(0, true).getFieldId())
+    assertEquals(0, info.get(0, false).getFieldId())
 
     def value = new IntValue(0)
     info.setStaticField(0, value)

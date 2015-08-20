@@ -8,6 +8,7 @@ import org.junit.Test
 
 import groovy.transform.CompileStatic
 
+@CompileStatic
 class FieldInfoTest {
   @CompileStatic
   class FakeClassDepot extends ClassDepot {
@@ -24,13 +25,11 @@ class FieldInfoTest {
   @Test
   void testField() {
     ClassDepot cd = new FakeClassDepot()
-    FieldInfo fi = new FieldInfo("class", "field", true)
-    fi.init(cd)
+    FieldInfo fi = new FieldInfo("class", "field", true, cd)
     assertEquals(1, fi.getFieldId())
 
 
-    FieldInfo f = new FieldInfo("class", "field", false)
-    f.init(cd)
+    FieldInfo f = new FieldInfo("class", "field", false, cd)
     assertEquals(1, f.getFieldId())
 
     assertTrue(f.toString().contains("FieldInfo"))
