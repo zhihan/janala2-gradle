@@ -165,7 +165,83 @@ class MethodInstrumenterTest {
   @Test
   void testDUP2_X2() {
     testInsn(Opcodes.DUP2_X2, "DUP2_X2")
-  }  
+  }
+
+  @Test
+  void testSWAP() {
+    testInsn(Opcodes.SWAP, "SWAP")
+  }
+
+  @Test
+  void testIADD() {
+    testInsn(Opcodes.IADD, "IADD")
+  }
+
+  @Test
+  void testLADD() {
+    testInsn(Opcodes.LADD, "LADD")
+  }
+
+  @Test
+  void testFADD() {
+    testInsn(Opcodes.FADD, "FADD")
+  }
+
+  @Test
+  void testDADD() {
+    testInsn(Opcodes.DADD, "DADD")
+  }
+
+  @Test
+  void testISUB() {
+    testInsn(Opcodes.ISUB, "ISUB")
+  }
+
+  @Test
+  void testLSUB() {
+    testInsn(Opcodes.LSUB, "LSUB")
+  }
+
+  @Test
+  void testFSUB() {
+    testInsn(Opcodes.FSUB, "FSUB")
+  }
+
+  @Test
+  void testDSUB() {
+    testInsn(Opcodes.DSUB, "DSUB")
+  }
+
+  @Test
+  void testIMUL() {
+    testInsn(Opcodes.IMUL, "IMUL")
+  }
+
+  @Test
+  void testLMUL() {
+    testInsn(Opcodes.LMUL, "LMUL")
+  }
+
+  @Test
+  void testFMUL() {
+    testInsn(Opcodes.FMUL, "FMUL")
+  }
+
+  @Test
+  void testDMUL() {
+    testInsn(Opcodes.DMUL, "DMUL")
+  }
+
+  @Test
+  void testFDIV() {
+    testInsn(Opcodes.FDIV, "FDIV")
+  }
+
+  @Test
+  void testDDIV() {
+    testInsn(Opcodes.DDIV, "DDIV")
+  }
+
   private void testInsnWithExceptionAndValue(int opcode, 
       String name, String type, String prefix) {
     ma.visitInsn(opcode)
@@ -226,7 +302,7 @@ class MethodInstrumenterTest {
     testInsnWithExceptionAndValue(Opcodes.AALOAD, "AALOAD", "Ljava/lang/Object;", "GETVALUE_")
   }
 
-  private void testInsnWithException(int opcode, String name, String type) {
+  private void testInsnWithException(int opcode, String name) {
     ma.visitInsn(opcode)
     
     MethodRecorder expected = new MethodRecorder()
@@ -246,42 +322,52 @@ class MethodInstrumenterTest {
 
   @Test
   void testIASTORE() {
-    testInsnWithException(Opcodes.IASTORE, "IASTORE", "I")
+    testInsnWithException(Opcodes.IASTORE, "IASTORE")
   }
 
   @Test
   void testLASTORE() {
-    testInsnWithException(Opcodes.LASTORE, "LASTORE", "J")
+    testInsnWithException(Opcodes.LASTORE, "LASTORE")
   }
 
   @Test
   void testFASTORE() {
-    testInsnWithException(Opcodes.FASTORE, "FASTORE", "F")
+    testInsnWithException(Opcodes.FASTORE, "FASTORE")
   }
 
   @Test
   void testDASTORE() {
-    testInsnWithException(Opcodes.DASTORE, "DASTORE", "D")
+    testInsnWithException(Opcodes.DASTORE, "DASTORE")
   }
 
   @Test
   void testBASTORE() {
-    testInsnWithException(Opcodes.BASTORE, "BASTORE", "B")
+    testInsnWithException(Opcodes.BASTORE, "BASTORE")
   }
 
   @Test
   void testCASTORE() {
-    testInsnWithException(Opcodes.CASTORE, "CASTORE", "C")
+    testInsnWithException(Opcodes.CASTORE, "CASTORE")
   }
 
   @Test
   void testSASTORE() {
-    testInsnWithException(Opcodes.SASTORE, "SASTORE", "S")
+    testInsnWithException(Opcodes.SASTORE, "SASTORE")
   }
 
   @Test
   void testAASTORE() {
-    testInsnWithException(Opcodes.AASTORE, "AASTORE", "Ljava/lang/Object;")
+    testInsnWithException(Opcodes.AASTORE, "AASTORE")
+  }
+
+  @Test
+  void testIDIV() {
+    testInsnWithException(Opcodes.IDIV, "IDIV")
+  }
+
+  @Test
+  void testLDIV() {
+    testInsnWithException(Opcodes.LDIV, "LDIV")
   }
 
   @Test
