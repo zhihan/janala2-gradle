@@ -242,6 +242,197 @@ class MethodInstrumenterTest {
     testInsn(Opcodes.DDIV, "DDIV")
   }
 
+  @Test
+  void testFREM() {
+    testInsn(Opcodes.FREM, "FREM")
+  }
+
+  @Test
+  void testDREM() {
+    testInsn(Opcodes.DREM, "DREM")
+  }
+
+  @Test
+  void testINEG() {
+    testInsn(Opcodes.INEG, "INEG")
+  }
+
+  @Test
+  void testLNEG() {
+    testInsn(Opcodes.LNEG, "LNEG")
+  }
+
+  @Test
+  void testFNEG() {
+    testInsn(Opcodes.FNEG, "FNEG")
+  }
+
+  @Test
+  void testDNEG() {
+    testInsn(Opcodes.DNEG, "DNEG")
+  }
+
+  @Test
+  void testISHL() {
+    testInsn(Opcodes.ISHL, "ISHL")
+  }
+
+  @Test
+  void testISHR() {
+    testInsn(Opcodes.ISHR, "ISHR")
+  }
+
+  @Test
+  void testLSHL() {
+    testInsn(Opcodes.LSHL, "LSHL")
+  }
+
+  @Test
+  void testLSHR() {
+    testInsn(Opcodes.LSHR, "LSHR")
+  }
+
+  @Test
+  void testIUSHR() {
+    testInsn(Opcodes.IUSHR, "IUSHR")
+  }
+
+  @Test
+  void testLUSHR() {
+    testInsn(Opcodes.LUSHR, "LUSHR")
+  }
+
+  @Test
+  void testIAND() {
+    testInsn(Opcodes.IAND, "IAND")
+  }
+
+  @Test
+  void testLAND() {
+    testInsn(Opcodes.LAND, "LAND")
+  }
+
+  @Test
+  void testIOR() {
+    testInsn(Opcodes.IOR, "IOR")
+  }
+
+  @Test
+  void testLOR() {
+    testInsn(Opcodes.LOR, "LOR")
+  }
+
+  @Test
+  void testIXOR() {
+    testInsn(Opcodes.IXOR, "IXOR")
+  }
+
+  @Test
+  void testLXOR() {
+    testInsn(Opcodes.LXOR, "LXOR")
+  }
+
+  @Test
+  void testI2L() {
+    testInsn(Opcodes.I2L, "I2L")
+  }
+
+  @Test
+  void testI2F() {
+    testInsn(Opcodes.I2F, "I2F")
+  }
+
+  @Test
+  void testI2D() {
+    testInsn(Opcodes.I2D, "I2D")
+  }
+
+  @Test
+  void testL2I() {
+    testInsn(Opcodes.L2I, "L2I")
+  }
+
+  @Test
+  void testL2F() {
+    testInsn(Opcodes.L2F, "L2F")
+  }
+
+  @Test
+  void testL2D() {
+    testInsn(Opcodes.L2D, "L2D")
+  }
+
+  @Test
+  void testF2I() {
+    testInsn(Opcodes.F2I, "F2I")
+  }
+
+  @Test
+  void testF2L() {
+    testInsn(Opcodes.F2L, "F2L")
+  }
+
+  @Test
+  void testF2D() {
+    testInsn(Opcodes.F2D, "F2D")
+  }
+
+  @Test
+  void testD2I() {
+    testInsn(Opcodes.D2I, "D2I")
+  }
+
+  @Test
+  void testD2L() {
+    testInsn(Opcodes.D2L, "D2L")
+  }
+
+  @Test
+  void testD2F() {
+    testInsn(Opcodes.D2F, "D2F")
+  }
+
+  @Test
+  void testI2B() {
+    testInsn(Opcodes.I2B, "I2B")
+  }
+
+  @Test
+  void testI2C() {
+    testInsn(Opcodes.I2C, "I2C")
+  }
+
+  @Test
+  void testI2S() {
+    testInsn(Opcodes.I2S, "I2S")
+  }
+
+  @Test
+  void testLCMP() {
+    testInsn(Opcodes.LCMP, "LCMP")
+  }
+
+  @Test
+  void testFCMPL() {
+    testInsn(Opcodes.FCMPL, "FCMPL")
+  } 
+
+  @Test
+  void testFCMPG() {
+    testInsn(Opcodes.FCMPG, "FCMPG")
+  }  
+
+  @Test
+  void testDCMPL() {
+    testInsn(Opcodes.DCMPL, "DCMPL")
+  } 
+
+  @Test
+  void testDCMPG() {
+    testInsn(Opcodes.DCMPG, "DCMPG")
+  }  
+
+
   private void testInsnWithExceptionAndValue(int opcode, 
       String name, String type, String prefix) {
     ma.visitInsn(opcode)
@@ -301,6 +492,7 @@ class MethodInstrumenterTest {
   void testAALOAD() {
     testInsnWithExceptionAndValue(Opcodes.AALOAD, "AALOAD", "Ljava/lang/Object;", "GETVALUE_")
   }
+
 
   private void testInsnWithException(int opcode, String name) {
     ma.visitInsn(opcode)
@@ -368,6 +560,16 @@ class MethodInstrumenterTest {
   @Test
   void testLDIV() {
     testInsnWithException(Opcodes.LDIV, "LDIV")
+  }
+
+  @Test
+  void testIREM() {
+    testInsnWithException(Opcodes.IREM, "IREM")
+  }
+
+  @Test
+  void testLREM() {
+    testInsnWithException(Opcodes.LREM, "LREM")
   }
 
   @Test
