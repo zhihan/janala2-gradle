@@ -30,7 +30,7 @@ And then look at the test coverage report in build/reports.
 
 ## Integration tests
 The integration tests from the original CATG repo are now included in this repo. To run these tests, 
-first download a copy of asm-all-5.0.4.jar and put it in /lib directory.
+first download a copy of asm-all-5.0.4.jar, automaton-1.11-8.jar and put them in the /lib directory.
 
 At the root directory, invoke gradle to compile the test classes.
 
@@ -47,6 +47,7 @@ Run the integration tests by invoking the following command from /scripts direct
 Now a number of integration tests are failing. I am still investigating why.
 
 ## More integration tests
-More integration tests are being added. To run these tests, do the following.
+More integration tests are being added. These tests require a working version of CVC4 in your path.
+To run these tests, do the following.
 
     gradle integrationTest

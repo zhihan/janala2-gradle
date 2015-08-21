@@ -126,7 +126,7 @@ catg_home = os.path.abspath(
         os.path.dirname(__file__), os.path.pardir)).replace("\\","/")+"/"
 classpath = (catg_home + "build/classes/integration" + sep 
              + catg_home + "lib/asm-all-5.0.4.jar" + sep
-             + catg_home+"lib/automaton.jar" + sep
+             + catg_home+"lib/automaton-1.11-8.jar" + sep
              + catg_home+"lib/catg-dev.jar")
 args = getArguments()
 iters = args.maxIterations
@@ -151,4 +151,3 @@ if args.coverage:
     print "\n\n*********************************************************************************************"
     print "To see detailed coverage information open the file catg_tmp/coverage/index.html in a browser."
     print "*********************************************************************************************\n"
-
