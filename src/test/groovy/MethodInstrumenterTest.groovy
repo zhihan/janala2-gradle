@@ -432,6 +432,40 @@ class MethodInstrumenterTest {
     testInsn(Opcodes.DCMPG, "DCMPG")
   }  
 
+  @Test
+  void testIRETURN() {
+    testInsn(Opcodes.IRETURN, "IRETURN")
+  }
+
+  @Test
+  void testFRETURN() {
+    testInsn(Opcodes.FRETURN, "FRETURN")
+  }
+
+  @Test
+  void testLRETURN() {
+    testInsn(Opcodes.LRETURN, "LRETURN")
+  }
+
+  @Test
+  void testDRETURN() {
+    testInsn(Opcodes.DRETURN, "DRETURN")
+  }
+
+  @Test
+  void testRETURN() {
+    testInsn(Opcodes.RETURN, "RETURN")
+  }
+
+  @Test
+  void testARETURN() {
+    testInsn(Opcodes.ARETURN, "ARETURN")
+  }
+
+  @Test
+  void testATHROW() {
+    testInsn(Opcodes.ATHROW, "ATHROW")
+  }
 
   private void testInsnWithExceptionAndValue(int opcode, 
       String name, String type, String prefix) {
@@ -493,6 +527,11 @@ class MethodInstrumenterTest {
     testInsnWithExceptionAndValue(Opcodes.AALOAD, "AALOAD", "Ljava/lang/Object;", "GETVALUE_")
   }
 
+  @Test
+  void testARRAYLENGTH() {
+    testInsnWithExceptionAndValue(Opcodes.ARRAYLENGTH, 
+      "ARRAYLENGTH", "I", "GETVALUE_")
+  }
 
   private void testInsnWithException(int opcode, String name) {
     ma.visitInsn(opcode)
@@ -570,6 +609,16 @@ class MethodInstrumenterTest {
   @Test
   void testLREM() {
     testInsnWithException(Opcodes.LREM, "LREM")
+  }
+
+  @Test
+  void testMONITORENTER() {
+    testInsnWithException(Opcodes.MONITORENTER, "MONITORENTER")
+  }
+
+  @Test
+  void testMONITOREXIT() {
+    testInsnWithException(Opcodes.MONITOREXIT, "MONITOREXIT")
   }
 
   @Test
