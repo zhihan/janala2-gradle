@@ -1,6 +1,8 @@
 package janala.instrument
 
 import static org.junit.Assert.assertEquals
+import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.verify
 
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Label
@@ -16,12 +18,14 @@ import janala.testing.MethodRecorder
 import org.junit.Before
 import org.junit.Test
 
+
 import groovy.transform.CompileStatic
 
 @CompileStatic
 class MethodInstrumenterTest {
   private MethodRecorder recorder
   private SnoopInstructionMethodAdapter ma
+  private Coverage coverage
 
   @Before
   void setup() {
@@ -30,7 +34,9 @@ class MethodInstrumenterTest {
     Config.instance.analysisClass = "MyAnalysisClass"
 
     recorder = new MethodRecorder()
-    ma = new SnoopInstructionMethodAdapter(recorder.getVisitor(), false)
+    coverage = mock(Coverage.class)
+    ma = new SnoopInstructionMethodAdapter(recorder.getVisitor(), false, coverage)
+
   }
 
   private void testInsn(int opcode, String name) {
@@ -619,6 +625,136 @@ class MethodInstrumenterTest {
   @Test
   void testMONITOREXIT() {
     testInsnWithException(Opcodes.MONITOREXIT, "MONITOREXIT")
+  }
+
+  private void testJumpInsn(int opcode, String name, Label label) {
+    ma.visitJumpInsn(opcode, label)
+    
+    MethodRecorder expected = new MethodRecorder()
+    def ev = expected.getVisitor()
+    int iid = GlobalStateForInstrumentation.instance.getId()
+    int mid = GlobalStateForInstrumentation.instance.getMid()
+    Utils.addBipushInsn(ev, iid)
+    Utils.addBipushInsn(ev, mid)
+    Utils.addBipushInsn(ev, System.identityHashCode(label))
+
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC,
+      Config.instance.analysisClass, name, "(III)V")
+    ev.visitJumpInsn(opcode, label)
+
+    Utils.addBipushInsn(ev, 1) // exception-free path
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC, 
+      Config.instance.analysisClass, "SPECIAL", "(I)V");
+ 
+    assertEquals(expected, recorder)
+  }
+
+  private void testUnconditionalJumpInsn(int opcode, String name, Label label) {
+    ma.visitJumpInsn(opcode, label)
+    
+    MethodRecorder expected = new MethodRecorder()
+    def ev = expected.getVisitor()
+    int iid = GlobalStateForInstrumentation.instance.getId()
+    int mid = GlobalStateForInstrumentation.instance.getMid()
+    Utils.addBipushInsn(ev, iid)
+    Utils.addBipushInsn(ev, mid)
+    Utils.addBipushInsn(ev, System.identityHashCode(label))
+
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC,
+      Config.instance.analysisClass, name, "(III)V")
+    ev.visitJumpInsn(opcode, label)
+
+    assertEquals(expected, recorder)
+  }
+
+  @Test
+  void testIFEQ() {
+    testJumpInsn(Opcodes.IFEQ, "IFEQ", new Label())
+  }
+
+  @Test
+  void testIFNE() {
+    testJumpInsn(Opcodes.IFNE, "IFNE", new Label())
+  }
+
+  @Test
+  void testIFLT() {
+    testJumpInsn(Opcodes.IFLT, "IFLT", new Label())
+  }
+
+  @Test
+  void testIFGE() {
+    testJumpInsn(Opcodes.IFGE, "IFGE", new Label())
+  }
+
+  @Test
+  void testIFGT() {
+    testJumpInsn(Opcodes.IFGT, "IFGT", new Label())
+  }
+
+  @Test
+  void testIFLE() {
+    testJumpInsn(Opcodes.IFLE, "IFLE", new Label())
+  }  
+
+  @Test
+  void testIF_ICMPEQ() {
+    testJumpInsn(Opcodes.IF_ICMPEQ, "IF_ICMPEQ", new Label())
+  }
+
+  @Test
+  void testIF_ICMPNE() {
+    testJumpInsn(Opcodes.IF_ICMPNE, "IF_ICMPNE", new Label())
+  }  
+
+  @Test
+  void testIF_ICMPLT() {
+    testJumpInsn(Opcodes.IF_ICMPLT, "IF_ICMPLT", new Label())
+  }
+
+  @Test
+  void testIF_ICMPGE() {
+    testJumpInsn(Opcodes.IF_ICMPGE, "IF_ICMPGE", new Label())
+  }
+
+  @Test
+  void testIF_ICMPLE() {
+    testJumpInsn(Opcodes.IF_ICMPLE, "IF_ICMPLE", new Label())
+  }
+
+  @Test
+  void testIF_ICMPGT() {
+    testJumpInsn(Opcodes.IF_ICMPGT, "IF_ICMPGT", new Label())
+  }
+
+  @Test
+  void testIF_ACMPEQ() {
+    testJumpInsn(Opcodes.IF_ACMPEQ, "IF_ACMPEQ", new Label())
+  }
+
+  @Test
+  void testIF_ACMPNE() {
+    testJumpInsn(Opcodes.IF_ACMPNE, "IF_ACMPNE", new Label())
+  }
+
+  @Test
+  void testIFNULL() {
+    testJumpInsn(Opcodes.IFNULL, "IFNULL", new Label())
+  }
+
+  @Test
+  void testIFNONNULL() {
+    testJumpInsn(Opcodes.IFNONNULL, "IFNONNULL", new Label())
+  }
+
+  @Test
+  void testGOTO() {
+    testUnconditionalJumpInsn(Opcodes.GOTO, "GOTO", new Label())
+  }
+
+  @Test
+  void testJSR() {
+    testUnconditionalJumpInsn(Opcodes.JSR, "JSR", new Label())
   }
 
   @Test

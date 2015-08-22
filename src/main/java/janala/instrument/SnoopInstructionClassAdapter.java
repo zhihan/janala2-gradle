@@ -15,7 +15,7 @@ public class SnoopInstructionClassAdapter extends ClassVisitor {
     Coverage.instance.setLastMethod(name + ":" + signature);
     MethodVisitor mv = cv.visitMethod(access, name, desc, signature, exceptions);
     if (mv != null) {
-      mv = new SnoopInstructionMethodAdapter(mv, name.equals("<init>"));
+      mv = new SnoopInstructionMethodAdapter(mv, name.equals("<init>"), Coverage.get());
     }
 
     return mv;

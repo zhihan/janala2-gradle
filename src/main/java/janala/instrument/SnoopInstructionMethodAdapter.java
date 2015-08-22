@@ -17,12 +17,12 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
   boolean calledNew = false;
   private Coverage coverage;
 
-  public SnoopInstructionMethodAdapter(MethodVisitor mv, boolean isInit) {
+  public SnoopInstructionMethodAdapter(MethodVisitor mv, boolean isInit, Coverage coverage) {
     super(Opcodes.ASM4, mv);
     this.isInit = isInit;
     this.isSuperInitCalled = false;
     tryCatchBlocks = new LinkedList<TryCatchBlock>();
-    coverage = Coverage.get();
+    this.coverage = coverage;
   }
 
   @Override
@@ -433,8 +433,8 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
         addSpecialInsn(mv, 0); // for non-exceptional path
         return;
       default:
-        System.err.println("Unknown instruction opcode " + opcode);
-        System.exit(1);
+        throw new RuntimeException("Unknown instruction opcode " + opcode);
+        
     }
     mv.visitInsn(opcode);
   }
@@ -820,8 +820,8 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
         addSpecialInsn(mv, 1); // for true path
         break;
       default:
-        System.err.println("Unknown jump opcode " + opcode);
-        System.exit(1);
+        throw new RuntimeException("Unknown jump opcode " + opcode);
+        
     }
   }
 
