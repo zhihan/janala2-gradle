@@ -530,7 +530,7 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
   public void visitTypeInsn(int opcode, String type) {
     switch (opcode) {
       case NEW:
-        mv.visitTypeInsn(opcode, type);
+        //mv.visitTypeInsn(opcode, type);
         addBipushInsn(mv, GlobalStateForInstrumentation.instance.incAndGetId());
         addBipushInsn(mv, GlobalStateForInstrumentation.instance.getMid());
         mv.visitLdcInsn(type);
@@ -538,6 +538,7 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
         addBipushInsn(mv, cIdx);
         mv.visitMethodInsn(
             INVOKESTATIC, Config.instance.analysisClass, "NEW", "(IILjava/lang/String;I)V");
+        mv.visitTypeInsn(opcode, type);
         calledNew = true;
         addSpecialInsn(mv, 0); // for non-exceptional path
         addBipushInsn(mv, GlobalStateForInstrumentation.instance.incAndGetId());
@@ -574,8 +575,7 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
         addValueReadInsn(mv, "I", "GETVALUE_");
         break;
       default:
-        System.err.println("Unknown type instruction opcode " + opcode);
-        System.exit(1);
+        throw new RuntimeException("Unknown type instruction opcode " + opcode);
     }
   }
 
@@ -638,12 +638,14 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
 
   @Override
   public void visitMethodInsn(int opcode, String owner, String name, String desc) {
-    boolean isInit2 = false;
+    boolean callingInit = false;
     addBipushInsn(mv, GlobalStateForInstrumentation.instance.incAndGetId());
     addBipushInsn(mv, GlobalStateForInstrumentation.instance.getMid());
+
     mv.visitLdcInsn(owner);
     mv.visitLdcInsn(name);
     mv.visitLdcInsn(desc);
+
     switch (opcode) {
       case INVOKEVIRTUAL:
         mv.visitMethodInsn(
@@ -655,7 +657,7 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
       case INVOKESPECIAL:
         if (name.equals("<init>")) {
           isSuperInitCalled = true;
-          isInit2 = true;
+          callingInit = true;
         }
         mv.visitMethodInsn(
             INVOKESTATIC,
@@ -678,27 +680,29 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
             "(IILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
         break;
       default:
-        System.err.println("Unknown method invocation opcode " + opcode);
-        System.exit(1);
+        throw new RuntimeException("Error instrumenting invokeMethod");
     }
 
+    // Wrap the method call in a try-catch block
     Label begin = new Label();
     Label handler = new Label();
     Label end = new Label();
 
     tryCatchBlocks.addFirst(new TryCatchBlock(begin, handler, handler, null));
+
     mv.visitLabel(begin);
     mv.visitMethodInsn(opcode, owner, name, desc);
     mv.visitJumpInsn(GOTO, end);
-    mv.visitLabel(handler);
 
+    mv.visitLabel(handler);
     mv.visitMethodInsn(
         INVOKESTATIC, Config.instance.analysisClass, "INVOKEMETHOD_EXCEPTION", "()V");
     mv.visitInsn(ATHROW);
+
     mv.visitLabel(end);
     mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "INVOKEMETHOD_END", "()V");
     addValueReadInsn(mv, desc, "GETVALUE_");
-    if (isInit2 && calledNew) {
+    if (callingInit && calledNew) {
       calledNew = false;
       addValueReadInsn(mv, "Ljava/lang/Object;", "GETVALUE_");
       addBipushInsn(mv, GlobalStateForInstrumentation.instance.incAndGetId());

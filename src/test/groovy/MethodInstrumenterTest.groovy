@@ -757,6 +757,64 @@ class MethodInstrumenterTest {
     testUnconditionalJumpInsn(Opcodes.JSR, "JSR", new Label())
   }
 
+  private void testMethodInsn(int opcode, String name, String owner, String method, String desc) {
+    ma.visitMethodInsn(opcode, owner, method, desc)
+    
+    MethodRecorder expected = new MethodRecorder()
+    def ev = expected.getVisitor()
+    
+    int iid = GlobalStateForInstrumentation.instance.getId()
+    int mid = GlobalStateForInstrumentation.instance.getMid()
+    Utils.addBipushInsn(ev, iid)
+    Utils.addBipushInsn(ev, mid)
+
+    ev.visitLdcInsn(owner)
+    ev.visitLdcInsn(method)
+    ev.visitLdcInsn(desc)
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC,
+      Config.instance.analysisClass, name,
+      "(IILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V")
+
+    Label begin = new Label() // Try-catch block around call
+    Label handler = new Label()
+    Label end = new Label()
+    ev.visitLabel(begin)
+    ev.visitMethodInsn(opcode, owner, method, desc)
+    ev.visitJumpInsn(Opcodes.GOTO, end)
+
+    ev.visitLabel(handler)
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC, Config.instance.analysisClass, 
+      "INVOKEMETHOD_EXCEPTION", "()V")
+    ev.visitInsn(Opcodes.ATHROW)
+
+    ev.visitLabel(end)
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC, Config.instance.analysisClass, 
+      "INVOKEMETHOD_END", "()V")
+    Utils.addValueReadInsn(ev, desc, "GETVALUE_")
+ 
+    assertEquals(expected, recorder)
+  }  
+
+  @Test
+  void testINVOKEVIRTUAL() {
+    testMethodInsn(Opcodes.INVOKEVIRTUAL, "INVOKEVIRTUAL", "class", "method", "(I)I")
+  }
+
+  @Test
+  void testINVOKESTATIC() {
+    testMethodInsn(Opcodes.INVOKESTATIC, "INVOKESTATIC", "class", "method", "(I)I")
+  }
+
+  @Test
+  void testINVOKESPECIAL() {
+    testMethodInsn(Opcodes.INVOKESPECIAL, "INVOKESPECIAL", "class", "method", "(I)I")
+  }
+
+  @Test
+  void testINVOKEINTERFACE() {
+    testMethodInsn(Opcodes.INVOKEINTERFACE, "INVOKEINTERFACE", "class", "method", "(I)I")
+  }
+
   @Test
   void testILOAD() {
     ma.visitVarInsn(Opcodes.ILOAD, 1)
