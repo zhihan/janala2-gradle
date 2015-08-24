@@ -110,4 +110,3 @@ for test in tests:
 f = open('test.log', 'r')
 print f.read()
 f.close()
-

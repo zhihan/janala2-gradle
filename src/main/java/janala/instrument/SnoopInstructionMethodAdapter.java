@@ -619,11 +619,17 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
   @Override
   public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
     if (opcode == INVOKESPECIAL && name.equals("<init>")) {
-      if (owner.equals("java/lang/Object")) {
-        // Constructor calls to <init> method of the Object class. If this is the
+      if (isInit) {
+        // Constructor calls to <init> method of the super class. If this is the
         // case, there is no need to wrap the method call in try catch block as
         // it uses uninitialized this object.
+        isSuperInitCalled = true;
         mv.visitMethodInsn(opcode, owner, name, desc);
+        if (calledNew) {
+          // When new is instrumented it always calls a dup. Even if we do not instrument the init call
+          // we still need to pop the 'this' pointer off the stack.
+          mv.visitInsn(POP);
+        }
         return;
       }
 
@@ -657,7 +663,6 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
       mv.visitLabel(end);
       mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "INVOKEMETHOD_END", "()V", false);
 
-      isSuperInitCalled = true;
       addValueReadInsn(mv, desc, "GETVALUE_");
       if (calledNew) {
         calledNew = false;
