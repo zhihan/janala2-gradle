@@ -1,10 +1,5 @@
 package janala.logger.inst;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- * Date: 6/16/12
- * Time: 9:22 AM
- */
 public class GETVALUE_void extends Instruction {
 
   public GETVALUE_void() {

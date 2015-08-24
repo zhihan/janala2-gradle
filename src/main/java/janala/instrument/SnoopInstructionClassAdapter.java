@@ -7,7 +7,7 @@ import org.objectweb.asm.Opcodes;
 
 public class SnoopInstructionClassAdapter extends ClassVisitor {
   public SnoopInstructionClassAdapter(ClassVisitor cv) {
-    super(Opcodes.ASM4, cv);
+    super(Opcodes.ASM5, cv);
   }
 
   public MethodVisitor visitMethod(

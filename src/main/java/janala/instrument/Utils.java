@@ -32,6 +32,8 @@ public class Utils implements Opcodes {
     }
   }
 
+  /** Add a set to code to read the given type from the top of the concrete stack
+      and invoke GETVALUE method of the analysis class. */
   public static void addValueReadInsn(MethodVisitor mv, String desc, String methodNamePrefix) {
     Type t;
 
@@ -44,12 +46,12 @@ public class Utils implements Opcodes {
       case Type.DOUBLE:
         mv.visitInsn(DUP2);
         mv.visitMethodInsn(
-            INVOKESTATIC, Config.instance.analysisClass, methodNamePrefix + "double", "(D)V");
+            INVOKESTATIC, Config.instance.analysisClass, methodNamePrefix + "double", "(D)V", false);
         break;
       case Type.LONG:
         mv.visitInsn(DUP2);
         mv.visitMethodInsn(
-            INVOKESTATIC, Config.instance.analysisClass, methodNamePrefix + "long", "(J)V");
+            INVOKESTATIC, Config.instance.analysisClass, methodNamePrefix + "long", "(J)V", false);
         break;
       case Type.ARRAY:
         mv.visitInsn(DUP);
@@ -57,32 +59,32 @@ public class Utils implements Opcodes {
             INVOKESTATIC,
             Config.instance.analysisClass,
             methodNamePrefix + "Object",
-            "(Ljava/lang/Object;)V");
+            "(Ljava/lang/Object;)V", false);
         break;
       case Type.BOOLEAN:
         mv.visitInsn(DUP);
         mv.visitMethodInsn(
-            INVOKESTATIC, Config.instance.analysisClass, methodNamePrefix + "boolean", "(Z)V");
+            INVOKESTATIC, Config.instance.analysisClass, methodNamePrefix + "boolean", "(Z)V", false);
         break;
       case Type.BYTE:
         mv.visitInsn(DUP);
         mv.visitMethodInsn(
-            INVOKESTATIC, Config.instance.analysisClass, methodNamePrefix + "byte", "(B)V");
+            INVOKESTATIC, Config.instance.analysisClass, methodNamePrefix + "byte", "(B)V", false);
         break;
       case Type.CHAR:
         mv.visitInsn(DUP);
         mv.visitMethodInsn(
-            INVOKESTATIC, Config.instance.analysisClass, methodNamePrefix + "char", "(C)V");
+            INVOKESTATIC, Config.instance.analysisClass, methodNamePrefix + "char", "(C)V", false);
         break;
       case Type.FLOAT:
         mv.visitInsn(DUP);
         mv.visitMethodInsn(
-            INVOKESTATIC, Config.instance.analysisClass, methodNamePrefix + "float", "(F)V");
+            INVOKESTATIC, Config.instance.analysisClass, methodNamePrefix + "float", "(F)V", false);
         break;
       case Type.INT:
         mv.visitInsn(DUP);
         mv.visitMethodInsn(
-            INVOKESTATIC, Config.instance.analysisClass, methodNamePrefix + "int", "(I)V");
+            INVOKESTATIC, Config.instance.analysisClass, methodNamePrefix + "int", "(I)V", false);
         break;
       case Type.OBJECT:
         mv.visitInsn(DUP);
@@ -90,16 +92,16 @@ public class Utils implements Opcodes {
             INVOKESTATIC,
             Config.instance.analysisClass,
             methodNamePrefix + "Object",
-            "(Ljava/lang/Object;)V");
+            "(Ljava/lang/Object;)V", false);
         break;
       case Type.SHORT:
         mv.visitInsn(DUP);
         mv.visitMethodInsn(
-            INVOKESTATIC, Config.instance.analysisClass, methodNamePrefix + "short", "(S)V");
+            INVOKESTATIC, Config.instance.analysisClass, methodNamePrefix + "short", "(S)V", false);
         break;
       case Type.VOID:
         mv.visitMethodInsn(
-            INVOKESTATIC, Config.instance.analysisClass, methodNamePrefix + "void", "()V");
+            INVOKESTATIC, Config.instance.analysisClass, methodNamePrefix + "void", "()V", false);
         break;
       default:
         System.err.println("Unknown field or method descriptor " + desc);
