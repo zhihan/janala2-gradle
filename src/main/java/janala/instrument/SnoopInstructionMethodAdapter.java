@@ -48,6 +48,24 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
     mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "SPECIAL", "(I)V", false);
   }
 
+  private void addInsn(MethodVisitor mv, String insn, int opcode) {
+    addBipushInsn(mv, GlobalStateForInstrumentation.instance.incAndGetId());
+    addBipushInsn(mv, GlobalStateForInstrumentation.instance.getMid());
+    mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, insn, "(II)V", false);
+
+    mv.visitInsn(opcode);
+  }
+
+  /** Add var insn and its instrumentation code. */
+  private void addVarInsn(MethodVisitor mv, int var, String insn, int opcode) {
+    addBipushInsn(mv, GlobalStateForInstrumentation.instance.incAndGetId());
+    addBipushInsn(mv, GlobalStateForInstrumentation.instance.getMid());
+    addBipushInsn(mv, var);
+    mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, insn, "(III)V", false);
+
+    mv.visitVarInsn(opcode, var);
+  }
+
   @Override
   public void visitLineNumber(int i, Label label) {
     line = i;
@@ -56,452 +74,410 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
 
   @Override
   public void visitInsn(int opcode) {
-    addBipushInsn(mv, GlobalStateForInstrumentation.instance.incAndGetId());
-    addBipushInsn(mv, GlobalStateForInstrumentation.instance.getMid());
     switch (opcode) {
       case NOP:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "NOP", "(II)V", false);
+        addInsn(mv, "NOP", opcode);
         break;
       case ACONST_NULL:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ACONST_NULL", "(II)V", false);
+        addInsn(mv, "ACONST_NULL", opcode);
         break;
       case ICONST_M1:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ICONST_M1", "(II)V", false);
+        addInsn(mv, "ICONST_M1", opcode);
         break;
       case ICONST_0:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ICONST_0", "(II)V", false);
+        addInsn(mv, "ICONST_0", opcode);
         break;
       case ICONST_1:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ICONST_1", "(II)V", false);
+        addInsn(mv, "ICONST_1", opcode);
         break;
       case ICONST_2:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ICONST_2", "(II)V", false);
+        addInsn(mv, "ICONST_2", opcode);
         break;
       case ICONST_3:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ICONST_3", "(II)V", false);
+        addInsn(mv, "ICONST_3", opcode);
         break;
       case ICONST_4:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ICONST_4", "(II)V", false);
+        addInsn(mv, "ICONST_4", opcode);
         break;
       case ICONST_5:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ICONST_5", "(II)V", false);
+        addInsn(mv, "ICONST_5", opcode);
         break;
       case LCONST_0:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LCONST_0", "(II)V", false);
+        addInsn(mv, "LCONST_0", opcode);
         break;
       case LCONST_1:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LCONST_1", "(II)V", false);
+        addInsn(mv, "LCONST_1", opcode);
         break;
       case FCONST_0:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "FCONST_0", "(II)V", false);
+        addInsn(mv, "FCONST_0", opcode);
         break;
       case FCONST_1:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "FCONST_1", "(II)V", false);
+        addInsn(mv, "FCONST_1", opcode);
         break;
       case FCONST_2:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "FCONST_2", "(II)V", false);
+        addInsn(mv, "FCONST_2", opcode);
         break;
       case DCONST_0:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DCONST_0", "(II)V", false);
+        addInsn(mv, "DCONST_0", opcode);
         break;
       case DCONST_1:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DCONST_1", "(II)V", false);
+        addInsn(mv, "DCONST_1", opcode);
         break;
       case IALOAD:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "IALOAD", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "IALOAD", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
         addValueReadInsn(mv, "I", "GETVALUE_");
-        return;
+        break;
       case LALOAD:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LALOAD", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "LALOAD", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
         addValueReadInsn(mv, "J", "GETVALUE_");
-        return;
+        break;
       case FALOAD:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "FALOAD", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "FALOAD", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
         addValueReadInsn(mv, "F", "GETVALUE_");
-        return;
+        break;
       case DALOAD:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DALOAD", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "DALOAD", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
         addValueReadInsn(mv, "D", "GETVALUE_");
-        return;
+        break;
       case AALOAD:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "AALOAD", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "AALOAD", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
         addValueReadInsn(mv, "Ljava/lang/Object;", "GETVALUE_");
-        return;
+        break;
       case BALOAD:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "BALOAD", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "BALOAD", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
         addValueReadInsn(mv, "B", "GETVALUE_");
-        return;
+        break;
       case CALOAD:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "CALOAD", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "CALOAD", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
         addValueReadInsn(mv, "C", "GETVALUE_");
-        return;
+        break;
       case SALOAD:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "SALOAD", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "SALOAD", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
         addValueReadInsn(mv, "S", "GETVALUE_");
-        return;
+        break;
       case IASTORE:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "IASTORE", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "IASTORE", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
-        return;
+        break;
       case LASTORE:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LASTORE", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "LASTORE", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
-        return;
+        break;
       case FASTORE:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "FASTORE", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "FASTORE", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
-        return;
+        break;
       case DASTORE:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DASTORE", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "DASTORE", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
-        return;
+        break;
       case AASTORE:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "AASTORE", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "AASTORE", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
-        return;
+        break;
       case BASTORE:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "BASTORE", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "BASTORE", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
-        return;
+        break;
       case CASTORE:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "CASTORE", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "CASTORE", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
-        return;
+        break;
       case SASTORE:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "SASTORE", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "SASTORE", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
-        return;
+        break;
       case POP:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "POP", "(II)V", false);
+        addInsn(mv, "POP", opcode);
         break;
       case POP2:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "POP2", "(II)V", false);
+        addInsn(mv, "POP2", opcode);
         break;
       case DUP:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DUP", "(II)V", false);
+        addInsn(mv, "DUP", opcode);
         break;
       case DUP_X1:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DUP_X1", "(II)V", false);
+        addInsn(mv, "DUP_X1", opcode);
         break;
       case DUP_X2:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DUP_X2", "(II)V", false);
+        addInsn(mv, "DUP_X2", opcode);
         break;
       case DUP2:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DUP2", "(II)V", false);
+        addInsn(mv, "DUP2", opcode);
         break;
       case DUP2_X1:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DUP2_X1", "(II)V", false);
+        addInsn(mv, "DUP2_X1", opcode);
         break;
       case DUP2_X2:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DUP2_X2", "(II)V", false);
+        addInsn(mv, "DUP2_X2", opcode);
         break;
       case SWAP:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "SWAP", "(II)V", false);
+        addInsn(mv, "SWAP", opcode);
         break;
       case IADD:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "IADD", "(II)V", false);
+        addInsn(mv, "IADD", opcode);
         break;
       case LADD:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LADD", "(II)V", false);
+        addInsn(mv, "LADD", opcode);
         break;
       case FADD:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "FADD", "(II)V", false);
+        addInsn(mv, "FADD", opcode);
         break;
       case DADD:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DADD", "(II)V", false);
+        addInsn(mv, "DADD", opcode);
         break;
       case ISUB:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ISUB", "(II)V", false);
+        addInsn(mv, "ISUB", opcode);
         break;
       case LSUB:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LSUB", "(II)V", false);
+        addInsn(mv, "LSUB", opcode);
         break;
       case FSUB:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "FSUB", "(II)V", false);
+        addInsn(mv, "FSUB", opcode);
         break;
       case DSUB:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DSUB", "(II)V", false);
+        addInsn(mv, "DSUB", opcode);
         break;
       case IMUL:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "IMUL", "(II)V", false);
+        addInsn(mv, "IMUL", opcode);
         break;
       case LMUL:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LMUL", "(II)V", false);
+        addInsn(mv, "LMUL", opcode);
         break;
       case FMUL:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "FMUL", "(II)V", false);
+        addInsn(mv, "FMUL", opcode);
         break;
       case DMUL:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DMUL", "(II)V", false);
+        addInsn(mv, "DMUL", opcode);
         break;
       case IDIV:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "IDIV", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "IDIV", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
-        return;
+        break;
       case LDIV:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LDIV", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "LDIV", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
-        return;
+        break;
       case FDIV:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "FDIV", "(II)V", false);
+        addInsn(mv, "FDIV", opcode);
         break;
       case DDIV:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DDIV", "(II)V", false);
+        addInsn(mv, "DDIV", opcode);
         break;
       case IREM:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "IREM", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "IREM", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
-        return;
+        break;
       case LREM:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LREM", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "LREM", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
-        return;
+        break;
       case FREM:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "FREM", "(II)V", false);
+        addInsn(mv, "FREM", opcode);
         break;
       case DREM:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DREM", "(II)V", false);
+        addInsn(mv, "DREM", opcode);
         break;
       case INEG:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "INEG", "(II)V", false);
+        addInsn(mv, "INEG", opcode);
         break;
       case LNEG:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LNEG", "(II)V", false);
+        addInsn(mv, "LNEG", opcode);
         break;
       case FNEG:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "FNEG", "(II)V", false);
+        addInsn(mv, "FNEG", opcode);
         break;
       case DNEG:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DNEG", "(II)V", false);
+        addInsn(mv, "DNEG", opcode);
         break;
       case ISHL:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ISHL", "(II)V", false);
+        addInsn(mv, "ISHL", opcode);
         break;
       case LSHL:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LSHL", "(II)V", false);
+        addInsn(mv, "LSHL", opcode);
         break;
       case ISHR:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ISHR", "(II)V", false);
+        addInsn(mv, "ISHR", opcode);
         break;
       case LSHR:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LSHR", "(II)V", false);
+        addInsn(mv, "LSHR", opcode);
         break;
       case IUSHR:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "IUSHR", "(II)V", false);
+        addInsn(mv, "IUSHR", opcode);
         break;
       case LUSHR:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LUSHR", "(II)V", false);
+        addInsn(mv, "LUSHR", opcode);
         break;
       case IAND:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "IAND", "(II)V", false);
+        addInsn(mv, "IAND", opcode);
         break;
       case LAND:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LAND", "(II)V", false);
+        addInsn(mv, "LAND", opcode);
         break;
       case IOR:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "IOR", "(II)V", false);
+        addInsn(mv, "IOR", opcode);
         break;
       case LOR:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LOR", "(II)V", false);
+        addInsn(mv, "LOR", opcode);
         break;
       case IXOR:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "IXOR", "(II)V", false);
+        addInsn(mv, "IXOR", opcode);
         break;
       case LXOR:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LXOR", "(II)V", false);
+        addInsn(mv, "LXOR", opcode);
         break;
       case I2L:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "I2L", "(II)V", false);
+        addInsn(mv, "I2L", opcode);
         break;
       case I2F:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "I2F", "(II)V", false);
+        addInsn(mv, "I2F", opcode);
         break;
       case I2D:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "I2D", "(II)V", false);
+        addInsn(mv, "I2D", opcode);
         break;
       case L2I:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "L2I", "(II)V", false);
+        addInsn(mv, "L2I", opcode);
         break;
       case L2F:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "L2F", "(II)V", false);
+        addInsn(mv, "L2F", opcode);
         break;
       case L2D:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "L2D", "(II)V", false);
+        addInsn(mv, "L2D", opcode);
         break;
       case F2I:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "F2I", "(II)V", false);
+        addInsn(mv, "F2I", opcode);
         break;
       case F2L:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "F2L", "(II)V", false);
+        addInsn(mv, "F2L", opcode);
         break;
       case F2D:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "F2D", "(II)V", false);
+        addInsn(mv, "F2D", opcode);
         break;
       case D2I:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "D2I", "(II)V", false);
+        addInsn(mv, "D2I", opcode);
         break;
       case D2L:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "D2L", "(II)V", false);
+        addInsn(mv, "D2L", opcode);
         break;
       case D2F:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "D2F", "(II)V", false);
+        addInsn(mv, "D2F", opcode);
         break;
       case I2B:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "I2B", "(II)V", false);
+        addInsn(mv, "I2B", opcode);
         break;
       case I2C:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "I2C", "(II)V", false);
+        addInsn(mv, "I2C", opcode);
         break;
       case I2S:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "I2S", "(II)V", false);
+        addInsn(mv, "I2S", opcode);
         break;
       case LCMP:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LCMP", "(II)V", false);
+        addInsn(mv, "LCMP", opcode);
         break;
       case FCMPL:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "FCMPL", "(II)V", false);
+        addInsn(mv, "FCMPL", opcode);
         break;
       case FCMPG:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "FCMPG", "(II)V", false);
+        addInsn(mv, "FCMPG", opcode);
         break;
       case DCMPL:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DCMPL", "(II)V", false);
+        addInsn(mv, "DCMPL", opcode);
         break;
       case DCMPG:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DCMPG", "(II)V", false);
+        addInsn(mv, "DCMPG", opcode);
         break;
       case IRETURN:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "IRETURN", "(II)V", false);
+        addInsn(mv, "IRETURN", opcode);
         break;
       case LRETURN:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LRETURN", "(II)V", false);
+        addInsn(mv, "LRETURN", opcode);
         break;
       case FRETURN:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "FRETURN", "(II)V", false);
+        addInsn(mv, "FRETURN", opcode);
         break;
       case DRETURN:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DRETURN", "(II)V", false);
+        addInsn(mv, "DRETURN", opcode);
         break;
       case ARETURN:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ARETURN", "(II)V", false);
+        addInsn(mv, "ARETURN", opcode);
         break;
       case RETURN:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "RETURN", "(II)V", false);
+        addInsn(mv, "RETURN", opcode);
         break;
       case ARRAYLENGTH:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ARRAYLENGTH", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "ARRAYLENGTH", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
         addValueReadInsn(mv, "I", "GETVALUE_");
-        return;
+        break;
       case ATHROW:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ATHROW", "(II)V", false);
+        addInsn(mv, "ATHROW", opcode);
         break;
       case MONITORENTER:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "MONITORENTER", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "MONITORENTER", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
-        return;
+        break;
       case MONITOREXIT:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "MONITOREXIT", "(II)V", false);
-        mv.visitInsn(opcode);
+        addInsn(mv, "MONITOREXIT", opcode);
         addSpecialInsn(mv, 0); // for non-exceptional path
-        return;
+        break;
       default:
         throw new RuntimeException("Unknown instruction opcode " + opcode);
-
     }
-    mv.visitInsn(opcode);
   }
 
   @Override
   public void visitVarInsn(int opcode, int var) {
-    addBipushInsn(mv, GlobalStateForInstrumentation.instance.incAndGetId());
-    addBipushInsn(mv, GlobalStateForInstrumentation.instance.getMid());
-    addBipushInsn(mv, var);
     switch (opcode) {
       case ILOAD:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ILOAD", "(III)V", false);
-        mv.visitVarInsn(opcode, var);
+        addVarInsn(mv, var, "ILOAD", opcode);
         addValueReadInsn(mv, "I", "GETVALUE_");
         break;
       case LLOAD:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LLOAD", "(III)V", false);
-        mv.visitVarInsn(opcode, var);
+        addVarInsn(mv, var, "LLOAD", opcode);
         addValueReadInsn(mv, "J", "GETVALUE_");
         break;
       case FLOAD:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "FLOAD", "(III)V", false);
-        mv.visitVarInsn(opcode, var);
+        addVarInsn(mv, var, "FLOAD", opcode);
         addValueReadInsn(mv, "F", "GETVALUE_");
         break;
       case DLOAD:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DLOAD", "(III)V", false);
-        mv.visitVarInsn(opcode, var);
+        addVarInsn(mv, var, "DLOAD", opcode);
         addValueReadInsn(mv, "D", "GETVALUE_");
         break;
       case ALOAD:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ALOAD", "(III)V", false);
-        mv.visitVarInsn(opcode, var);
+        addVarInsn(mv, var, "ALOAD", opcode);
         if (!(var == 0 && isInit && !isSuperInitCalled)) {
           addValueReadInsn(mv, "Ljava/lang/Object;", "GETVALUE_");
         }
         break;
       case ISTORE:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ISTORE", "(III)V", false);
-        mv.visitVarInsn(opcode, var);
+        addVarInsn(mv, var, "ISTORE", opcode);
         break;
       case LSTORE:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "LSTORE", "(III)V", false);
-        mv.visitVarInsn(opcode, var);
+        addVarInsn(mv, var, "LSTORE", opcode);
         break;
       case FSTORE:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "FSTORE", "(III)V", false);
-        mv.visitVarInsn(opcode, var);
+        addVarInsn(mv, var, "FSTORE", opcode);
         break;
       case DSTORE:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DSTORE", "(III)V", false);
-        mv.visitVarInsn(opcode, var);
+        addVarInsn(mv, var, "DSTORE", opcode);
         break;
       case ASTORE:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ASTORE", "(III)V", false);
-        mv.visitVarInsn(opcode, var);
+        addVarInsn(mv, var, "ASTORE", opcode);
         break;
       case RET:
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "RET", "(III)V", false);
-        mv.visitVarInsn(opcode, var);
+        addVarInsn(mv, var, "RET", opcode);
         break;
       default:
-        System.err.println("Unknown var instruction opcode " + opcode);
-        System.exit(1);
+        throw new RuntimeException("Unknown var insn");
     }
   }
 
