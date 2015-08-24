@@ -16,5 +16,5 @@ popd > /dev/null
 ROOT=`dirname $SCRIPT_DIR`
 source "$SCRIPT_DIR/env.sh"
 
-java -cp $CLASSPATH:.:"${ROOT}/build/classes/integration" -javaagent:${ROOT}/lib/catg-dev.jar $@
+java -cp $CLASSPATH:.:"${ROOT}/build/classes/integration"  $@
 

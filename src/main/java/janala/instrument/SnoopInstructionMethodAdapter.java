@@ -18,7 +18,7 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
   private Coverage coverage;
 
   public SnoopInstructionMethodAdapter(MethodVisitor mv, boolean isInit, Coverage coverage) {
-    super(Opcodes.ASM4, mv);
+    super(ASM4, mv);
     this.isInit = isInit;
     this.isSuperInitCalled = false;
     tryCatchBlocks = new LinkedList<TryCatchBlock>();
@@ -39,6 +39,7 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
   private void addValueReadInsn(MethodVisitor mv, String desc, String methodNamePrefix) {
     Utils.addValueReadInsn(mv, desc, methodNamePrefix);
   }
+    
 
   private void addSpecialInsn(MethodVisitor mv, int val) {
     addBipushInsn(mv, val);
@@ -468,8 +469,9 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
       case ALOAD:
         mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ALOAD", "(III)V");
         mv.visitVarInsn(opcode, var);
-        if (!(var == 0 && isInit && !isSuperInitCalled))
+        if (!(var == 0 && isInit && !isSuperInitCalled)) {
           addValueReadInsn(mv, "Ljava/lang/Object;", "GETVALUE_");
+        }
         break;
       case ISTORE:
         mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "ISTORE", "(III)V");
@@ -638,7 +640,58 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
 
   @Override
   public void visitMethodInsn(int opcode, String owner, String name, String desc) {
-    boolean callingInit = false;
+    if (opcode == INVOKESPECIAL && name.equals("<init>")) {
+      if (owner.equals("java/lang/Object")) {
+        // Constructor calls to <init> method of the Object class. If this is the
+        // case, there is no need to wrap the method call in try catch block as
+        // it uses uninitialized this object.
+        mv.visitMethodInsn(opcode, owner, name, desc);
+        return;
+      }
+
+      addBipushInsn(mv, GlobalStateForInstrumentation.instance.incAndGetId());
+      addBipushInsn(mv, GlobalStateForInstrumentation.instance.getMid());
+      
+      mv.visitLdcInsn(owner);
+      mv.visitLdcInsn(name);
+      mv.visitLdcInsn(desc);
+      mv.visitMethodInsn(
+                         INVOKESTATIC,
+                         Config.instance.analysisClass,
+                         "INVOKESPECIAL",
+                         "(IILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
+      // Wrap the method call in a try-catch block
+      Label begin = new Label();
+      Label handler = new Label();
+      Label end = new Label();
+      
+      tryCatchBlocks.addFirst(new TryCatchBlock(begin, handler, handler, null));
+      
+      mv.visitLabel(begin);
+      mv.visitMethodInsn(opcode, owner, name, desc);
+      mv.visitJumpInsn(GOTO, end);
+
+      mv.visitLabel(handler);
+      mv.visitMethodInsn(
+                         INVOKESTATIC, Config.instance.analysisClass, "INVOKEMETHOD_EXCEPTION", "()V");
+      mv.visitInsn(ATHROW);
+      
+      mv.visitLabel(end);
+      mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "INVOKEMETHOD_END", "()V");
+
+      isSuperInitCalled = true;
+      addValueReadInsn(mv, desc, "GETVALUE_");
+      if (calledNew) {
+        calledNew = false;
+        addValueReadInsn(mv, "Ljava/lang/Object;", "GETVALUE_");
+        addBipushInsn(mv, GlobalStateForInstrumentation.instance.incAndGetId());
+        addBipushInsn(mv, GlobalStateForInstrumentation.instance.getMid());
+        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "POP", "(II)V");
+        mv.visitInsn(POP);
+      } 
+      return;
+    }
+    
     addBipushInsn(mv, GlobalStateForInstrumentation.instance.incAndGetId());
     addBipushInsn(mv, GlobalStateForInstrumentation.instance.getMid());
 
@@ -655,10 +708,6 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
             "(IILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
         break;
       case INVOKESPECIAL:
-        if (name.equals("<init>")) {
-          isSuperInitCalled = true;
-          callingInit = true;
-        }
         mv.visitMethodInsn(
             INVOKESTATIC,
             Config.instance.analysisClass,
@@ -702,14 +751,6 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
     mv.visitLabel(end);
     mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "INVOKEMETHOD_END", "()V");
     addValueReadInsn(mv, desc, "GETVALUE_");
-    if (callingInit && calledNew) {
-      calledNew = false;
-      addValueReadInsn(mv, "Ljava/lang/Object;", "GETVALUE_");
-      addBipushInsn(mv, GlobalStateForInstrumentation.instance.incAndGetId());
-      addBipushInsn(mv, GlobalStateForInstrumentation.instance.getMid());
-      mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "POP", "(II)V");
-      mv.visitInsn(POP);
-    }
   }
 
   @Override
