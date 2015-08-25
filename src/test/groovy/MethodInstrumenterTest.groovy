@@ -14,6 +14,7 @@ import org.objectweb.asm.tree.TryCatchBlockNode
 import java.io.InputStream
 import janala.config.Config
 import janala.testing.MethodRecorder
+import janala.logger.ClassNames
 
 import org.junit.Before
 import org.junit.Test
@@ -642,7 +643,7 @@ class MethodInstrumenterTest {
       Config.instance.analysisClass, name, "(III)V")
     ev.visitJumpInsn(opcode, label)
 
-    Utils.addBipushInsn(ev, 1) // exception-free path
+    Utils.addBipushInsn(ev, 1) // default path
     ev.visitMethodInsn(Opcodes.INVOKESTATIC, 
       Config.instance.analysisClass, "SPECIAL", "(I)V");
  
@@ -813,6 +814,82 @@ class MethodInstrumenterTest {
   @Test
   void testINVOKEINTERFACE() {
     testMethodInsn(Opcodes.INVOKEINTERFACE, "INVOKEINTERFACE", "class", "method", "(I)I")
+  }
+
+  private void testTypeInsn(int opcode, String name, String type, boolean getValue) {
+    ma.visitTypeInsn(opcode, type)
+    
+    MethodRecorder expected = new MethodRecorder()
+    def ev = expected.getVisitor()
+    int iid = GlobalStateForInstrumentation.instance.getId()
+    int mid = GlobalStateForInstrumentation.instance.getMid()
+    Utils.addBipushInsn(ev, iid)
+    Utils.addBipushInsn(ev, mid)
+    ev.visitLdcInsn(type)
+    
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC,
+      Config.instance.analysisClass, name, "(IILjava/lang/String;)V")
+    ev.visitTypeInsn(opcode, type)
+
+    Utils.addBipushInsn(ev, 0) // exception-free path
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC, 
+      Config.instance.analysisClass, "SPECIAL", "(I)V");
+ 
+    if (getValue) {
+      // special case for getting integer value.
+      Utils.addValueReadInsn(ev, "I", "GETVALUE_")
+    }
+    assertEquals(expected, recorder)
+  }
+
+  @Test
+  void testANEWARRAY() {
+    testTypeInsn(Opcodes.ANEWARRAY, "ANEWARRAY", "java/lang/String", false)
+  }
+
+  @Test
+  void testCHECKCAST() {
+    testTypeInsn(Opcodes.CHECKCAST, "CHECKCAST", "java/lang/String", false)
+  }
+
+  @Test
+  void testNEW() {
+    def type = "java/lang/String"
+    def name = "NEW"
+    def opcode  = Opcodes.NEW
+    ma.visitTypeInsn(Opcodes.NEW, type)
+    
+    MethodRecorder expected = new MethodRecorder()
+    def ev = expected.getVisitor()
+    int iid = GlobalStateForInstrumentation.instance.getId() - 1
+    int mid = GlobalStateForInstrumentation.instance.getMid()
+    Utils.addBipushInsn(ev, iid)
+    Utils.addBipushInsn(ev, mid)
+    ev.visitLdcInsn(type)
+    int cIdx = ClassNames.getInstance().get(type);
+    Utils.addBipushInsn(ev, cIdx);
+    
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC,
+      Config.instance.analysisClass, name, "(IILjava/lang/String;I)V")
+    ev.visitTypeInsn(opcode, type)
+
+    Utils.addBipushInsn(ev, 0) // exception-free path
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC, 
+      Config.instance.analysisClass, "SPECIAL", "(I)V");
+
+    iid = GlobalStateForInstrumentation.instance.getId()
+    mid = GlobalStateForInstrumentation.instance.getMid()
+    Utils.addBipushInsn(ev, iid)
+    Utils.addBipushInsn(ev, mid)
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC, Config.instance.analysisClass, 
+      "DUP", "(II)V", false);
+    ev.visitInsn(Opcodes.DUP);
+    assertEquals(expected, recorder)
+  }
+
+  @Test
+  void testINSTANCEOF() {
+    testTypeInsn(Opcodes.INSTANCEOF, "INSTANCEOF", "java/lang/String", true)
   }
 
   @Test
