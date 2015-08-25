@@ -892,9 +892,8 @@ class MethodInstrumenterTest {
     testTypeInsn(Opcodes.INSTANCEOF, "INSTANCEOF", "java/lang/String", true)
   }
 
-  @Test
-  void testILOAD() {
-    ma.visitVarInsn(Opcodes.ILOAD, 1)
+  private void testVarLoad(int opcode, String name, String type) {
+    ma.visitVarInsn(opcode, 1)
 
     MethodRecorder expected = new MethodRecorder()
     def ev = expected.getVisitor()
@@ -902,15 +901,37 @@ class MethodInstrumenterTest {
     ev.visitInsn(Opcodes.ICONST_0)
     ev.visitInsn(Opcodes.ICONST_1)
     ev.visitMethodInsn(Opcodes.INVOKESTATIC,
-      Config.instance.analysisClass, "ILOAD", "(III)V")
-    ev.visitVarInsn(Opcodes.ILOAD, 1)
-    ev.visitInsn(Opcodes.DUP)
-    ev.visitMethodInsn(Opcodes.INVOKESTATIC,
-      Config.instance.analysisClass, "GETVALUE_int", "(I)V")
+      Config.instance.analysisClass, name, "(III)V")
+    ev.visitVarInsn(opcode, 1)
+    Utils.addValueReadInsn(ev, type, "GETVALUE_")
 
-    assertEquals(expected, recorder)
+    assertEquals(expected, recorder)    
   }
 
+  @Test
+  void testILOAD() {
+    testVarLoad(Opcodes.ILOAD, "ILOAD", "I")
+  }
+
+  @Test
+  void testLLOAD() {
+    testVarLoad(Opcodes.LLOAD, "LLOAD", "J")
+  }
+
+  @Test
+  void testFLOAD() {
+    testVarLoad(Opcodes.FLOAD, "FLOAD", "F")
+  }
+
+  @Test
+  void testDLOAD() {
+    testVarLoad(Opcodes.DLOAD, "DLOAD", "D")
+  }
+
+  @Test
+  void testALOAD() {
+    testVarLoad(Opcodes.ALOAD, "ALOAD", "Ljava/lang/Object;")
+  }
   @Test
   void testISTORE() {
     ma.visitVarInsn(Opcodes.ISTORE, 1)

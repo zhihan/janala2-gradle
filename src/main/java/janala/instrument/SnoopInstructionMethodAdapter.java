@@ -66,6 +66,15 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
     mv.visitVarInsn(opcode, var);
   }
 
+  private void addTypeInsn(MethodVisitor mv, String type, int opcode, String name) {
+    addBipushInsn(mv, GlobalStateForInstrumentation.instance.incAndGetId());
+    addBipushInsn(mv, GlobalStateForInstrumentation.instance.getMid());
+    mv.visitLdcInsn(type);
+    mv.visitMethodInsn(
+      INVOKESTATIC, Config.instance.analysisClass, name, "(IILjava/lang/String;)V", false);
+    mv.visitTypeInsn(opcode, type);
+  }
+
   @Override
   public void visitLineNumber(int i, Label label) {
     line = i;
@@ -527,30 +536,15 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
         mv.visitInsn(DUP);
         break;
       case ANEWARRAY:
-        addBipushInsn(mv, GlobalStateForInstrumentation.instance.incAndGetId());
-        addBipushInsn(mv, GlobalStateForInstrumentation.instance.getMid());
-        mv.visitLdcInsn(type);
-        mv.visitMethodInsn(
-            INVOKESTATIC, Config.instance.analysisClass, "ANEWARRAY", "(IILjava/lang/String;)V", false);
-        mv.visitTypeInsn(opcode, type);
+        addTypeInsn(mv, type, opcode, "ANEWARRAY");
         addSpecialInsn(mv, 0); // for non-exceptional path
         break;
       case CHECKCAST:
-        addBipushInsn(mv, GlobalStateForInstrumentation.instance.incAndGetId());
-        addBipushInsn(mv, GlobalStateForInstrumentation.instance.getMid());
-        mv.visitLdcInsn(type);
-        mv.visitMethodInsn(
-            INVOKESTATIC, Config.instance.analysisClass, "CHECKCAST", "(IILjava/lang/String;)V", false);
-        mv.visitTypeInsn(opcode, type);
+        addTypeInsn(mv, type, opcode, "CHECKCAST");
         addSpecialInsn(mv, 0); // for non-exceptional path
         break;
       case INSTANCEOF:
-        addBipushInsn(mv, GlobalStateForInstrumentation.instance.incAndGetId());
-        addBipushInsn(mv, GlobalStateForInstrumentation.instance.getMid());
-        mv.visitLdcInsn(type);
-        mv.visitMethodInsn(
-            INVOKESTATIC, Config.instance.analysisClass, "INSTANCEOF", "(IILjava/lang/String;)V", false);
-        mv.visitTypeInsn(opcode, type);
+        addTypeInsn(mv, type, opcode, "INSTANCEOF");
         addSpecialInsn(mv, 0); // for non-exceptional path
         addValueReadInsn(mv, "I", "GETVALUE_");
         break;
