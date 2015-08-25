@@ -27,6 +27,7 @@ class MethodInstrumenterTest {
   private MethodRecorder recorder
   private SnoopInstructionMethodAdapter ma
   private Coverage coverage
+  private GlobalStateForInstrumentation state
 
   @Before
   void setup() {
@@ -36,7 +37,9 @@ class MethodInstrumenterTest {
 
     recorder = new MethodRecorder()
     coverage = mock(Coverage.class)
-    ma = new SnoopInstructionMethodAdapter(recorder.getVisitor(), false, coverage)
+    state = new GlobalStateForInstrumentation()
+    ma = new SnoopInstructionMethodAdapter(recorder.getVisitor(), false, 
+      coverage, state)
 
   }
 
@@ -45,8 +48,8 @@ class MethodInstrumenterTest {
 
     MethodRecorder expected = new MethodRecorder()
     def ev = expected.getVisitor()
-    ev.visitInsn(Opcodes.ICONST_1)
-    ev.visitInsn(Opcodes.ICONST_0)
+    Utils.addBipushInsn(ev, state.getId())
+    Utils.addBipushInsn(ev, state.getMid())
     ev.visitMethodInsn(Opcodes.INVOKESTATIC,
       Config.instance.analysisClass, name, "(II)V")
     ev.visitInsn(opcode)
@@ -480,8 +483,8 @@ class MethodInstrumenterTest {
     
     MethodRecorder expected = new MethodRecorder()
     def ev = expected.getVisitor()
-    ev.visitInsn(Opcodes.ICONST_1)
-    ev.visitInsn(Opcodes.ICONST_0)
+    Utils.addBipushInsn(ev, state.getId())
+    Utils.addBipushInsn(ev, state.getMid())
     ev.visitMethodInsn(Opcodes.INVOKESTATIC,
       Config.instance.analysisClass, name, "(II)V")
     ev.visitInsn(opcode)
@@ -545,8 +548,8 @@ class MethodInstrumenterTest {
     
     MethodRecorder expected = new MethodRecorder()
     def ev = expected.getVisitor()
-    ev.visitInsn(Opcodes.ICONST_1)
-    ev.visitInsn(Opcodes.ICONST_0)
+    Utils.addBipushInsn(ev, state.getId())
+    Utils.addBipushInsn(ev, state.getMid())
     ev.visitMethodInsn(Opcodes.INVOKESTATIC,
       Config.instance.analysisClass, name, "(II)V")
     ev.visitInsn(opcode)
@@ -633,8 +636,8 @@ class MethodInstrumenterTest {
     
     MethodRecorder expected = new MethodRecorder()
     def ev = expected.getVisitor()
-    int iid = GlobalStateForInstrumentation.instance.getId()
-    int mid = GlobalStateForInstrumentation.instance.getMid()
+    int iid = state.getId()
+    int mid = state.getMid()
     Utils.addBipushInsn(ev, iid)
     Utils.addBipushInsn(ev, mid)
     Utils.addBipushInsn(ev, System.identityHashCode(label))
@@ -655,8 +658,8 @@ class MethodInstrumenterTest {
     
     MethodRecorder expected = new MethodRecorder()
     def ev = expected.getVisitor()
-    int iid = GlobalStateForInstrumentation.instance.getId()
-    int mid = GlobalStateForInstrumentation.instance.getMid()
+    int iid = state.getId()
+    int mid = state.getMid()
     Utils.addBipushInsn(ev, iid)
     Utils.addBipushInsn(ev, mid)
     Utils.addBipushInsn(ev, System.identityHashCode(label))
@@ -764,8 +767,8 @@ class MethodInstrumenterTest {
     MethodRecorder expected = new MethodRecorder()
     def ev = expected.getVisitor()
     
-    int iid = GlobalStateForInstrumentation.instance.getId()
-    int mid = GlobalStateForInstrumentation.instance.getMid()
+    int iid = state.getId()
+    int mid = state.getMid()
     Utils.addBipushInsn(ev, iid)
     Utils.addBipushInsn(ev, mid)
 
@@ -821,8 +824,8 @@ class MethodInstrumenterTest {
     
     MethodRecorder expected = new MethodRecorder()
     def ev = expected.getVisitor()
-    int iid = GlobalStateForInstrumentation.instance.getId()
-    int mid = GlobalStateForInstrumentation.instance.getMid()
+    int iid = state.getId()
+    int mid = state.getMid()
     Utils.addBipushInsn(ev, iid)
     Utils.addBipushInsn(ev, mid)
     ev.visitLdcInsn(type)
@@ -861,8 +864,8 @@ class MethodInstrumenterTest {
     
     MethodRecorder expected = new MethodRecorder()
     def ev = expected.getVisitor()
-    int iid = GlobalStateForInstrumentation.instance.getId() - 1
-    int mid = GlobalStateForInstrumentation.instance.getMid()
+    int iid = state.getId() - 1
+    int mid = state.getMid()
     Utils.addBipushInsn(ev, iid)
     Utils.addBipushInsn(ev, mid)
     ev.visitLdcInsn(type)
@@ -877,8 +880,8 @@ class MethodInstrumenterTest {
     ev.visitMethodInsn(Opcodes.INVOKESTATIC, 
       Config.instance.analysisClass, "SPECIAL", "(I)V");
 
-    iid = GlobalStateForInstrumentation.instance.getId()
-    mid = GlobalStateForInstrumentation.instance.getMid()
+    iid = state.getId()
+    mid = state.getMid()
     Utils.addBipushInsn(ev, iid)
     Utils.addBipushInsn(ev, mid)
     ev.visitMethodInsn(Opcodes.INVOKESTATIC, Config.instance.analysisClass, 
@@ -932,9 +935,9 @@ class MethodInstrumenterTest {
   void testALOAD() {
     testVarLoad(Opcodes.ALOAD, "ALOAD", "Ljava/lang/Object;")
   }
-  @Test
-  void testISTORE() {
-    ma.visitVarInsn(Opcodes.ISTORE, 1)
+
+  private void testVarStore(int opcode, String name) {
+    ma.visitVarInsn(opcode, 1)
 
     MethodRecorder expected = new MethodRecorder()
     MethodVisitor ev = expected.getVisitor()
@@ -942,9 +945,39 @@ class MethodInstrumenterTest {
     ev.visitInsn(Opcodes.ICONST_0)
     ev.visitInsn(Opcodes.ICONST_1)
     ev.visitMethodInsn(Opcodes.INVOKESTATIC,
-      Config.instance.analysisClass, "ISTORE", "(III)V")
-    ev.visitVarInsn(Opcodes.ISTORE, 1)
+      Config.instance.analysisClass, name, "(III)V")
+    ev.visitVarInsn(opcode, 1)
 
     assertEquals(expected, recorder)
+  }
+
+  @Test
+  void testISTORE() {
+    testVarStore(Opcodes.ISTORE, "ISTORE")
+  }
+  
+  @Test
+  void testLSTORE() {
+    testVarStore(Opcodes.LSTORE, "LSTORE")
+  }
+
+  @Test
+  void testFSTORE() {
+    testVarStore(Opcodes.FSTORE, "FSTORE")
+  }
+
+  @Test
+  void testDSTORE() {
+    testVarStore(Opcodes.DSTORE, "DSTORE")
+  }
+
+  @Test
+  void testASTORE() {
+    testVarStore(Opcodes.ASTORE, "ASTORE")
+  }
+
+  @Test
+  void testRET() {
+    testVarStore(Opcodes.RET, "RET")
   }
 }
