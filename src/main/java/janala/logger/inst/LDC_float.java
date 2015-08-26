@@ -14,6 +14,6 @@ public class LDC_float extends Instruction {
 
   @Override
   public String toString() {
-    return "LDC iid=" + iid + " mid=" + mid + " c=" + c;
+    return "LDC_float iid=" + iid + " mid=" + mid + " c=" + c;
   }
 }

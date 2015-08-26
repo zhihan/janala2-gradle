@@ -14,6 +14,6 @@ public class LDC_long extends Instruction {
 
   @Override
   public String toString() {
-    return "LDC iid=" + iid + " mid=" + mid + " c=" + c;
+    return "LDC_long iid=" + iid + " mid=" + mid + " c=" + c;
   }
 }

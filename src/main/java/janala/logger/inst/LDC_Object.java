@@ -19,6 +19,6 @@ public class LDC_Object extends Instruction {
 
   @Override
   public String toString() {
-    return "LDC iid=" + iid + " mid=" + mid + " c=" + c;
+    return "LDC_Object iid=" + iid + " mid=" + mid + " c=" + c;
   }
 }

@@ -14,6 +14,6 @@ public class LDC_int extends Instruction {
 
   @Override
   public String toString() {
-    return "LDC iid=" + iid + " mid=" + mid + " c=" + c;
+    return "LDC_int iid=" + iid + " mid=" + mid + " c=" + c;
   }
 }

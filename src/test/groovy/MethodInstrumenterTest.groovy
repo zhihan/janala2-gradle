@@ -15,6 +15,7 @@ import java.io.InputStream
 import janala.config.Config
 import janala.testing.MethodRecorder
 import janala.logger.ClassNames
+import janala.logger.ObjectInfo
 
 import org.junit.Before
 import org.junit.Test
@@ -28,6 +29,7 @@ class MethodInstrumenterTest {
   private SnoopInstructionMethodAdapter ma
   private Coverage coverage
   private GlobalStateForInstrumentation state
+  private ClassNames classNames
 
   @Before
   void setup() {
@@ -38,8 +40,9 @@ class MethodInstrumenterTest {
     recorder = new MethodRecorder()
     coverage = mock(Coverage.class)
     state = new GlobalStateForInstrumentation()
-    ma = new SnoopInstructionMethodAdapter(recorder.getVisitor(), false, 
-      coverage, state)
+    classNames = ClassNames.getInstance()
+    ma = new SnoopInstructionMethodAdapter(recorder.getVisitor(), false,
+      coverage, state, classNames)
 
   }
 
@@ -869,7 +872,7 @@ class MethodInstrumenterTest {
     Utils.addBipushInsn(ev, iid)
     Utils.addBipushInsn(ev, mid)
     ev.visitLdcInsn(type)
-    int cIdx = ClassNames.getInstance().get(type);
+    int cIdx = classNames.get(type);
     Utils.addBipushInsn(ev, cIdx);
     
     ev.visitMethodInsn(Opcodes.INVOKESTATIC,
@@ -1065,5 +1068,56 @@ class MethodInstrumenterTest {
   @Test
   void testLdcForArray() {
     testLdcForType([1], "Ljava/lang/Object;");
-  }  
+  }
+
+  private testFieldInsn(int opcode, String name, String owner, String field, 
+    String desc, boolean isStatic, boolean isGet) {
+    ma.visitFieldInsn(opcode, owner, field, desc)
+
+    MethodRecorder expected = new MethodRecorder()
+    def ev = expected.getVisitor()
+    Utils.addBipushInsn(ev, state.getId())
+    Utils.addBipushInsn(ev, state.getMid())
+    
+    int cIdx = classNames.get(owner)
+    Utils.addBipushInsn(ev, cIdx)
+    ObjectInfo tmp = classNames.get(cIdx)
+    int fIdx = tmp.getIdx(field, isStatic)
+    Utils.addBipushInsn(ev, fIdx)
+    ev.visitLdcInsn(desc)
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC, Config.instance.analysisClass, 
+      name, "(IIIILjava/lang/String;)V", false)
+    ev.visitFieldInsn(opcode, owner, field, desc)
+
+    Utils.addSpecialInsn(ev, 0)
+    if (isGet) {
+      Utils.addValueReadInsn(ev, desc, "GETVALUE_")
+    }
+
+    assertEquals(expected, recorder)
+  }
+
+  @Test
+  void testGETSTATIC() {
+     testFieldInsn(Opcodes.GETSTATIC, "GETSTATIC", "janala/interpreters/TestClass", "c",
+      "I", true, true)
+  }
+
+  @Test
+  void testPUTSTATIC() {
+     testFieldInsn(Opcodes.PUTSTATIC, "PUTSTATIC", "janala/interpreters/TestClass", "c",
+      "I", true, false)
+  }
+
+  @Test
+  void testGETFIELD() {
+     testFieldInsn(Opcodes.GETFIELD, "GETFIELD", "janala/interpreters/TestClass", "a",
+      "I", false, true)
+  }
+
+  @Test
+  void testPUTFIELD() {
+     testFieldInsn(Opcodes.PUTFIELD, "PUTFIELD", "janala/interpreters/TestClass", "a",
+      "I", false, false)
+  }
 }

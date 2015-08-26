@@ -18,9 +18,11 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
 
   private final Coverage coverage;
   private final GlobalStateForInstrumentation instrumentationState;
+  private final ClassNames classNames;
 
   public SnoopInstructionMethodAdapter(MethodVisitor mv, boolean isInit, 
-      Coverage coverage, GlobalStateForInstrumentation instrumentationState) {
+      Coverage coverage, GlobalStateForInstrumentation instrumentationState,
+      ClassNames classNames) {
     super(ASM5, mv);
     this.isInit = isInit;
     this.isSuperInitCalled = false;
@@ -28,6 +30,7 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
 
     this.coverage = coverage;
     this.instrumentationState = instrumentationState;
+    this.classNames = classNames;
   }
 
   @Override
@@ -526,7 +529,7 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
         addBipushInsn(mv, instrumentationState.incAndGetId());
         addBipushInsn(mv, instrumentationState.getMid());
         mv.visitLdcInsn(type);
-        int cIdx = ClassNames.getInstance().get(type);
+        int cIdx = classNames.get(type);
         addBipushInsn(mv, cIdx);
         mv.visitMethodInsn(
             INVOKESTATIC, Config.instance.analysisClass, "NEW", "(IILjava/lang/String;I)V", false);
@@ -560,9 +563,9 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
   public void visitFieldInsn(int opcode, String owner, String name, String desc) {
     addBipushInsn(mv, instrumentationState.incAndGetId());
     addBipushInsn(mv, instrumentationState.getMid());
-    int cIdx = ClassNames.getInstance().get(owner);
-    ObjectInfo tmp = ClassNames.getInstance().get(cIdx);
+    int cIdx = classNames.get(owner);
     addBipushInsn(mv, cIdx);
+    ObjectInfo tmp = classNames.get(cIdx);
     switch (opcode) {
       case GETSTATIC:
         int fIdx = tmp.getIdx(name, true);
@@ -608,8 +611,7 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
         addSpecialInsn(mv, 0); // for non-exceptional path
         break;
       default:
-        System.err.println("Unknown field access opcode " + opcode);
-        System.exit(1);
+        throw new RuntimeException("Unknown field access opcode " + opcode);
     }
   }
 
@@ -676,7 +678,6 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
           // we still need to pop the 'this' pointer off the stack.
           mv.visitInsn(POP);
         }
-        return;
       } else {
         addMethodWithTryCatch(opcode, owner, name, desc);
         if (calledNew) {
@@ -688,7 +689,6 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
           mv.visitInsn(POP);
         }
       }
-      return;
     } else {
       addMethodWithTryCatch(opcode, owner, name, desc);
     }
@@ -807,7 +807,6 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
         break;
       default:
         throw new RuntimeException("Unknown jump opcode " + opcode);
-
     }
   }
 
