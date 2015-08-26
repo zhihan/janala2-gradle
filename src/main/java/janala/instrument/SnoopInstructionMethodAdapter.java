@@ -613,6 +613,55 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
     }
   }
 
+  private String getMethodName(int opcode) {
+    switch (opcode) {
+      case INVOKESPECIAL:
+        return "INVOKESPECIAL";
+      case INVOKESTATIC:
+        return "INVOKESTATIC";
+      case INVOKEINTERFACE:
+        return "INVOKEINTERFACE";
+      case INVOKEVIRTUAL:
+        return "INVOKEVIRTUAL";
+      default:
+        throw new RuntimeException("Unknown opcode for method");
+    }
+  }
+
+  private void addMethodWithTryCatch(int opcode, String owner, String name, String desc) {
+    addBipushInsn(mv, instrumentationState.incAndGetId());
+    addBipushInsn(mv, instrumentationState.getMid());
+
+    mv.visitLdcInsn(owner);
+    mv.visitLdcInsn(name);
+    mv.visitLdcInsn(desc);
+    mv.visitMethodInsn(
+     INVOKESTATIC,
+     Config.instance.analysisClass,
+     getMethodName(opcode),
+     "(IILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", false);
+      // Wrap the method call in a try-catch block
+    Label begin = new Label();
+    Label handler = new Label();
+    Label end = new Label();
+
+    tryCatchBlocks.addFirst(new TryCatchBlock(begin, handler, handler, null));
+
+    mv.visitLabel(begin);
+    mv.visitMethodInsn(opcode, owner, name, desc);
+    mv.visitJumpInsn(GOTO, end);
+
+    mv.visitLabel(handler);
+    mv.visitMethodInsn(
+     INVOKESTATIC, Config.instance.analysisClass, "INVOKEMETHOD_EXCEPTION", "()V", false);
+    mv.visitInsn(ATHROW);
+
+    mv.visitLabel(end);
+    mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "INVOKEMETHOD_END", "()V", false);
+
+    addValueReadInsn(mv, desc, "GETVALUE_");
+  }
+
   @Override
   public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
     if (opcode == INVOKESPECIAL && name.equals("<init>")) {
@@ -628,109 +677,21 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
           mv.visitInsn(POP);
         }
         return;
-      }
-
-      addBipushInsn(mv, instrumentationState.incAndGetId());
-      addBipushInsn(mv, instrumentationState.getMid());
-
-      mv.visitLdcInsn(owner);
-      mv.visitLdcInsn(name);
-      mv.visitLdcInsn(desc);
-      mv.visitMethodInsn(
-                         INVOKESTATIC,
-                         Config.instance.analysisClass,
-                         "INVOKESPECIAL",
-                         "(IILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", false);
-      // Wrap the method call in a try-catch block
-      Label begin = new Label();
-      Label handler = new Label();
-      Label end = new Label();
-
-      tryCatchBlocks.addFirst(new TryCatchBlock(begin, handler, handler, null));
-
-      mv.visitLabel(begin);
-      mv.visitMethodInsn(opcode, owner, name, desc);
-      mv.visitJumpInsn(GOTO, end);
-
-      mv.visitLabel(handler);
-      mv.visitMethodInsn(
-                         INVOKESTATIC, Config.instance.analysisClass, "INVOKEMETHOD_EXCEPTION", "()V", false);
-      mv.visitInsn(ATHROW);
-
-      mv.visitLabel(end);
-      mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "INVOKEMETHOD_END", "()V", false);
-
-      addValueReadInsn(mv, desc, "GETVALUE_");
-      if (calledNew) {
-        calledNew = false;
-        addValueReadInsn(mv, "Ljava/lang/Object;", "GETVALUE_");
-        addBipushInsn(mv, instrumentationState.incAndGetId());
-        addBipushInsn(mv, instrumentationState.getMid());
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "POP", "(II)V", false);
-        mv.visitInsn(POP);
+      } else {
+        addMethodWithTryCatch(opcode, owner, name, desc);
+        if (calledNew) {
+          calledNew = false;
+          addValueReadInsn(mv, "Ljava/lang/Object;", "GETVALUE_");
+          addBipushInsn(mv, instrumentationState.incAndGetId());
+          addBipushInsn(mv, instrumentationState.getMid());
+          mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "POP", "(II)V", false);
+          mv.visitInsn(POP);
+        }
       }
       return;
+    } else {
+      addMethodWithTryCatch(opcode, owner, name, desc);
     }
-
-    addBipushInsn(mv, instrumentationState.incAndGetId());
-    addBipushInsn(mv, instrumentationState.getMid());
-
-    mv.visitLdcInsn(owner);
-    mv.visitLdcInsn(name);
-    mv.visitLdcInsn(desc);
-
-    switch (opcode) {
-      case INVOKEVIRTUAL:
-        mv.visitMethodInsn(
-            INVOKESTATIC,
-            Config.instance.analysisClass,
-            "INVOKEVIRTUAL",
-            "(IILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", false);
-        break;
-      case INVOKESPECIAL:
-        mv.visitMethodInsn(
-            INVOKESTATIC,
-            Config.instance.analysisClass,
-            "INVOKESPECIAL",
-            "(IILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", false);
-        break;
-      case INVOKESTATIC:
-        mv.visitMethodInsn(
-            INVOKESTATIC,
-            Config.instance.analysisClass,
-            "INVOKESTATIC",
-            "(IILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", false);
-        break;
-      case INVOKEINTERFACE:
-        mv.visitMethodInsn(
-            INVOKESTATIC,
-            Config.instance.analysisClass,
-            "INVOKEINTERFACE",
-            "(IILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", false);
-        break;
-      default:
-        throw new RuntimeException("Error instrumenting invokeMethod");
-    }
-
-    // Wrap the method call in a try-catch block
-    Label begin = new Label();
-    Label handler = new Label();
-    Label end = new Label();
-
-    tryCatchBlocks.addFirst(new TryCatchBlock(begin, handler, handler, null));
-
-    mv.visitLabel(begin);
-    mv.visitMethodInsn(opcode, owner, name, desc);
-    mv.visitJumpInsn(GOTO, end);
-
-    mv.visitLabel(handler);
-    mv.visitMethodInsn(
-        INVOKESTATIC, Config.instance.analysisClass, "INVOKEMETHOD_EXCEPTION", "()V", false);
-    mv.visitInsn(ATHROW);
-
-    mv.visitLabel(end);
-    mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "INVOKEMETHOD_END", "()V", false);
-    addValueReadInsn(mv, desc, "GETVALUE_");
   }
 
   @Override

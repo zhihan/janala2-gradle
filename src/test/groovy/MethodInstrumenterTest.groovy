@@ -1021,5 +1021,49 @@ class MethodInstrumenterTest {
 
     assertEquals(expected, recorder)
   }
-  
+
+  private void testLdcForType(Object obj, String type) {
+    ma.visitLdcInsn(obj)
+    
+    MethodRecorder expected = new MethodRecorder()
+    def ev = expected.getVisitor()
+    Utils.addBipushInsn(ev, state.getId())
+    Utils.addBipushInsn(ev, state.getMid())
+    ev.visitLdcInsn(obj)
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC, 
+      Config.instance.analysisClass, "LDC", "(II"+ type + ")V", false)
+    ev.visitLdcInsn(obj)
+
+    assertEquals(expected, recorder)
+  }
+
+  @Test
+  void testLdcForInt() {
+    testLdcForType(new Integer(1), "I");
+  }
+
+  @Test
+  void testLdcForLong() {
+    testLdcForType(new Long(1L), "J");
+  }
+
+  @Test
+  void testLdcForFloat() {
+    testLdcForType(new Float(1.0F), "F");
+  }
+
+  @Test
+  void testLdcForDouble() {
+    testLdcForType(new Double(1.0), "D");
+  }
+
+  @Test
+  void testLdcForString() {
+    testLdcForType("a", "Ljava/lang/String;");
+  }
+
+  @Test
+  void testLdcForArray() {
+    testLdcForType([1], "Ljava/lang/Object;");
+  }  
 }
