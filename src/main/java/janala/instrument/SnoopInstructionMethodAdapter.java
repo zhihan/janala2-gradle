@@ -49,8 +49,7 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
 
   /** Add a special probe instruction. */
   private void addSpecialInsn(MethodVisitor mv, int val) {
-    addBipushInsn(mv, val);
-    mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "SPECIAL", "(I)V", false);
+    Utils.addSpecialInsn(mv, val);
   }
 
   private void addInsn(MethodVisitor mv, String insn, int opcode) {
@@ -514,8 +513,7 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
         addSpecialInsn(mv, 0); // for non-exceptional path
         return;
       default:
-        System.err.println("Unknown int instruction opcode " + opcode);
-        System.exit(1);
+        throw new RuntimeException("Unknown int instruction opcode " + opcode);
     }
     mv.visitIntInsn(opcode, operand);
   }

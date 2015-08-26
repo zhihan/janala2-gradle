@@ -980,4 +980,46 @@ class MethodInstrumenterTest {
   void testRET() {
     testVarStore(Opcodes.RET, "RET")
   }
+
+  private void testIntInsn(int opcode, String name, int operand) {
+    ma.visitIntInsn(opcode, operand)
+    
+    MethodRecorder expected = new MethodRecorder()
+    def ev = expected.getVisitor()
+    Utils.addBipushInsn(ev, state.getId())
+    Utils.addBipushInsn(ev, state.getMid())
+    Utils.addBipushInsn(ev, operand)
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC, 
+      Config.instance.analysisClass, name, "(III)V", false)    
+    ev.visitIntInsn(opcode, operand)
+
+    assertEquals(expected, recorder)
+  }
+
+  @Test
+  void testBIPUSH() {
+    testIntInsn(Opcodes.BIPUSH, "BIPUSH", 1)
+  }
+
+  @Test
+  void testSIPUSH() {
+    testIntInsn(Opcodes.SIPUSH, "SIPUSH", 1)
+  }
+
+  @Test
+  void testNEWARRAY() {
+    ma.visitIntInsn(Opcodes.NEWARRAY, 1)
+
+    MethodRecorder expected = new MethodRecorder()
+    def ev = expected.getVisitor()
+    Utils.addBipushInsn(ev, state.getId())
+    Utils.addBipushInsn(ev, state.getMid())
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC, 
+      Config.instance.analysisClass, "NEWARRAY", "(II)V", false)    
+    ev.visitIntInsn(Opcodes.NEWARRAY, 1)
+    Utils.addSpecialInsn(ev, 0)
+
+    assertEquals(expected, recorder)
+  }
+  
 }

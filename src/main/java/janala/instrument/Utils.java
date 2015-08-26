@@ -32,6 +32,12 @@ public class Utils implements Opcodes {
     }
   }
 
+  public static void addSpecialInsn(MethodVisitor mv, int val) {
+    addBipushInsn(mv, val);
+    mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, 
+      "SPECIAL", "(I)V", false);
+  }
+
   /** Add a set to code to read the given type from the top of the concrete stack
       and invoke GETVALUE method of the analysis class. */
   public static void addValueReadInsn(MethodVisitor mv, String desc, String methodNamePrefix) {
