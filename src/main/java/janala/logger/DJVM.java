@@ -3,7 +3,12 @@ package janala.logger;
 import janala.config.Config;
 
 public class DJVM {
-  public static Logger intp = Config.instance.getLogger();
+  private static Logger intp = Config.instance.getLogger();
+
+  // For testing purposes
+  public static void setInterpreter(Logger logger) {
+    intp = logger;
+  }
 
   public static void LDC(int iid, int mid, int c) {
     intp.LDC(iid, mid, c);

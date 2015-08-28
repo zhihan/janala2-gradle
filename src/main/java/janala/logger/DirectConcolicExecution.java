@@ -9,10 +9,14 @@ public class DirectConcolicExecution extends Thread implements Logger {
   Instruction inst, next;
   java.util.logging.Logger tester =
       MyLogger.getTestLogger(Config.mainClass + "." + Config.iteration);
-  IVisitor intp = null;
+  final IVisitor intp;
 
   public DirectConcolicExecution() {
-    intp = new ConcolicInterpreter(ClassNames.getInstance());
+    this(new ConcolicInterpreter(ClassNames.getInstance()));
+  }
+
+  public DirectConcolicExecution(IVisitor interpreter) {
+    intp = interpreter;
     Runtime.getRuntime().addShutdownHook(this);
   }
 
