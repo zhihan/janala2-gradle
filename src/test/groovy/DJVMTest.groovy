@@ -226,5 +226,94 @@ class DJVMTest {
     DJVM.ACONST_NULL(0, 0)
     verify(intp).ACONST_NULL(0, 0)
 
+    DJVM.ICONST_M1(0, 0)
+    verify(intp).ICONST_M1(0, 0)
+
+    DJVM.ICONST_0(0, 0)
+    verify(intp).ICONST_0(0, 0)
+
+    DJVM.ICONST_1(0, 0)
+    verify(intp).ICONST_1(0, 0)
+
+    DJVM.ICONST_2(0, 0)
+    verify(intp).ICONST_2(0, 0)
+
+    DJVM.ICONST_3(0, 0)
+    verify(intp).ICONST_3(0, 0)
+
+    DJVM.ICONST_4(0, 0)
+    verify(intp).ICONST_4(0, 0)
+
+    DJVM.ICONST_5(0, 0)
+    verify(intp).ICONST_5(0, 0)
+
+    DJVM.LCONST_0(0, 0)
+    verify(intp).LCONST_0(0, 0)
+
+    DJVM.LCONST_1(0, 0)
+    verify(intp).LCONST_1(0, 0)
+
+    DJVM.FCONST_0(0, 0)
+    verify(intp).FCONST_0(0, 0)
+
+    DJVM.FCONST_1(0, 0)
+    verify(intp).FCONST_1(0, 0)
+
+    DJVM.FCONST_2(0, 0)
+    verify(intp).FCONST_2(0, 0)
+
+    DJVM.DCONST_0(0, 0)
+    verify(intp).DCONST_0(0, 0)
+
+    DJVM.DCONST_1(0, 0)
+    verify(intp).DCONST_1(0, 0)
+
+    DJVM.IALOAD(0, 0)
+    verify(intp).IALOAD(0, 0)
+
+    DJVM.IASTORE(0, 0)
+    verify(intp).IASTORE(0, 0)
+
+    DJVM.LALOAD(0, 0)
+    verify(intp).LALOAD(0, 0)
+
+    DJVM.LASTORE(0, 0)
+    verify(intp).LASTORE(0, 0)
+
+    DJVM.FALOAD(0, 0)
+    verify(intp).FALOAD(0, 0)
+
+    DJVM.FASTORE(0, 0)
+    verify(intp).FASTORE(0, 0)
+
+    DJVM.DALOAD(0, 0)
+    verify(intp).DALOAD(0, 0)
+
+    DJVM.DASTORE(0, 0)
+    verify(intp).DASTORE(0, 0)
+
+    DJVM.AALOAD(0, 0)
+    verify(intp).AALOAD(0, 0)
+
+    DJVM.AASTORE(0, 0)
+    verify(intp).AASTORE(0, 0)
+
+    DJVM.BALOAD(0, 0)
+    verify(intp).BALOAD(0, 0)
+
+    DJVM.BASTORE(0, 0)
+    verify(intp).BASTORE(0, 0)
+
+    DJVM.CALOAD(0, 0)
+    verify(intp).CALOAD(0, 0)
+
+    DJVM.CASTORE(0, 0)
+    verify(intp).CASTORE(0, 0)
+
+    DJVM.SALOAD(0, 0)
+    verify(intp).SALOAD(0, 0)
+
+    DJVM.SASTORE(0, 0)
+    verify(intp).SASTORE(0, 0)    
   }
 }
