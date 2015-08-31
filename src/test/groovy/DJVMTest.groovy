@@ -314,6 +314,291 @@ class DJVMTest {
     verify(intp).SALOAD(0, 0)
 
     DJVM.SASTORE(0, 0)
-    verify(intp).SASTORE(0, 0)    
+    verify(intp).SASTORE(0, 0)
+
+    DJVM.POP(0, 0)
+    verify(intp).POP(0, 0)
+
+    DJVM.POP2(0, 0)
+    verify(intp).POP2(0, 0)
+
+    DJVM.DUP(0, 0)
+    verify(intp).DUP(0, 0)   
+
+    DJVM.DUP_X1(0, 0)
+    verify(intp).DUP_X1(0, 0)
+
+    DJVM.DUP_X2(0, 0)
+    verify(intp).DUP_X2(0, 0)
+
+    DJVM.DUP2(0, 0)
+    verify(intp).DUP2(0, 0)
+
+    DJVM.DUP2_X1(0, 0)
+    verify(intp).DUP2_X1(0, 0)
+
+    DJVM.DUP2_X2(0, 0)
+    verify(intp).DUP2_X2(0, 0)
+
+    DJVM.SWAP(0, 0)
+    verify(intp).SWAP(0, 0)        
+  }
+
+  @Test
+  void testMathInsn() {
+    DJVM.IADD(0, 0)
+    verify(intp).IADD(0, 0)
+
+    DJVM.LADD(0, 0)
+    verify(intp).LADD(0, 0)
+
+    DJVM.FADD(0, 0)
+    verify(intp).FADD(0, 0)
+
+    DJVM.DADD(0, 0)
+    verify(intp).DADD(0, 0)
+
+    DJVM.ISUB(0, 0)
+    verify(intp).ISUB(0, 0)
+
+    DJVM.LSUB(0, 0)
+    verify(intp).LSUB(0, 0)
+
+    DJVM.FSUB(0, 0)
+    verify(intp).FSUB(0, 0)
+
+    DJVM.DSUB(0, 0)
+    verify(intp).DSUB(0, 0)
+
+    DJVM.IMUL(0, 0)
+    verify(intp).IMUL(0, 0)
+
+    DJVM.FMUL(0, 0)
+    verify(intp).FMUL(0, 0)
+
+    DJVM.LMUL(0, 0)
+    verify(intp).LMUL(0, 0)
+
+    DJVM.DMUL(0, 0)
+    verify(intp).DMUL(0, 0)
+
+    DJVM.IDIV(0, 0)
+    verify(intp).IDIV(0, 0)
+
+    DJVM.FDIV(0, 0)
+    verify(intp).FDIV(0, 0)
+
+    DJVM.LDIV(0, 0)
+    verify(intp).LDIV(0, 0)
+
+    DJVM.DDIV(0, 0)
+    verify(intp).DDIV(0, 0)
+
+    DJVM.IREM(0, 0)
+    verify(intp).IREM(0, 0)
+
+    DJVM.LREM(0, 0)
+    verify(intp).LREM(0, 0)
+
+    DJVM.FREM(0, 0)
+    verify(intp).FREM(0, 0)
+
+    DJVM.DREM(0, 0)
+    verify(intp).DREM(0, 0)
+
+    DJVM.INEG(0, 0)
+    verify(intp).INEG(0, 0)
+
+    DJVM.LNEG(0, 0)
+    verify(intp).LNEG(0, 0)
+
+    DJVM.FNEG(0, 0)
+    verify(intp).FNEG(0, 0)
+
+    DJVM.DNEG(0, 0)
+    verify(intp).DNEG(0, 0)
+
+    DJVM.ISHL(0, 0)
+    verify(intp).ISHL(0, 0)
+
+    DJVM.LSHL(0, 0)
+    verify(intp).LSHL(0, 0)
+
+    DJVM.ISHR(0, 0)
+    verify(intp).ISHR(0, 0)
+
+    DJVM.LSHR(0, 0)
+    verify(intp).LSHR(0, 0)
+
+    DJVM.IUSHR(0, 0)
+    verify(intp).IUSHR(0, 0)
+
+    DJVM.LUSHR(0, 0)
+    verify(intp).LUSHR(0, 0)
+  }
+
+  @Test
+  void testLogicInsn() {
+    DJVM.IAND(0, 0)
+    verify(intp).IAND(0, 0)
+
+    DJVM.LAND(0, 0)
+    verify(intp).LAND(0, 0)
+
+    DJVM.IOR(0, 0)
+    verify(intp).IOR(0, 0)
+
+    DJVM.LOR(0, 0)
+    verify(intp).LOR(0, 0)
+
+    DJVM.IXOR(0, 0)
+    verify(intp).IXOR(0, 0)
+
+    DJVM.LXOR(0, 0)
+    verify(intp).LXOR(0, 0)
+  }
+
+  @Test
+  void testNumberInsn() {
+    DJVM.I2L(0, 0)
+    verify(intp).I2L(0, 0)
+
+    DJVM.I2F(0, 0)
+    verify(intp).I2F(0, 0)
+
+    DJVM.I2D(0, 0)
+    verify(intp).I2D(0, 0)
+
+    DJVM.L2I(0, 0)
+    verify(intp).L2I(0, 0)
+
+    DJVM.L2F(0, 0)
+    verify(intp).L2F(0, 0)
+
+    DJVM.L2D(0, 0)
+    verify(intp).L2D(0, 0)
+
+    DJVM.F2I(0, 0)
+    verify(intp).F2I(0, 0)
+
+    DJVM.F2L(0, 0)
+    verify(intp).F2L(0, 0)
+
+    DJVM.F2D(0, 0)
+    verify(intp).F2D(0, 0)
+
+    DJVM.D2I(0, 0)
+    verify(intp).D2I(0, 0)
+
+    DJVM.D2L(0, 0)
+    verify(intp).D2L(0, 0)
+
+    DJVM.D2F(0, 0)
+    verify(intp).D2F(0, 0)
+
+    DJVM.I2C(0, 0)
+    verify(intp).I2C(0, 0)
+
+    DJVM.I2B(0, 0)
+    verify(intp).I2B(0, 0)
+
+    DJVM.I2S(0, 0)
+    verify(intp).I2S(0, 0)
+  }
+
+  @Test
+  void testOtherInsn() {
+    DJVM.LCMP(0, 0)
+    verify(intp).LCMP(0, 0)
+
+    DJVM.FCMPL(0, 0)
+    verify(intp).FCMPL(0, 0)
+
+    DJVM.FCMPG(0, 0)
+    verify(intp).FCMPG(0, 0)
+
+    DJVM.DCMPL(0, 0)
+    verify(intp).DCMPL(0, 0)
+
+    DJVM.DCMPG(0, 0)
+    verify(intp).DCMPG(0, 0)
+
+    DJVM.IRETURN(0, 0)
+    verify(intp).IRETURN(0, 0)
+
+    DJVM.LRETURN(0, 0)
+    verify(intp).LRETURN(0, 0)
+
+    DJVM.FRETURN(0, 0)
+    verify(intp).FRETURN(0, 0)
+
+    DJVM.DRETURN(0, 0)
+    verify(intp).DRETURN(0, 0)
+
+    DJVM.ARETURN(0, 0)
+    verify(intp).ARETURN(0, 0)
+
+    DJVM.RETURN(0, 0)
+    verify(intp).RETURN(0, 0)
+
+    DJVM.ARRAYLENGTH(0, 0)
+    verify(intp).ARRAYLENGTH(0, 0)
+
+    DJVM.ATHROW(0, 0)
+    verify(intp).ATHROW(0, 0)
+
+    DJVM.MONITORENTER(0, 0)
+    verify(intp).MONITORENTER(0, 0)
+
+    DJVM.MONITOREXIT(0, 0)
+    verify(intp).MONITOREXIT(0, 0)
+  }
+
+  @Test
+  void testGETVALUE() {
+    DJVM.GETVALUE_double(0.0D)
+    verify(intp).GETVALUE_double(0.0D)
+
+    DJVM.GETVALUE_long(0L)
+    verify(intp).GETVALUE_long(0L)
+
+    DJVM.GETVALUE_float(0.0F)
+    verify(intp).GETVALUE_float(0.0F)
+
+    DJVM.GETVALUE_int(0)
+    verify(intp).GETVALUE_int(0)
+
+    DJVM.GETVALUE_byte((byte)0)
+    verify(intp).GETVALUE_byte((byte)0)
+
+    DJVM.GETVALUE_char((char)0)
+    verify(intp).GETVALUE_char((char)0)
+
+    DJVM.GETVALUE_boolean(true)
+    verify(intp).GETVALUE_boolean(true)
+
+    DJVM.GETVALUE_Object("a")
+    verify(intp).GETVALUE_Object("a")
+
+    DJVM.GETVALUE_short((short)0)
+    verify(intp).GETVALUE_short((short)0)
+
+    DJVM.GETVALUE_void()
+    verify(intp).GETVALUE_void()
+  }
+
+  @Test
+  void testSpecials() {
+    DJVM.INVOKEMETHOD_EXCEPTION()
+    verify(intp).INVOKEMETHOD_EXCEPTION()
+
+    DJVM.INVOKEMETHOD_END()
+    verify(intp).INVOKEMETHOD_END()
+
+    DJVM.MAKE_SYMBOLIC()
+    verify(intp).MAKE_SYMBOLIC()
+
+    DJVM.SPECIAL(0)
+    verify(intp).SPECIAL(0)
   }
 }
