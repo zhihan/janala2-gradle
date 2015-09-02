@@ -593,5 +593,185 @@ class StringLoggerTest {
   void testSWAP() {
     logger.SWAP(0, 0)
     assertTrue(logger.log.contains("SWAP"))
-  } 
+  }
+
+  @Test
+  void testIAdd() {
+    logger.IADD(0, 0)
+    assertTrue(logger.log.contains("IADD"))
+  }
+
+  @Test
+  void testLAdd() {
+    logger.LADD(0, 0)
+    assertTrue(logger.log.contains("LADD"))
+  }
+
+  @Test
+  void testFAdd() {
+    logger.FADD(0, 0)
+    assertTrue(logger.log.contains("FADD"))
+  }
+
+  @Test
+  void testDadd() {
+    logger.DADD(0, 0)
+    assertTrue(logger.log.contains("DADD"))
+  }
+
+  @Test
+  void testISub() {
+    logger.ISUB(0, 0)
+    assertTrue(logger.log.contains("ISUB"))
+  }
+
+  @Test
+  void testLSub() {
+    logger.LSUB(0, 0)
+    assertTrue(logger.log.contains("LSUB"))
+  }
+
+  @Test
+  void testFSub() {
+    logger.FSUB(0, 0)
+    assertTrue(logger.log.contains("FSUB"))
+  }
+
+  @Test
+  void testDSub() {
+    logger.DSUB(0, 0)
+    assertTrue(logger.log.contains("DSUB"))
+  }
+
+  @Test
+  void testIMul() {
+    logger.IMUL(0, 0)
+    assertTrue(logger.log.contains("IMUL"))
+  }
+
+  @Test
+  void testFMul() {
+    logger.FMUL(0, 0)
+    assertTrue(logger.log.contains("FMUL"))
+  }
+
+  @Test
+  void testLMul() {
+    logger.LMUL(0, 0)
+    assertTrue(logger.log.contains("LMUL"))
+  }
+
+  @Test
+  void testDMul() {
+    logger.DMUL(0, 0)
+    assertTrue(logger.log.contains("DMUL"))
+  }
+
+  @Test
+  void testIDiv() {
+    logger.IDIV(0, 0)
+    assertTrue(logger.log.contains("IDIV"))
+  }
+
+  @Test
+  void testFDiv() {
+    logger.FDIV(0, 0)
+    assertTrue(logger.log.contains("FDIV"))
+  }
+
+  @Test
+  void testLDiv() {
+    logger.LDIV(0, 0)
+    assertTrue(logger.log.contains("LDIV"))
+  }
+
+  @Test
+  void testDDiv() {
+    logger.DDIV(0, 0)
+    assertTrue(logger.log.contains("DDIV"))
+  }
+
+  @Test
+  void testIRem() {
+    logger.IREM(0, 0)
+    assertTrue(logger.log.contains("IREM"))
+  }
+
+  @Test
+  void testLRem() {
+    logger.LREM(0, 0)
+    assertTrue(logger.log.contains("LREM"))
+  }
+
+  @Test
+  void testFRem() {
+    logger.FREM(0, 0)
+    assertTrue(logger.log.contains("FREM"))
+  }
+
+  @Test
+  void testDRem() {
+    logger.DREM(0, 0)
+    assertTrue(logger.log.contains("DREM"))
+  }
+
+  @Test
+  void testINeg() {
+    logger.INEG(0, 0)
+    assertTrue(logger.log.contains("INEG"))
+  }
+
+  @Test
+  void testLNeg() {
+    logger.LNEG(0, 0)
+    assertTrue(logger.log.contains("LNEG"))
+  }
+
+  @Test
+  void testFNeg() {
+    logger.FNEG(0, 0)
+    assertTrue(logger.log.contains("FNEG"))
+  }
+
+  @Test
+  void testDNeg() {
+    logger.DNEG(0, 0)
+    assertTrue(logger.log.contains("DNEG"))
+  }
+
+  @Test
+  void testIShl() {
+    logger.ISHL(0, 0)
+    assertTrue(logger.log.contains("ISHL"))
+  }
+
+  @Test
+  void testLShl() {
+    logger.LSHL(0, 0)
+    assertTrue(logger.log.contains("LSHL"))
+  }
+
+  @Test
+  void testIShr() {
+    logger.ISHR(0, 0)
+    assertTrue(logger.log.contains("ISHR"))
+  }
+
+  @Test
+  void testLShr() {
+    logger.LSHR(0, 0)
+    assertTrue(logger.log.contains("LSHR"))
+  }
+
+  @Test
+  void testIUshr() {
+    logger.IUSHR(0, 0)
+    assertTrue(logger.log.contains("IUSHR"))
+  }
+
+  @Test
+  void testLUshr() {
+    logger.LUSHR(0, 0)
+    assertTrue(logger.log.contains("LUSHR"))
+  }
 }
