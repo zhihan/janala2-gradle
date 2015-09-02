@@ -191,4 +191,407 @@ class StringLoggerTest {
     logger.JSR(0, 0, 1)
     assertTrue(logger.log.contains("JSR"))
   }
+
+  @Test
+  void testInvokeVirtual() {
+    logger.INVOKEVIRTUAL(0, 0, "owner", "method", "()I")
+    assertTrue(logger.log.contains("INVOKEVIRTUAL"))
+  }
+
+  @Test
+  void testInvokeStatic() {
+    logger.INVOKESTATIC(0, 0, "owner", "method", "()I")
+    assertTrue(logger.log.contains("INVOKESTATIC"))
+  }
+
+  @Test
+  void testInvokeSpecial() {
+    logger.INVOKESPECIAL(0, 0, "owner", "method", "()I")
+    assertTrue(logger.log.contains("INVOKESPECIAL"))
+  }
+
+  @Test
+  void testInvokeInterface() {  
+    logger.INVOKEINTERFACE(0, 0, "owner", "method", "()I")
+    assertTrue(logger.log.contains("INVOKEINTERFACE"))
+  }
+
+  @Test
+  void testField() {
+    logger.GETFIELD(0, 0, 1, 1, "I")
+    assertTrue(logger.log.contains("GETFIELD"))
+  }
+
+  @Test
+  void testPutField() {
+    logger.PUTFIELD(0, 0, 1, 1, "I")
+    assertTrue(logger.log.contains("PUTFIELD"))
+  }
+
+  @Test
+  void testGetStatic() {
+    logger.GETSTATIC(0, 0, 1, 1, "I")
+    assertTrue(logger.log.contains("GETSTATIC"))
+  }
+
+  @Test
+  void testPutStatic() {
+    logger.PUTSTATIC(0, 0, 1, 1, "I")
+    assertTrue(logger.log.contains("PUTSTATIC"))
+  }
+
+  @Test
+  void testNew() {
+    logger.NEW(0, 0, "MyClass", 0)
+    assertTrue(logger.log.contains("NEW"))
+  }
+
+  @Test
+  void testNewArray() {
+    logger.ANEWARRAY(0, 0, "MyClass")
+    assertTrue(logger.log.contains("ANEWARRAY"))
+  }
+
+  @Test
+  void testCheckCast() {
+    logger.CHECKCAST(0, 0, "MyClass")
+    assertTrue(logger.log.contains("CHECKCAST"))
+  }
+
+  @Test
+  void testInstanceOf() {
+    logger.INSTANCEOF(0, 0, "MyClass")
+    assertTrue(logger.log.contains("INSTANCEOF"))
+  }
+
+  @Test
+  void testBiPush(){
+    logger.BIPUSH(0, 0, 1)
+    assertTrue(logger.log.contains("BIPUSH"))
+  }
+
+  @Test
+  void testSIPush() {
+    logger.SIPUSH(0, 0, 1)
+    assertTrue(logger.log.contains("SIPUSH"))
+  }
+
+  @Test
+  void testILoad() {
+    logger.ILOAD(0, 0, 1)
+    assertTrue(logger.log.contains("ILOAD"))
+  }
+
+  @Test
+  void testIStore() {
+    logger.ISTORE(0, 0, 1)
+    assertTrue(logger.log.contains("ISTORE"))
+  }
+
+  @Test
+  void testLLoad() {
+    logger.LLOAD(0, 0, 1)
+    assertTrue(logger.log.contains("LLOAD"))
+  }
+
+  @Test
+  void testLStore() {
+    logger.LSTORE(0, 0, 1)
+    assertTrue(logger.log.contains("STORE"))
+  }
+
+  @Test
+  void testFLoad() {
+    logger.FLOAD(0, 0, 1)
+    assertTrue(logger.log.contains("FLOAD"))
+  }
+
+  @Test
+  void testFStore() {
+    logger.FSTORE(0, 0, 1)
+    assertTrue(logger.log.contains("FSTORE"))
+  }
+
+  @Test
+  void testDLoad() {
+    logger.DLOAD(0, 0, 1)
+    assertTrue(logger.log.contains("DLOAD"))
+  }
+
+  @Test
+  void testDStore() {
+    logger.DSTORE(0, 0, 1)
+    assertTrue(logger.log.contains("DSTORE"))
+  }
+
+  @Test
+  void testALoad() {
+    logger.ALOAD(0, 0, 1)
+    assertTrue(logger.log.contains("ALOAD"))
+  }
+
+  @Test
+  void testAStore() {
+    logger.ASTORE(0, 0, 1)
+    assertTrue(logger.log.contains("ASTORE"))
+  }
+
+  @Test
+  void testRet() {
+    logger.RET(0, 0, 1)
+    assertTrue(logger.log.contains("RET"))
+  }
+
+
+  @Test
+  void testNOP() {
+    logger.NOP(0, 0)
+    assertTrue(logger.log.contains("NOP"))
+  }
+
+  @Test
+  void testNEWARRAY() {
+    logger.NEWARRAY(0, 0)
+    assertTrue(logger.log.contains("NEWARRAY"))
+  }
+
+  @Test
+  void testACONST_NULL() {
+    logger.ACONST_NULL(0, 0)
+    assertTrue(logger.log.contains("ACONST_NULL"))
+  }
+
+  @Test
+  void testICONST_M1() {
+    logger.ICONST_M1(0, 0)
+    assertTrue(logger.log.contains("ICONST_M1"))
+  }
+
+  @Test
+  void testICONST_0() {
+    logger.ICONST_0(0, 0)
+    assertTrue(logger.log.contains("ICONST_0"))
+  }
+
+  @Test
+  void testICONST_1() {
+    logger.ICONST_1(0, 0)
+    assertTrue(logger.log.contains("ICONST_1"))
+  }
+
+  @Test
+  void testICONST_2() {
+    logger.ICONST_2(0, 0)
+    assertTrue(logger.log.contains("ICONST_2"))
+  }
+
+  @Test
+  void testICONST_3() {
+    logger.ICONST_3(0, 0)
+    assertTrue(logger.log.contains("ICONST_3"))
+  }
+
+  @Test
+  void testICONST_4() {
+    logger.ICONST_4(0, 0)
+    assertTrue(logger.log.contains("ICONST_4"))
+  }
+
+  @Test
+  void testICONST_5() {
+    logger.ICONST_5(0, 0)
+    assertTrue(logger.log.contains("ICONST_5"))
+  }
+
+  @Test
+  void testLCONST_0() {
+    logger.LCONST_0(0, 0)
+    assertTrue(logger.log.contains("LCONST_0"))
+  }
+
+  @Test
+  void testLCONST_1() {
+    logger.LCONST_1(0, 0)
+    assertTrue(logger.log.contains("LCONST_1"))
+  }
+
+  @Test
+  void testFCONST_0() {
+    logger.FCONST_0(0, 0)
+    assertTrue(logger.log.contains("FCONST_0"))
+  }
+
+  @Test
+  void testFCONST_1() {
+    logger.FCONST_1(0, 0)
+    assertTrue(logger.log.contains("FCONST_1"))
+  }
+
+  @Test
+  void testFCONST_2() {
+    logger.FCONST_2(0, 0)
+    assertTrue(logger.log.contains("FCONST_2"))
+  }
+
+  @Test
+  void testDCONST_0() {
+    logger.DCONST_0(0, 0)
+    assertTrue(logger.log.contains("DCONST_0"))
+  }
+
+  @Test
+  void testDCONST_1() {
+    logger.DCONST_1(0, 0)
+    assertTrue(logger.log.contains("DCONST_1"))
+  }
+
+  @Test
+  void testIALOAD() {
+    logger.IALOAD(0, 0)
+    assertTrue(logger.log.contains("IALOAD"))
+  }
+
+  @Test
+  void testIASTORE() {
+    logger.IASTORE(0, 0)
+    assertTrue(logger.log.contains("IASTORE"))
+  }
+
+  @Test
+  void testLALOAD() {
+    logger.LALOAD(0, 0)
+    assertTrue(logger.log.contains("LALOAD"))
+  }
+
+  @Test
+  void testLASTORE() {
+    logger.LASTORE(0, 0)
+    assertTrue(logger.log.contains("LASTORE"))
+  }
+
+  @Test
+  void testFALOAD() {
+    logger.FALOAD(0, 0)
+    assertTrue(logger.log.contains("FALOAD"))
+  }
+
+  @Test
+  void testFASTORE() {
+    logger.FASTORE(0, 0)
+    assertTrue(logger.log.contains("FASTORE"))
+  }
+
+  @Test
+  void testDALOAD() {
+    logger.DALOAD(0, 0)
+    assertTrue(logger.log.contains("DALOAD"))
+  }
+
+  @Test
+  void testDASTORE() {
+    logger.DASTORE(0, 0)
+    assertTrue(logger.log.contains("DASTORE"))
+  }
+
+  @Test
+  void testAALOAD() {
+    logger.AALOAD(0, 0)
+    assertTrue(logger.log.contains("AALOAD"))
+  }
+
+  @Test
+  void testAASTORE() {
+    logger.AASTORE(0, 0)
+    assertTrue(logger.log.contains("AASTORE"))
+  }
+
+  @Test
+  void testBALOAD() {
+    logger.BALOAD(0, 0)
+    assertTrue(logger.log.contains("BALOAD"))
+  }
+
+  @Test
+  void testBASTORE() {
+    logger.BASTORE(0, 0)
+    assertTrue(logger.log.contains("BASTORE"))
+  }
+
+  @Test
+  void testCALOAD() {
+    logger.CALOAD(0, 0)
+    assertTrue(logger.log.contains("CALOAD"))
+  }
+
+  @Test
+  void testCASTORE() {
+    logger.CASTORE(0, 0)
+    assertTrue(logger.log.contains("CASTORE"))
+  }
+
+  @Test
+  void testSALOAD() {
+    logger.SALOAD(0, 0)
+    assertTrue(logger.log.contains("SALOAD"))
+  }
+
+  @Test
+  void testSASTORE() {
+    logger.SASTORE(0, 0)
+    assertTrue(logger.log.contains("SASTORE"))
+  }
+
+  @Test
+  void testPOP() {
+    logger.POP(0, 0)
+    assertTrue(logger.log.contains("POP"))
+  }
+
+  @Test
+  void testPOP2() {
+    logger.POP2(0, 0)
+    assertTrue(logger.log.contains("POP2"))
+  }
+
+  @Test
+  void testDUP() {
+    logger.DUP(0, 0)
+    assertTrue(logger.log.contains("DUP"))
+  }
+
+  @Test
+  void testDUP_X1() {
+    logger.DUP_X1(0, 0)
+    assertTrue(logger.log.contains("DUP_X1"))
+  }
+
+  @Test
+  void testDUP_X2() {
+    logger.DUP_X2(0, 0)
+    assertTrue(logger.log.contains("DUP_X2"))
+  }
+
+  @Test
+  void testDUP2() {
+    logger.DUP2(0, 0)
+    assertTrue(logger.log.contains("DUP2"))
+  }
+
+  @Test
+  void testDUP2_X1() {
+    logger.DUP2_X1(0, 0)
+    assertTrue(logger.log.contains("DUP2_X1"))
+  }
+
+  @Test
+  void testDUP2_X2() {
+    logger.DUP2_X2(0, 0)
+    assertTrue(logger.log.contains("DUP2_X2"))
+  }
+
+  @Test
+  void testSWAP() {
+    logger.SWAP(0, 0)
+    assertTrue(logger.log.contains("SWAP"))
+  } 
 }
