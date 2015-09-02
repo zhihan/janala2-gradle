@@ -2,11 +2,6 @@ package janala.interpreters;
 
 import janala.logger.inst.*;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- * Date: 6/17/12
- * Time: 12:29 PM
- */
 public class PrintInterpreter implements IVisitor {
   public void visitAALOAD(AALOAD inst) {
     System.out.println(inst);
