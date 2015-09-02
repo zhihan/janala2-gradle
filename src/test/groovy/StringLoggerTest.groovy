@@ -774,4 +774,304 @@ class StringLoggerTest {
     logger.LUSHR(0, 0)
     assertTrue(logger.log.contains("LUSHR"))
   }
+
+  @Test
+  void testIAND() {
+    logger.IAND(0, 0)
+    assertTrue(logger.log.contains("IAND"))
+  }
+
+  @Test
+  void testLAnd() {
+    logger.LAND(0, 0)
+    assertTrue(logger.log.contains("LAND"))
+  }
+
+  @Test
+  void testIOr() {
+    logger.IOR(0, 0)
+    assertTrue(logger.log.contains("IOR"))
+  }
+
+  @Test
+  void testLOr() {
+    logger.LOR(0, 0)
+    assertTrue(logger.log.contains("LOR"))
+  }
+
+  @Test
+  void testIXor() {
+    logger.IXOR(0, 0)
+    assertTrue(logger.log.contains("IXOR"))
+  }
+
+  @Test
+  void testLXor() {
+    logger.LXOR(0, 0)
+    assertTrue(logger.log.contains("LXOR"))
+  }
+
+  @Test
+  void testI2L() {
+    logger.I2L(0, 0)
+    assertTrue(logger.log.contains("I2L"))
+  }
+
+  @Test
+  void testI2F() {
+    logger.I2F(0, 0)
+    assertTrue(logger.log.contains("I2F"))
+  }
+
+  @Test
+  void testI2D() {
+    logger.I2D(0, 0)
+    assertTrue(logger.log.contains("I2D"))
+  }
+
+  @Test
+  void testL2I() {
+    logger.L2I(0, 0)
+    assertTrue(logger.log.contains("L2I"))
+  }
+
+  @Test
+  void testL2F() {
+    logger.L2F(0, 0)
+    assertTrue(logger.log.contains("L2F"))
+  }
+
+  @Test
+  void testL2D() {
+    logger.L2D(0, 0)
+    assertTrue(logger.log.contains("L2D"))
+  }
+
+  @Test
+  void testF2I() {
+    logger.F2I(0, 0)
+    assertTrue(logger.log.contains("F2I"))
+  }
+
+  @Test
+  void testF2L() {
+    logger.F2L(0, 0)
+    assertTrue(logger.log.contains("F2L"))
+  }
+
+  @Test
+  void testF2D() {
+    logger.F2D(0, 0)
+    assertTrue(logger.log.contains("F2D"))
+  }
+
+  @Test
+  void testD2I() {
+    logger.D2I(0, 0)
+    assertTrue(logger.log.contains("D2I"))
+  }
+
+  @Test
+  void testD2L() {
+    logger.D2L(0, 0)
+    assertTrue(logger.log.contains("D2L"))
+  }
+
+  @Test
+  void testD2F() {
+    logger.D2F(0, 0)
+    assertTrue(logger.log.contains("D2F"))
+  }
+
+  @Test
+  void testI2C() {
+    logger.I2C(0, 0)
+    assertTrue(logger.log.contains("I2C"))
+  }
+
+  @Test
+  void testI2B() {
+    logger.I2B(0, 0)
+    assertTrue(logger.log.contains("I2B"))
+  }
+
+  @Test
+  void testI2S() {
+    logger.I2S(0, 0)
+    assertTrue(logger.log.contains("I2S"))
+  }
+
+  @Test
+  void testLCMP() {
+    logger.LCMP(0, 0)
+    assertTrue(logger.log.contains("LCMP"))
+  }
+
+  @Test
+  void testFCMPL() {
+    logger.FCMPL(0, 0)
+    assertTrue(logger.log.contains("FCMPL"))
+  }
+
+  @Test
+  void testFCMPG() {
+    logger.FCMPG(0, 0)
+    assertTrue(logger.log.contains("FCMPG"))
+  }
+
+  @Test
+  void testDCMPL() {
+    logger.DCMPL(0, 0)
+    assertTrue(logger.log.contains("DCMPL"))
+  }
+
+  @Test
+  void testDCMPG() {
+    logger.DCMPG(0, 0)
+    assertTrue(logger.log.contains("DCMPG"))
+  }
+
+  @Test
+  void testIReturn() {
+    logger.IRETURN(0, 0)
+    assertTrue(logger.log.contains("IRETURN"))
+  }
+
+  @Test
+  void testLReturn() {
+    logger.LRETURN(0, 0)
+    assertTrue(logger.log.contains("LRETURN"))
+  }
+
+  @Test
+  void testFReturn() {
+    logger.FRETURN(0, 0)
+    assertTrue(logger.log.contains("FRETURN"))
+  }
+
+  @Test
+  void testDReturn() {
+    logger.DRETURN(0, 0)
+    assertTrue(logger.log.contains("DRETURN"))
+  }
+
+  @Test
+  void testAReturn() {
+    logger.ARETURN(0, 0)
+    assertTrue(logger.log.contains("ARETURN"))
+  }
+
+  @Test
+  void testReturn() {
+    logger.RETURN(0, 0)
+    assertTrue(logger.log.contains("RETURN"))
+  }
+
+  @Test
+  void testArrayLength() {
+    logger.ARRAYLENGTH(0, 0)
+    assertTrue(logger.log.contains("ARRAYLENGTH"))
+  }
+
+  @Test
+  void testAThrow() {
+    logger.ATHROW(0, 0)
+    assertTrue(logger.log.contains("ATHROW"))
+  }
+
+  @Test
+  void testMonitor() {
+    logger.MONITORENTER(0, 0)
+    assertTrue(logger.log.contains("MONITORENTER"))
+  }
+
+  @Test
+  void testMonitor2() {
+    logger.MONITOREXIT(0, 0)
+    assertTrue(logger.log.contains("MONITOREXIT"))
+  }
+
+  @Test
+  void testGetValue_double() {
+    logger.GETVALUE_double(0.0D)
+    assertTrue(logger.log.contains("GETVALUE_double"))
+  }
+
+  @Test
+  void testGetValue_long() {
+    logger.GETVALUE_long(0L)
+    assertTrue(logger.log.contains("GETVALUE_long"))
+  }
+
+  @Test
+  void testGetValue_floag() {
+    logger.GETVALUE_float(0.0F)
+    assertTrue(logger.log.contains("GETVALUE_float"))
+  }
+
+  @Test
+  void testGetValue_int() {
+    logger.GETVALUE_int(0)
+    assertTrue(logger.log.contains("GETVALUE_int"))
+  }
+
+  @Test
+  void testGetValue_byte() {
+    logger.GETVALUE_byte((byte)0)
+    assertTrue(logger.log.contains("GETVALUE_byte"))
+  }
+
+  @Test
+  void testGetValue_char() {
+    logger.GETVALUE_char((char)0)
+    assertTrue(logger.log.contains("GETVALUE_char"))
+  }
+
+  @Test
+  void testGetValue_boolean() {
+    logger.GETVALUE_boolean(true)
+    assertTrue(logger.log.contains("GETVALUE_boolean"))
+  }
+
+  @Test
+  void testGetValue_object() {
+    logger.GETVALUE_Object("a")
+    assertTrue(logger.log.contains("GETVALUE_Object"))
+  }
+
+  @Test
+  void testGetValue_short() {
+    logger.GETVALUE_short((short)0)
+    assertTrue(logger.log.contains("GETVALUE_short"))
+  }
+
+  @Test
+  void testGetValue_void() {
+    logger.GETVALUE_void()
+    assertTrue(logger.log.contains("GETVALUE_void"))
+  }
+
+  @Test
+  void testMethod_1() {
+    logger.INVOKEMETHOD_EXCEPTION()
+    assertTrue(logger.log.contains("INVOKEMETHOD_EXCEPTION"))
+  }
+
+  @Test
+  void testMedthod_2() {
+    logger.INVOKEMETHOD_END()
+    assertTrue(logger.log.contains("INVOKEMETHOD_END"))
+  }
+
+  @Test
+  void testMakeSymbolic() {
+    logger.MAKE_SYMBOLIC()
+    assertTrue(logger.log.contains("MAKE_SYMBOLIC"))
+  }
+
+  @Test
+  void testSpecial() {
+    logger.SPECIAL(0)
+    assertTrue(logger.log.contains("SPECIAL"))
+  }
 }
