@@ -6,12 +6,14 @@ import static org.mockito.Mockito.verify
 
 import org.junit.Before
 import org.junit.Test
+import janala.interpreters.PrintInterpreter
 
 import groovy.transform.CompileStatic
 
 @CompileStatic
 class InstrutionTest {
   private IVisitor visitor
+  private IVisitor printer
 
   private testToString(Object o) {
     String s = o.toString()
@@ -21,6 +23,7 @@ class InstrutionTest {
   @Before
   void setup() {
     visitor = mock(IVisitor.class)
+    printer = new PrintInterpreter()
   }
 
   @Test
@@ -29,6 +32,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitAALOAD(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -37,6 +41,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitAASTORE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -45,6 +50,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitACONST_NULL(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -53,6 +59,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitALOAD(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -61,6 +68,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitANEWARRAY(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -69,6 +77,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitARETURN(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -77,6 +86,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitARRAYLENGTH(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -85,6 +95,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitASTORE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -93,6 +104,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitATHROW(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -101,6 +113,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitBALOAD(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -109,6 +122,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitBASTORE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -117,6 +131,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitBIPUSH(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -125,6 +140,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitCALOAD(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -133,6 +149,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitCASTORE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -141,6 +158,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitCHECKCAST(insn)
+    insn.visit(printer)
   }
   
   @Test
@@ -149,6 +167,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitD2F(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -157,6 +176,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitD2I(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -165,6 +185,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitD2L(insn)
+    insn.visit(printer)
   }
    
   @Test
@@ -173,6 +194,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDADD(insn)
+    insn.visit(printer)
   }
    
   @Test
@@ -181,6 +203,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDALOAD(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -189,6 +212,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDASTORE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -197,6 +221,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDCMPG(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -205,6 +230,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDCMPL(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -213,6 +239,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDCONST_0(insn)
+    insn.visit(printer)
   }
       
   @Test
@@ -221,6 +248,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDCONST_1(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -229,6 +257,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDDIV(insn)
+    insn.visit(printer)
   }
   
   @Test
@@ -237,6 +266,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDLOAD(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -245,6 +275,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDMUL(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -253,6 +284,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDNEG(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -261,6 +293,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDREM(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -269,6 +302,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDRETURN(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -277,6 +311,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDSTORE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -285,6 +320,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDSUB(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -293,6 +329,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDUP(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -301,6 +338,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDUP2(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -309,6 +347,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDUP2_X1(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -317,6 +356,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDUP2_X2(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -325,6 +365,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDUP_X1(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -333,6 +374,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitDUP_X2(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -341,6 +383,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitF2D(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -349,6 +392,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitF2I(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -357,6 +401,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitF2L(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -365,6 +410,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitFADD(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -373,6 +419,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitFALOAD(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -381,6 +428,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitFASTORE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -389,6 +437,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitFCMPG(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -397,6 +446,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitFCMPL(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -405,6 +455,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitFCONST_0(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -413,6 +464,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitFCONST_1(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -421,6 +473,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitFCONST_2(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -429,6 +482,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitFDIV(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -437,6 +491,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitFLOAD(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -445,6 +500,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitFSTORE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -453,6 +509,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitFMUL(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -461,6 +518,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitFNEG(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -469,6 +527,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitFREM(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -477,6 +536,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitFRETURN(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -485,6 +545,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitFSUB(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -493,6 +554,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitGETFIELD(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -501,6 +563,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitGETSTATIC(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -509,6 +572,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitGETVALUE_Object(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -517,6 +581,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitGETVALUE_boolean(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -525,6 +590,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitGETVALUE_byte(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -533,6 +599,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitGETVALUE_char(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -541,6 +608,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitGETVALUE_double(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -549,6 +617,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitGETVALUE_float(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -557,6 +626,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitGETVALUE_int(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -565,6 +635,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitGETVALUE_long(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -573,6 +644,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitGETVALUE_short(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -581,6 +653,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitGETVALUE_void(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -589,6 +662,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitGOTO(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -597,6 +671,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitI2B(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -605,6 +680,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitI2C(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -613,6 +689,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitI2D(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -621,6 +698,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitI2F(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -629,6 +707,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitI2L(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -637,6 +716,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitI2S(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -645,6 +725,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIADD(insn)
+    insn.visit(printer)
   } 
 
   @Test
@@ -653,6 +734,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIALOAD(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -661,6 +743,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIAND(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -669,6 +752,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIASTORE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -677,6 +761,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitICONST_0(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -685,6 +770,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitICONST_1(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -693,6 +779,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitICONST_2(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -701,6 +788,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitICONST_3(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -709,6 +797,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitICONST_4(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -717,6 +806,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitICONST_5(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -725,6 +815,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitICONST_M1(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -733,6 +824,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIDIV(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -741,6 +833,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIFEQ(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -749,6 +842,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIFGE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -757,6 +851,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIFGT(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -765,6 +860,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIFLE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -773,6 +869,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIFLT(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -781,6 +878,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIFNE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -789,6 +887,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIFNONNULL(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -797,6 +896,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIFNULL(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -805,6 +905,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIF_ACMPEQ(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -813,6 +914,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIF_ACMPNE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -821,6 +923,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIF_ICMPEQ(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -829,6 +932,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIF_ICMPGE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -837,6 +941,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIF_ICMPGT(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -845,6 +950,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIF_ICMPLE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -853,6 +959,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIF_ICMPLT(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -861,6 +968,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIF_ICMPNE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -869,6 +977,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIINC(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -877,6 +986,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitILOAD(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -885,6 +995,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIMUL(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -893,6 +1004,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitINEG(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -901,6 +1013,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitINSTANCEOF(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -909,6 +1022,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitINVOKEINTERFACE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -917,6 +1031,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitINVOKEMETHOD_END(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -925,6 +1040,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitINVOKEMETHOD_EXCEPTION(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -933,6 +1049,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitINVOKESPECIAL(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -941,6 +1058,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitINVOKESTATIC(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -949,6 +1067,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitINVOKEVIRTUAL(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -957,6 +1076,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIOR(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -965,6 +1085,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIREM(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -973,6 +1094,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIRETURN(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -981,6 +1103,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitISHL(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -989,6 +1112,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitISHR(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -997,6 +1121,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitISTORE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1005,6 +1130,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitISUB(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1013,6 +1139,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIUSHR(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1021,6 +1148,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitIXOR(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1029,6 +1157,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitJSR(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1037,6 +1166,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitL2D(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1045,6 +1175,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitL2F(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1053,6 +1184,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitL2I(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1061,6 +1193,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLADD(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1069,6 +1202,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLALOAD(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1077,6 +1211,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLAND(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1085,6 +1220,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLASTORE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1093,6 +1229,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLCMP(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1101,6 +1238,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLCONST_0(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1109,6 +1247,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLCONST_1(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1117,6 +1256,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLDC_Object(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1125,6 +1265,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLDC_String(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1133,6 +1274,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLDC_double(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1141,6 +1283,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLDC_float(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1149,6 +1292,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLDC_int(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1157,6 +1301,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLDC_long(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1165,6 +1310,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLDIV(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1173,6 +1319,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLLOAD(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1181,6 +1328,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLMUL(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1189,6 +1337,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLNEG(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1201,6 +1350,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLOOKUPSWITCH(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1209,6 +1359,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLOR(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1217,6 +1368,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLREM(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1225,6 +1377,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLRETURN(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1233,6 +1386,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLSHL(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1241,6 +1395,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLSHR(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1249,6 +1404,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLSTORE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1257,6 +1413,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLSUB(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1265,6 +1422,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLUSHR(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1273,6 +1431,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitLXOR(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1281,6 +1440,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitMAKE_SYMBOLIC(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1289,6 +1449,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitMONITORENTER(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1297,6 +1458,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitMONITOREXIT(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1305,6 +1467,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitMULTIANEWARRAY(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1313,6 +1476,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitNEW(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1321,6 +1485,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitNEWARRAY(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1329,6 +1494,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitNOP(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1337,6 +1503,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitPOP(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1345,6 +1512,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitPOP2(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1353,6 +1521,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitPUTFIELD(insn)
+    insn.visit(printer)
   }
 
   @Test void testPUTSTATIC() {
@@ -1360,6 +1529,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitPUTSTATIC(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1368,6 +1538,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitRET(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1376,6 +1547,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitRETURN(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1384,6 +1556,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitSALOAD(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1392,6 +1565,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitSASTORE(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1400,6 +1574,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitSIPUSH(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1408,6 +1583,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitSPECIAL(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1416,6 +1592,7 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitSWAP(insn)
+    insn.visit(printer)
   }
 
   @Test
@@ -1426,5 +1603,6 @@ class InstrutionTest {
     testToString(insn)
     insn.visit(visitor)
     verify(visitor).visitTABLESWITCH(insn)
+    insn.visit(printer)
   }
 }
