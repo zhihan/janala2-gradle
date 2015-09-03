@@ -36,38 +36,36 @@ public class LongValue extends Value {
   }
 
   public LongValue LADD(LongValue i) {
+    long concreteVal = concrete + i.concrete;
+    SymbolicInt x = null;
     if (symbolic == null && i.symbolic == null) {
-      return new LongValue(concrete + i.concrete);
+      return new LongValue(concreteVal);
     } else if (symbolic != null && i.symbolic != null) {
-      LongValue ret = new LongValue(concrete + i.concrete);
-      ret.symbolic = symbolic.add(i.symbolic);
-      return ret;
+      x = symbolic.add(i.symbolic);
+      return new LongValue(concreteVal, x);
     } else if (symbolic != null) {
-      LongValue ret = new LongValue(concrete + i.concrete);
-      ret.symbolic = symbolic.add(i.concrete);
-      return ret;
+      x = symbolic.add(i.concrete);
+      return new LongValue(concreteVal, x);
     } else {
-      LongValue ret = new LongValue(concrete + i.concrete);
-      ret.symbolic = i.symbolic.add(concrete);
-      return ret;
+      x = i.symbolic.add(concrete);
+      return new LongValue(concreteVal, x);
     }
   }
 
   public LongValue LSUB(LongValue i) {
+    long concreteVal = concrete - i.concrete;
+    SymbolicInt x = null;
     if (symbolic == null && i.symbolic == null) {
-      return new LongValue(concrete - i.concrete);
+      return new LongValue(concreteVal);
     } else if (symbolic != null && i.symbolic != null) {
-      LongValue ret = new LongValue(concrete - i.concrete);
-      ret.symbolic = symbolic.subtract(i.symbolic);
-      return ret;
+      x = symbolic.subtract(i.symbolic);
+      return new LongValue(concreteVal, x);
     } else if (symbolic != null) {
-      LongValue ret = new LongValue(concrete - i.concrete);
-      ret.symbolic = symbolic.subtract(i.concrete);
-      return ret;
+      x = symbolic.subtract(i.concrete);
+      return new LongValue(concreteVal, x);
     } else {
-      LongValue ret = new LongValue(concrete - i.concrete);
-      ret.symbolic = i.symbolic.subtractFrom(concrete);
-      return ret;
+      x = i.symbolic.subtractFrom(concrete);
+      return new LongValue(concreteVal, x);
     }
   }
 
@@ -96,11 +94,10 @@ public class LongValue extends Value {
   }
 
   public LongValue LNEG() {
-    if (symbolic == null) return new LongValue(-concrete);
-    else {
-      LongValue ret = new LongValue(-concrete);
-      ret.symbolic = symbolic.subtractFrom(0);
-      return ret;
+    if (symbolic == null) {
+      return new LongValue(-concrete);
+    } else {
+      return new LongValue( -concrete, symbolic.subtractFrom(0));
     }
   }
 
@@ -141,35 +138,22 @@ public class LongValue extends Value {
   }
 
   public IntValue LCMP(LongValue i2) {
-    IntValue ret;
+    int val = 0;
     if (concrete == i2.concrete) {
-      ret = new IntValue(0);
+      val = 0;
     } else if (concrete > i2.concrete) {
-      ret = new IntValue(1);
+      val = 1;
     } else {
-      ret = new IntValue(-1);
+      val = -1;
     }
     if (symbolic == null && i2.symbolic == null) {
-      return ret;
+      return new IntValue(val);
     } else if (symbolic != null && i2.symbolic != null) {
-      ret.symbolic = symbolic.subtract(i2.symbolic);
-      return ret;
+      return new IntValue(val, symbolic.subtract(i2.symbolic));
     } else if (symbolic != null) {
-      if (ret.concrete == 0)
-        ret.symbolic = symbolic.subtract(i2.concrete); //.setop(SymbolicInt.COMPARISON_OPS.EQ);
-      if (ret.concrete == 1)
-        ret.symbolic = symbolic.subtract(i2.concrete); //.setop(SymbolicInt.COMPARISON_OPS.GT);
-      if (ret.concrete == -1)
-        ret.symbolic = symbolic.subtract(i2.concrete); //.setop(SymbolicInt.COMPARISON_OPS.LT);
-      return ret;
+      return new IntValue(val, symbolic.subtract(i2.concrete));
     } else {
-      if (ret.concrete == 0)
-        ret.symbolic = i2.symbolic.subtractFrom(concrete); //.setop(SymbolicInt.COMPARISON_OPS.EQ);
-      if (ret.concrete == 1)
-        ret.symbolic = i2.symbolic.subtractFrom(concrete); //.setop(SymbolicInt.COMPARISON_OPS.GT);
-      if (ret.concrete == -1)
-        ret.symbolic = i2.symbolic.subtractFrom(concrete); //.setop(SymbolicInt.COMPARISON_OPS.LT);
-      return ret;
+      return new IntValue(val, i2.symbolic.subtractFrom(concrete));
     }
   }
 

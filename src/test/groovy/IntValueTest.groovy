@@ -17,7 +17,6 @@ class IntValueTest {
 
     @Test
     void testNewId() {
-        Value.reset()
         IntValue i = new IntValue(0)
         assertEquals(0, i.concrete)
         def b = i.MAKE_SYMBOLIC(null)
@@ -28,8 +27,6 @@ class IntValueTest {
 
     @Test
     void testConstructor() {
-        Value.reset()
-
         IntValue a = new IntValue(1, SymbolicFalseConstraint.instance)
         assertEquals(a.concrete, 1)
         assertEquals(a.symbolic, SymbolicFalseConstraint.instance)
@@ -44,7 +41,6 @@ class IntValueTest {
 
     @Test
     void testSubstitute() {
-        Value.reset()
         IntValue i = new IntValue(0)
         def b = i.MAKE_SYMBOLIC(null)
         def m = ["x1": 1L]
@@ -53,7 +49,6 @@ class IntValueTest {
 
     @Test
     void testSubstitueNone() {
-        Value.reset()
         IntValue i = new IntValue(0)
         assertEquals(0, i.substituteInLinear(["x2": 1L]))
         IntValue j = new IntValue(0)
