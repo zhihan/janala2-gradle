@@ -556,10 +556,27 @@ class ConcolicInterpreterTest {
   @Test
   void testGetValueBoolean_fail() {
     Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.visitGETVALUE_boolean(new GETVALUE_boolean(false))
+    assertEquals(new IntValue(0), frame.peek())
+  }
+
+  @Test
+  void testGetValueByte_fail() {
+    Frame frame = interpreter.getCurrentFrame()
     frame.push(PlaceHolder.instance)
-    interpreter.visitGETVALUE_boolean(new GETVALUE_boolean(true))
+    interpreter.visitGETVALUE_byte(new GETVALUE_byte((byte)1))
     assertEquals(new IntValue(1), frame.peek())
   }
+
+  @Test
+  void testGetValueByte_pass() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.visitGETVALUE_byte(new GETVALUE_byte((byte)1))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
   @Test
   void testIFNULL_pass() {
     Frame frame = interpreter.getCurrentFrame()
@@ -639,6 +656,32 @@ class ConcolicInterpreterTest {
   }
 
   @Test
+  void testBASTORE() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1)
+    v.setAddress(1) // Arbitrary address
+    frame.push(v)
+    frame.push(new IntValue(0)) // index
+    frame.push(new IntValue(1)) // value
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitBASTORE(new BASTORE(0, 0))
+    assertEquals(new IntValue(1), v.getFields()[0])
+  }
+
+  @Test
+  void testBALOAD() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1)
+    v.setAddress(1) // Arbitrary address
+    v.setField(0, new IntValue(2))
+    frame.push(v)
+    frame.push(new IntValue(0)) // index
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitBALOAD(new BALOAD(0, 0))
+    assertEquals(new IntValue(2), frame.peek())
+  }
+
+  @Test
   void testCALOAD_Symbol() {
     Frame frame = interpreter.getCurrentFrame()
     def v = new ObjectValue(1)
@@ -661,6 +704,54 @@ class ConcolicInterpreterTest {
     assertTrue(branch.branch)
   }
 
+  @Test
+  void testLALOAD() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1)
+    v.setAddress(1) // Arbitrary address
+    v.setField(0, new LongValue(2))
+    frame.push(v)
+    frame.push(new IntValue(0)) // index
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitLALOAD(new LALOAD(0, 0))
+    assertEquals(new LongValue(2), frame.peek2())
+  }
+
+  @Test
+  void testLASTORE() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1)
+    v.setAddress(1) // Arbitrary address
+    frame.push(v)
+    frame.push(new IntValue(0)) // index
+    frame.push2(new LongValue(2)) // value
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitLASTORE(new LASTORE(0, 0))
+    assertEquals(new LongValue(2), v.getFields()[0])
+  }
+
+  @Test
+  void testLALOAD_Symbol() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1)
+    v.setAddress(1) // Arbitrary address
+    v.setField(0, new LongValue(2))
+    frame.push(v)
+
+    SymbolicInt x = new SymbolicInt(1)
+    IntValue idx = new IntValue(0, x)
+    frame.push(idx) // index
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitLALOAD(new LALOAD(0, 0))
+
+    LongValue result = (LongValue) frame.peek2()
+    assertEquals(2L, result.concrete)
+    println(result.getSymbolic()) // TODO: how to test this?
+
+    assertEquals(1, history.getHistory().size())
+    BranchElement branch = (BranchElement) history.getHistory().get(0)
+    assertTrue(branch.branch)
+  }
   @Test
   void testIASTORE() {
     Frame frame = interpreter.getCurrentFrame()
