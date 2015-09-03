@@ -1321,13 +1321,10 @@ public class ConcolicInterpreter implements IVisitor {
   public void visitNEW(NEW inst) {
     try {
       ObjectInfo oi = cnames.get(inst.cIdx);
-      //            currentFrame.push(new ObjectValue(oi.nFields));
       currentFrame.push(ObjectFactory.create(oi.getNFields(), oi.getClassName()));
     } catch (Exception e) {
       e.printStackTrace();
     }
-    //        checkAndSetException();
-
   }
 
   public void visitNEWARRAY(NEWARRAY inst) {

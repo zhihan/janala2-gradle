@@ -15,6 +15,19 @@ public class LongValue extends Value {
     return concrete;
   }
 
+  @Override
+  public boolean equals(Object other) {
+    if (other == null ) {
+      return false;
+    } 
+    if (other instanceof LongValue) {
+      LongValue otherVal = (LongValue) other;
+      return (this.concrete == otherVal.concrete &&
+        this.symbolic == otherVal.symbolic);
+    } else {
+      return false;
+    }
+  }
   public long getConcreteLong() {
     return concrete;
   }

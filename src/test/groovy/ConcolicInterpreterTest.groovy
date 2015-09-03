@@ -497,6 +497,23 @@ class ConcolicInterpreterTest {
   }
 
   @Test
+  void testGetValueLong_pass() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(1L))
+    interpreter.visitGETVALUE_long(new GETVALUE_long(1L))
+    assertEquals(new LongValue(1L), frame.peek2())
+  }
+
+  @Test
+  void testGetValueLong_fail() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(PlaceHolder.instance)
+    interpreter.visitGETVALUE_long(new GETVALUE_long(1L))
+    assertEquals(new LongValue(1L), frame.peek2())
+  }
+
+
+  @Test
   void testGetValueShort_pass() {
     Frame frame = interpreter.getCurrentFrame()
     frame.push(new IntValue(1))
@@ -738,6 +755,37 @@ class ConcolicInterpreterTest {
     ObjectValue result = (ObjectValue) frame.peek()
     assertEquals(val.address, result.address)
     println(result.getSymbolic()) // TODO: how to test this?
-
   }  
+
+  @Test
+  void testLDC_int() {
+    IntValue x = new IntValue(1)
+    interpreter.visitLDC_int(new LDC_int(0, 0, 1))
+    assertEquals(x, interpreter.getCurrentFrame().peek())
+  }
+
+  @Test
+  void testLDC_long() {
+    LongValue x = new LongValue(1L)
+    interpreter.visitLDC_long(new LDC_long(0, 0, 1L))
+    assertEquals(x, interpreter.getCurrentFrame().peek2())
+  }
+
+  @Test
+  void testILOAD() {
+    IntValue e = new IntValue(1)
+    Frame frame = interpreter.getCurrentFrame()
+    frame.setLocal(1, e)
+    interpreter.visitILOAD(new ILOAD(0, 0, 1))
+    assertEquals(e, frame.peek())
+  }
+
+  @Test
+  void testISTORE() {
+    IntValue e = new IntValue(1)
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(e)
+    interpreter.visitISTORE(new ISTORE(0, 0, 1))
+    assertEquals(e, frame.getLocal(1))
+  }
 }
