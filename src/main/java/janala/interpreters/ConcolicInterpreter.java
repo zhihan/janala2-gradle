@@ -158,7 +158,7 @@ public class ConcolicInterpreter implements IVisitor {
 
   private Value getArrayElementLong(int iid, ObjectValue ref, IntValue i1, Value val) {
     if (i1.symbolic != null) {
-      LongValue sval = new LongValue(((LongValue) val).concrete);
+      LongValue sval = new LongValue(((LongValue) val).getConcreteLong());
       sval.MAKE_SYMBOLIC(history);
       SymbolicOrConstraint or1 = null;
       SymbolicAndConstraint and1;
@@ -719,7 +719,7 @@ public class ConcolicInterpreter implements IVisitor {
 
   public void visitGETVALUE_long(GETVALUE_long inst) {
     if (currentFrame.peek2() == PlaceHolder.instance
-        || ((LongValue) currentFrame.peek2()).concrete != inst.v) {
+        || ((LongValue) currentFrame.peek2()).getConcreteLong() != inst.v) {
       logger.log(Level.FINE, "** Failed to match {0} and " + inst.v, currentFrame.peek());
       currentFrame.pop2();
       currentFrame.push2(new LongValue(inst.v));

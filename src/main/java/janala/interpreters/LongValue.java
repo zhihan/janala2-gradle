@@ -3,11 +3,19 @@ package janala.interpreters;
 import janala.solvers.History;
 
 public class LongValue extends Value {
-  SymbolicInt symbolic;
-  long concrete;
+  private SymbolicInt symbolic; // mutable in make_symbolic
+  public SymbolicInt getSymbolic() {
+    return symbolic;
+  }
+
+  private final long concrete;
 
   @Override
   public Object getConcrete() {
+    return concrete;
+  }
+
+  public long getConcreteLong() {
     return concrete;
   }
 
@@ -64,20 +72,18 @@ public class LongValue extends Value {
   }
 
   public LongValue LMUL(LongValue i) {
+    long concreteVal = concrete * i.concrete;
     if (symbolic == null && i.symbolic == null) {
-      return new LongValue(concrete * i.concrete);
+      return new LongValue(concreteVal);
     } else if (symbolic != null && i.symbolic != null) {
-      LongValue ret = new LongValue(concrete * i.concrete);
-      ret.symbolic = symbolic.multiply(i.concrete);
-      return ret;
+      SymbolicInt s = symbolic.multiply(i.concrete);
+      return new LongValue(concreteVal, s);
     } else if (symbolic != null) {
-      LongValue ret = new LongValue(concrete * i.concrete);
-      ret.symbolic = symbolic.multiply(i.concrete);
-      return ret;
+      SymbolicInt s = symbolic.multiply(i.concrete);
+      return new LongValue(concreteVal, s);
     } else {
-      LongValue ret = new LongValue(concrete * i.concrete);
-      ret.symbolic = i.symbolic.multiply(concrete);
-      return ret;
+      SymbolicInt s = i.symbolic.multiply(concrete);
+      return new LongValue(concreteVal, s);
     }
   }
 
@@ -147,14 +153,6 @@ public class LongValue extends Value {
       return ret;
     } else if (symbolic != null && i2.symbolic != null) {
       ret.symbolic = symbolic.subtract(i2.symbolic);
-      //            if (tmp!=null) {
-      //                if (ret.concrete==0)
-      //                    ret.symbolic = tmp.setop(SymbolicInt.COMPARISON_OPS.EQ);
-      //                if (ret.concrete==1)
-      //                    ret.symbolic = tmp.setop(SymbolicInt.COMPARISON_OPS.GT);
-      //                if (ret.concrete==-1)
-      //                    ret.symbolic = tmp.setop(SymbolicInt.COMPARISON_OPS.LT);
-      //            }
       return ret;
     } else if (symbolic != null) {
       if (ret.concrete == 0)
