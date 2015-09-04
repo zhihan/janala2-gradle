@@ -1,16 +1,25 @@
 package janala.interpreters;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- * Date: 6/19/12
- * Time: 10:01 AM
- */
 public class FloatValue extends Value {
   float concrete;
 
   @Override
   public Object getConcrete() {
     return concrete;
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == this) {
+      return true;
+    } else if (other == null) {
+      return false;
+    } else if (other instanceof FloatValue) {
+      FloatValue otherVal = (FloatValue) other;
+      return (concrete == otherVal.concrete);
+    } else {
+      return false;
+    }
   }
 
   public FloatValue(float concrete) {
@@ -56,24 +65,16 @@ public class FloatValue extends Value {
   public IntValue FCMPL(FloatValue d) {
     if (Float.isNaN(concrete) || Float.isNaN(d.concrete)) {
       return new IntValue(-1);
-    } else if (concrete == d.concrete) {
-      return new IntValue(0);
-    } else if (concrete > d.concrete) {
-      return new IntValue(1);
     } else {
-      return new IntValue(-1);
+      return new IntValue(-((Float)concrete).compareTo(d.concrete));
     }
   }
 
   public IntValue FCMPG(FloatValue d) {
     if (Float.isNaN(concrete) || Float.isNaN(d.concrete)) {
       return new IntValue(1);
-    } else if (concrete == d.concrete) {
-      return new IntValue(0);
-    } else if (concrete > d.concrete) {
-      return new IntValue(1);
     } else {
-      return new IntValue(-1);
+      return new IntValue(((Float)concrete).compareTo(d.concrete));
     }
   }
 }

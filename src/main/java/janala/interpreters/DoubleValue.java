@@ -8,6 +8,20 @@ public class DoubleValue extends Value {
     return concrete;
   }
 
+  @Override
+  public boolean equals(Object other) {
+    if (other == this) {
+      return true;
+    } else if (other == null) {
+      return false;
+    } else if (other instanceof DoubleValue) {
+      DoubleValue otherVal = (DoubleValue) other;
+      return (concrete == otherVal.concrete);
+    } else {
+      return false;
+    }
+  }
+
   public DoubleValue(double concrete) {
     this.concrete = concrete;
   }
@@ -51,24 +65,16 @@ public class DoubleValue extends Value {
   public IntValue DCMPL(DoubleValue d) {
     if (Double.isNaN(concrete) || Double.isNaN(d.concrete)) {
       return new IntValue(-1);
-    } else if (concrete == d.concrete) {
-      return new IntValue(0);
-    } else if (concrete > d.concrete) {
-      return new IntValue(1);
     } else {
-      return new IntValue(-1);
+      return new IntValue(-((Double)concrete).compareTo(d.concrete));
     }
   }
 
   public IntValue DCMPG(DoubleValue d) {
     if (Double.isNaN(concrete) || Double.isNaN(d.concrete)) {
       return new IntValue(1);
-    } else if (concrete == d.concrete) {
-      return new IntValue(0);
-    } else if (concrete > d.concrete) {
-      return new IntValue(1);
     } else {
-      return new IntValue(-1);
+      return new IntValue(((Double)concrete).compareTo(d.concrete));
     }
   }
 }
