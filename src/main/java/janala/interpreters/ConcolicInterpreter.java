@@ -249,7 +249,7 @@ public class ConcolicInterpreter implements IVisitor {
   }
 
   public void visitARETURN(ARETURN inst) {
-    currentFrame.ret = currentFrame.pop();
+    currentFrame.setRet(currentFrame.pop());
   }
 
   public void visitARRAYLENGTH(ARRAYLENGTH inst) {
@@ -424,7 +424,7 @@ public class ConcolicInterpreter implements IVisitor {
   }
 
   public void visitDRETURN(DRETURN inst) {
-    currentFrame.ret = currentFrame.pop2();
+    currentFrame.setRet(currentFrame.pop2());
   }
 
   public void visitDSTORE(DSTORE inst) {
@@ -584,7 +584,7 @@ public class ConcolicInterpreter implements IVisitor {
   }
 
   public void visitFRETURN(FRETURN inst) {
-    currentFrame.ret = currentFrame.pop();
+    currentFrame.setRet(currentFrame.pop());
   }
 
   public void visitFSTORE(FSTORE inst) {
@@ -1051,10 +1051,9 @@ public class ConcolicInterpreter implements IVisitor {
         || next instanceof INVOKEMETHOD_EXCEPTION
         || next == null) {
       if (isInstance) {
-        currentFrame.ret = instance.invokeMethod(name, tmpValues, history);
+        currentFrame.setRet(instance.invokeMethod(name, tmpValues, history));
       } else {
-        //                checkAssumption(owner,name,tmpValues);
-        currentFrame.ret = StaticInvocation.invokeMethod(inst.iid, owner, name, tmpValues, history);
+        currentFrame.setRet(StaticInvocation.invokeMethod(inst.iid, owner, name, tmpValues, history));
       }
     }
   }
@@ -1093,7 +1092,7 @@ public class ConcolicInterpreter implements IVisitor {
   }
 
   public void visitIRETURN(IRETURN inst) {
-    currentFrame.ret = currentFrame.pop();
+    currentFrame.setRet(currentFrame.pop());
   }
 
   public void visitISHL(ISHL inst) {
@@ -1273,7 +1272,7 @@ public class ConcolicInterpreter implements IVisitor {
   }
 
   public void visitLRETURN(LRETURN inst) {
-    currentFrame.ret = currentFrame.pop2();
+    currentFrame.setRet(currentFrame.pop2());
   }
 
   public void visitLSHL(LSHL inst) {
@@ -1435,9 +1434,9 @@ public class ConcolicInterpreter implements IVisitor {
     Frame old = stack.pop();
     currentFrame = stack.peek();
     if (old.nReturnWords == 2) {
-      currentFrame.push2(old.ret);
+      currentFrame.push2(old.getRet());
     } else if (old.nReturnWords == 1) {
-      currentFrame.push(old.ret);
+      currentFrame.push(old.getRet());
     }
   }
 

@@ -879,4 +879,71 @@ class ConcolicInterpreterTest {
     interpreter.visitISTORE(new ISTORE(0, 0, 1))
     assertEquals(e, frame.getLocal(1))
   }
+
+  @Test
+  void testACONST_NULL() {
+    interpreter.visitACONST_NULL(new ACONST_NULL(0, 0))
+    Frame frame = interpreter.getCurrentFrame()
+    assertEquals(ObjectValue.NULL, frame.peek())
+  }
+
+  @Test
+  void testALOAD() {
+    ObjectValue obj = new ObjectValue(1)
+    obj.setAddress(10)
+    Frame frame = interpreter.getCurrentFrame()
+    frame.setLocal(0, obj)
+
+    interpreter.visitALOAD(new ALOAD(0, 0, 0))
+    assertEquals(obj, frame.peek())
+  }
+
+  @Test
+  void testANEWARRAY() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.visitANEWARRAY(new ANEWARRAY(0, 0, "MyClass"))
+
+    def obj = frame.peek()
+    assertTrue(obj instanceof ObjectValue)
+    ObjectValue o = (ObjectValue)obj
+    assertEquals(1, o.fields.length)
+  }
+
+  @Test
+  void testARETURN() {
+    Frame frame = interpreter.getCurrentFrame()
+    ObjectValue obj = new ObjectValue(1)
+    frame.push(obj)
+    interpreter.visitARETURN(new ARETURN(0, 0))
+    assertEquals(obj, frame.ret)
+  }
+
+  @Test
+  void testARRAYLENGTH() {
+    Frame frame = interpreter.getCurrentFrame()
+    ObjectValue obj = new ObjectValue(2)
+    frame.push(obj)
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitARRAYLENGTH(new ARRAYLENGTH(0, 0))
+    assertEquals(new IntValue(2), frame.peek())
+  }
+
+  @Test
+  void testD2F() {
+    Frame frame = interpreter.getCurrentFrame()
+    Value obj = new DoubleValue(2.0D)
+    frame.push2(obj)
+    interpreter.visitD2F(new D2F(0, 0))
+    assertEquals(new FloatValue(2.0F), frame.peek())
+  }
+
+  @Test
+  void testASTORE() {
+    Frame frame = interpreter.getCurrentFrame()
+    ObjectValue obj = new ObjectValue(1)
+    frame.push(obj)
+    interpreter.visitASTORE(new ASTORE(0, 0, 0))
+    assertEquals(obj, frame.getLocal(0))
+  }
 }

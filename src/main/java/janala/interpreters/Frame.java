@@ -8,7 +8,10 @@ public class Frame {
   private ArrayList<Value> stack = new ArrayList<Value>(8);
 
   public final int nReturnWords;
-  public Value ret;
+
+  private Value ret;
+  public void setRet(Value v) { ret = v; }
+  public Value getRet() { return ret; }
 
   public Frame(int nReturnWords) {
     this.nReturnWords = nReturnWords;

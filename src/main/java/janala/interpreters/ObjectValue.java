@@ -7,8 +7,11 @@ public class ObjectValue extends Value {
   
   // For array object, fields are the content of the array.
   // For plain object, fields are the instance variables.
-  private Value[] fields;
+  private final Value[] fields;
   public Value[] getFields() {
+    if (fields != null) {
+      System.out.println("getFields " + fields.length);
+    }
     return fields;
   }
 
