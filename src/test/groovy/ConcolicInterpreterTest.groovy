@@ -5,11 +5,13 @@ import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.verify
+import static org.mockito.Mockito.when
 
 import janala.solvers.History
 import janala.solvers.Solver
 import janala.solvers.BranchElement
 import janala.logger.ClassNames
+import janala.logger.ObjectInfo
 import janala.logger.inst.*
 import janala.instrument.Coverage
 
@@ -939,11 +941,416 @@ class ConcolicInterpreterTest {
   }
 
   @Test
+  void testD2I() {
+    Frame frame = interpreter.getCurrentFrame()
+    Value obj = new DoubleValue(2.0D)
+    frame.push2(obj)
+    interpreter.visitD2I(new D2I(0, 0))
+    assertEquals(new IntValue(2), frame.peek())
+  }
+
+  @Test
+  void testD2L() {
+    Frame frame = interpreter.getCurrentFrame()
+    Value obj = new DoubleValue(2.0D)
+    frame.push2(obj)
+    interpreter.visitD2L(new D2L(0, 0))
+    assertEquals(new LongValue(2), frame.peek2())
+  }
+
+  @Test
   void testASTORE() {
     Frame frame = interpreter.getCurrentFrame()
     ObjectValue obj = new ObjectValue(1)
     frame.push(obj)
     interpreter.visitASTORE(new ASTORE(0, 0, 0))
     assertEquals(obj, frame.getLocal(0))
+  }
+
+  @Test
+  void testDADD() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new DoubleValue(1.0D))
+    frame.push2(new DoubleValue(1.0D))
+    interpreter.visitDADD(new DADD(0, 0))
+    assertEquals(new DoubleValue(1.0D + 1.0D), frame.peek2())
+  }
+
+  @Test
+  void testDALOAD() {
+    ObjectValue obj = new ObjectValue(1)
+    obj.setAddress(10)
+    obj.setField(0, new DoubleValue(1.0D))
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(obj)
+    frame.push(new IntValue(0))
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitDALOAD(new DALOAD(0, 0))
+    assertEquals(new DoubleValue(1.0D), frame.peek2())
+  }
+
+  @Test
+  void testDASTORE() {
+    ObjectValue obj = new ObjectValue(1)
+    obj.setAddress(10)
+    obj.setField(0, new DoubleValue(0.0D))
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(obj)
+    frame.push(new IntValue(0))
+    frame.push2(new DoubleValue(2.0D))
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitDASTORE(new DASTORE(0, 0))
+    assertEquals(new DoubleValue(2.0D), obj.getField(0))
+  }
+
+  @Test
+  void testDCMPG() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new DoubleValue(2.0D))
+    frame.push2(new DoubleValue(3.0D))
+    interpreter.visitDCMPG(new DCMPG(0, 0))
+    assertEquals(new IntValue(-1), frame.peek())
+  }
+
+  @Test
+  void testDCMPL() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new DoubleValue(2.0D))
+    frame.push2(new DoubleValue(3.0D))
+    interpreter.visitDCMPL(new DCMPL(0, 0))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testDCONST_0() {
+    Frame frame = interpreter.getCurrentFrame()
+    interpreter.visitDCONST_0(new DCONST_0(0, 0))
+    assertEquals(new DoubleValue(0.0D), frame.peek2())
+  }
+
+  @Test
+  void testDCONST_1() {
+    Frame frame = interpreter.getCurrentFrame()
+    interpreter.visitDCONST_1(new DCONST_1(0, 0))
+    assertEquals(new DoubleValue(1.0D), frame.peek2())
+  }
+
+  @Test
+  void testDDIV() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new DoubleValue(2.0D))
+    frame.push2(new DoubleValue(1.0D))
+    interpreter.visitDDIV(new DDIV(0, 0))
+    assertEquals(new DoubleValue(2.0D), frame.peek2())
+  }
+
+  @Test
+  void testDLOAD() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.setLocal2(0 , new DoubleValue(2.0D))
+    interpreter.visitDLOAD(new DLOAD(0, 0, 0))
+    assertEquals(new DoubleValue(2.0D), frame.peek2())
+  }
+
+  @Test
+  void testDSTORE() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new DoubleValue(2.0D))
+    interpreter.visitDSTORE(new DSTORE(0, 0, 0))
+    assertEquals(new DoubleValue(2.0D), frame.getLocal2(0))
+  }
+
+  @Test
+  void testDMUL() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new DoubleValue(2.0D))
+    frame.push2(new DoubleValue(1.0D))
+    interpreter.visitDMUL(new DMUL(0, 0))
+    assertEquals(new DoubleValue(2.0D), frame.peek2())
+  }
+
+  @Test
+  void testDNEG() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new DoubleValue(2.0D))
+    interpreter.visitDNEG(new DNEG(0, 0))
+    assertEquals(new DoubleValue(-2.0D), frame.peek2())
+  }
+
+  @Test
+  void testDREM() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new DoubleValue(1.0D))
+    frame.push2(new DoubleValue(2.0D))
+    interpreter.visitDREM(new DREM(0, 0))
+    assertEquals(new DoubleValue(1.0D), frame.peek2())
+  }
+
+  @Test
+  void testDRET() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new DoubleValue(2.0D))
+    interpreter.visitDRETURN(new DRETURN(0, 0))
+    assertEquals(new DoubleValue(2.0D), frame.ret)
+  }
+
+  @Test
+  void testDSUB() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new DoubleValue(2.0D))
+    frame.push2(new DoubleValue(1.0D))
+    interpreter.visitDSUB(new DSUB(0, 0))
+    assertEquals(new DoubleValue(1.0D), frame.peek2())
+  }
+
+  @Test
+  void testDUP() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.visitDUP(new DUP(0, 0))
+    assertEquals(new IntValue(1), frame.peek())
+    frame.pop()
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testDUP2() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new DoubleValue(1.0D))
+    interpreter.visitDUP2(new DUP2(0, 0))
+    assertEquals(new DoubleValue(1.0D), frame.peek2())
+    frame.pop2()
+    assertEquals(new DoubleValue(1.0D), frame.peek2())
+  }
+
+  @Test
+  void testDUP2_X1() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    frame.push2(new DoubleValue(1.0D))
+    interpreter.visitDUP2_X1(new DUP2_X1(0, 0))
+    assertEquals(new DoubleValue(1.0D), frame.pop2())
+    assertEquals(new IntValue(1), frame.pop())
+    assertEquals(new DoubleValue(1.0D), frame.peek2())
+  }
+
+  @Test
+  void testDUP2_X2() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new DoubleValue(2.0D))
+    frame.push2(new DoubleValue(1.0D))
+    interpreter.visitDUP2_X2(new DUP2_X2(0, 0))
+    assertEquals(new DoubleValue(1.0D), frame.pop2())
+    assertEquals(new DoubleValue(2.0D), frame.pop2())
+    assertEquals(new DoubleValue(1.0D), frame.peek2())
+  }
+
+  @Test
+  void testDUP_X1() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(2))
+    frame.push(new IntValue(1))
+    interpreter.visitDUP_X1(new DUP_X1(0, 0))
+    assertEquals(new IntValue(1), frame.pop())
+    assertEquals(new IntValue(2), frame.pop())
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testDUP_X2() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new DoubleValue(1.0D))
+    frame.push(new IntValue(1))
+    interpreter.visitDUP_X2(new DUP_X2(0, 0))
+    assertEquals(new IntValue(1), frame.pop())
+    assertEquals(new DoubleValue(1.0D), frame.pop2())
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testF2D() {
+    Frame frame = interpreter.getCurrentFrame()
+    Value obj = new FloatValue(2.0F)
+    frame.push(obj)
+    interpreter.visitF2D(new F2D(0, 0))
+    assertEquals(new DoubleValue(2.0D), frame.peek2())
+  }
+
+  @Test
+  void testF2I() {
+    Frame frame = interpreter.getCurrentFrame()
+    Value obj = new FloatValue(2.0F)
+    frame.push(obj)
+    interpreter.visitF2I(new F2I(0, 0))
+    assertEquals(new IntValue(2), frame.peek())
+  }
+
+  @Test
+  void testF2L() {
+    Frame frame = interpreter.getCurrentFrame()
+    Value obj = new FloatValue(2.0F)
+    frame.push(obj)
+    interpreter.visitF2L(new F2L(0, 0))
+    assertEquals(new LongValue(2), frame.peek2())
+  }
+
+  @Test
+  void testFADD() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new FloatValue(1.0F))
+    frame.push(new FloatValue(1.0F))
+    interpreter.visitFADD(new FADD(0, 0))
+    assertEquals(new FloatValue(2.0F), frame.peek())
+  }
+
+  @Test
+  void testFALOAD() {
+    ObjectValue obj = new ObjectValue(1)
+    obj.setAddress(10)
+    obj.setField(0, new FloatValue(1.0F))
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(obj)
+    frame.push(new IntValue(0))
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitFALOAD(new FALOAD(0, 0))
+    assertEquals(new FloatValue(1.0F), frame.peek())
+  }
+
+  @Test
+  void testFASTORE() {
+    ObjectValue obj = new ObjectValue(1)
+    obj.setAddress(10)
+    obj.setField(0, new FloatValue(0.0F))
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(obj)
+    frame.push(new IntValue(0))
+    frame.push(new FloatValue(2.0F))
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitFASTORE(new FASTORE(0, 0))
+    assertEquals(new FloatValue(2.0F), obj.getField(0))
+  }
+
+  @Test
+  void testFCMPG() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new FloatValue(2.0F))
+    frame.push(new FloatValue(3.0F))
+    interpreter.visitFCMPG(new FCMPG(0, 0))
+    assertEquals(new IntValue(-1), frame.peek())
+  }
+
+  @Test
+  void testFCMPL() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new FloatValue(2.0F))
+    frame.push(new FloatValue(3.0F))
+    interpreter.visitFCMPL(new FCMPL(0, 0))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testFCONST_0() {
+    Frame frame = interpreter.getCurrentFrame()
+    interpreter.visitFCONST_0(new FCONST_0(0, 0))
+    assertEquals(new FloatValue(0.0F), frame.peek())
+  }
+
+  @Test
+  void testFCONST_1() {
+    Frame frame = interpreter.getCurrentFrame()
+    interpreter.visitFCONST_1(new FCONST_1(0, 0))
+    assertEquals(new FloatValue(1.0F), frame.peek())
+  }
+
+  @Test
+  void testFCONST_2() {
+    Frame frame = interpreter.getCurrentFrame()
+    interpreter.visitFCONST_2(new FCONST_2(0, 0))
+    assertEquals(new FloatValue(2.0F), frame.peek())
+  }
+
+  @Test
+  void testFDIV() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new FloatValue(2.0F))
+    frame.push(new FloatValue(1.0F))
+    interpreter.visitFDIV(new FDIV(0, 0))
+    assertEquals(new FloatValue(2.0F), frame.peek())
+  }
+
+  @Test
+  void testFLOAD() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.setLocal(0 , new FloatValue(2.0F))
+    interpreter.visitFLOAD(new FLOAD(0, 0, 0))
+    assertEquals(new FloatValue(2.0F), frame.peek())
+  }
+
+  @Test
+  void testFSTORE() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new FloatValue(2.0F))
+    interpreter.visitFSTORE(new FSTORE(0, 0, 0))
+    assertEquals(new FloatValue(2.0F), frame.getLocal(0))
+  }
+
+  @Test
+  void testFMUL() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new FloatValue(2.0F))
+    frame.push(new FloatValue(1.0F))
+    interpreter.visitFMUL(new FMUL(0, 0))
+    assertEquals(new FloatValue(2.0F), frame.peek())
+  }
+
+  @Test
+  void testFNEG() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new FloatValue(2.0F))
+    interpreter.visitFNEG(new FNEG(0, 0))
+    assertEquals(new FloatValue(-2.0F), frame.peek())
+  }
+
+  @Test
+  void testFREM() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new FloatValue(1.0F))
+    frame.push(new FloatValue(2.0F))
+    interpreter.visitFREM(new FREM(0, 0))
+    assertEquals(new FloatValue(1.0F), frame.peek())
+  }
+
+  @Test
+  void testFRET() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new FloatValue(2.0F))
+    interpreter.visitFRETURN(new FRETURN(0, 0))
+    assertEquals(new FloatValue(2.0F), frame.ret)
+  }
+
+  @Test
+  void testFSUB() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new FloatValue(2.0F))
+    frame.push(new FloatValue(1.0F))
+    interpreter.visitFSUB(new FSUB(0, 0))
+    assertEquals(new FloatValue(1.0F), frame.peek())
+  }
+
+  @Test
+  void testGETFIELD() {
+    when(classDepot.getFieldIndex("MyClass", "myField")).thenReturn(0)
+    when(classDepot.nFields("MyClass")).thenReturn(1)
+    int classIdx = classNames.get("MyClass")
+    ObjectInfo oi = classNames.get(classIdx)
+    int fIdx = oi.getIdx("myField", false)
+    ObjectValue obj = new ObjectValue(1)
+    obj.setAddress(10)
+    obj.setField(0, new FloatValue(1.0F))
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(obj)
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitGETFIELD(new GETFIELD(0, 0, classIdx, fIdx, "F"))
+    assertEquals(new FloatValue(1.0F), frame.peek())
   }
 }

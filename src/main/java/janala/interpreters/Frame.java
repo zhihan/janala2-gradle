@@ -44,8 +44,7 @@ public class Frame {
   }
 
   public void setLocal2(int index, Value o) {
-    int sz = locals.size();
-    int diff = index - sz;
+    int diff = index - locals.size();
     while (diff >= -1) {
       locals.add(PlaceHolder.instance);
       diff--;
