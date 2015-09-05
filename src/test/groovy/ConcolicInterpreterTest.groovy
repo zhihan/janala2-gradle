@@ -81,6 +81,13 @@ class ConcolicInterpreterTest {
   }
 
   @Test
+  void testICONST_M1() {
+    interpreter.visitICONST_M1(new ICONST_M1(0, 0))
+    Frame frame = interpreter.getCurrentFrame()
+    assertEquals(new IntValue(-1), frame.peek())
+  }
+
+  @Test
   void testIADD() {
     Frame frame = interpreter.getCurrentFrame()
     frame.push(new IntValue(1))
@@ -399,7 +406,7 @@ class ConcolicInterpreterTest {
     Frame frame = interpreter.getCurrentFrame()
     frame.push(new IntValue(1))
     frame.push(new IntValue(0))
-    interpreter.setNext(new SPECIAL(1)) 
+    interpreter.setNext(new SPECIAL(1))
     interpreter.visitIF_ICMPGE(new IF_ICMPGE(0, 0, 1))
     // For the true branch, see SnoopInstructionMethodAdapter
     assertEquals(1, history.getHistory().size())
@@ -480,6 +487,16 @@ class ConcolicInterpreterTest {
     def branch = (BranchElement) history.getHistory().get(0)
     assertFalse(branch.branch)
     verify(coverage).visitBranch(0, false)
+  }
+
+  @Test
+  void testGetValueObject_pass() {
+    Frame frame = interpreter.getCurrentFrame()
+    ObjectValue obj = new ObjectValue(1)
+    obj.setAddress(10)
+    frame.push(obj)
+    interpreter.visitGETVALUE_Object(new GETVALUE_Object(10, "", false))
+    assertEquals(obj, frame.peek())
   }
 
   @Test
@@ -577,6 +594,39 @@ class ConcolicInterpreterTest {
     frame.push(new IntValue(1))
     interpreter.visitGETVALUE_byte(new GETVALUE_byte((byte)1))
     assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testGetValueDouble_fail() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(PlaceHolder.instance)
+    frame.push(PlaceHolder.instance)
+    interpreter.visitGETVALUE_double(new GETVALUE_double(1.0D))
+    assertEquals(new DoubleValue(1.0D), frame.peek2())
+  }
+
+  @Test
+  void testGetValueDouble_pass() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new DoubleValue(1.0D))
+    interpreter.visitGETVALUE_double(new GETVALUE_double(1.0D))
+    assertEquals(new DoubleValue(1.0D), frame.peek2())
+  }
+
+  @Test
+  void testGetValueFloat_fail() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(PlaceHolder.instance)
+    interpreter.visitGETVALUE_float(new GETVALUE_float(1.0F))
+    assertEquals(new FloatValue(1.0F), frame.peek())
+  }
+
+  @Test
+  void testGetValueFloat_pass() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new FloatValue(1.0F))
+    interpreter.visitGETVALUE_float(new GETVALUE_float(1.0F))
+    assertEquals(new FloatValue(1.0F), frame.peek())
   }
 
   @Test
@@ -1384,5 +1434,49 @@ class ConcolicInterpreterTest {
     interpreter.setNext(new SPECIAL(0)) // exception handling
     interpreter.visitPUTFIELD(new PUTFIELD(0, 0, classIdx, fIdx, "F"))
     assertEquals(new FloatValue(1.0F), obj.getField(0))
+  }
+
+  @Test
+  void testIAND() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    frame.push(new IntValue(1))
+    interpreter.visitIAND(new IAND(0, 0))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testIDIV() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(2))
+    frame.push(new IntValue(1))
+    interpreter.setNext(new SPECIAL(0))
+    interpreter.visitIDIV(new IDIV(0, 0))
+    assertEquals(new IntValue(2), frame.peek())
+  }
+
+  @Test
+  void testIINC() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.setLocal(0, new IntValue(0))
+    interpreter.visitIINC(new IINC(0, 0, 0, 2))
+    assertEquals(new IntValue(2), frame.getLocal(0))
+  }
+
+  @Test
+  void testIMUL() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(2))
+    frame.push(new IntValue(1))
+    interpreter.visitIMUL(new IMUL(0, 0))
+    assertEquals(new IntValue(2), frame.peek())
+  }
+
+  @Test
+  void testINEG() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.visitINEG(new INEG(0, 0))
+    assertEquals(new IntValue(-1), frame.peek())
   }
 }
