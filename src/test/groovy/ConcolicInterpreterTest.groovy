@@ -1353,4 +1353,36 @@ class ConcolicInterpreterTest {
     interpreter.visitGETFIELD(new GETFIELD(0, 0, classIdx, fIdx, "F"))
     assertEquals(new FloatValue(1.0F), frame.peek())
   }
+
+  @Test
+  void testGETSTATIC() {
+    when(classDepot.getStaticFieldIndex("MyClass", "myField")).thenReturn(0)
+    when(classDepot.nStaticFields("MyClass")).thenReturn(1)
+    int classIdx = classNames.get("MyClass")
+    ObjectInfo oi = classNames.get(classIdx)
+    int fIdx = oi.getIdx("myField", true)
+    oi.setStaticField(fIdx, new FloatValue(1.0F))
+    Frame frame = interpreter.getCurrentFrame()
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    
+    interpreter.visitGETSTATIC(new GETSTATIC(0, 0, classIdx, fIdx, "F"))
+    assertEquals(new FloatValue(1.0F), frame.peek())
+  }
+
+  @Test
+  void testPUTFIELD() {
+    when(classDepot.getFieldIndex("MyClass", "myField")).thenReturn(0)
+    when(classDepot.nFields("MyClass")).thenReturn(1)
+    int classIdx = classNames.get("MyClass")
+    ObjectInfo oi = classNames.get(classIdx)
+    int fIdx = oi.getIdx("myField", false)
+    ObjectValue obj = new ObjectValue(1)
+    obj.setAddress(10)
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(obj)
+    frame.push(new FloatValue(1.0F))
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitPUTFIELD(new PUTFIELD(0, 0, classIdx, fIdx, "F"))
+    assertEquals(new FloatValue(1.0F), obj.getField(0))
+  }
 }

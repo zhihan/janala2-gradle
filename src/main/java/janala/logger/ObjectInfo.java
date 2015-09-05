@@ -41,14 +41,6 @@ public class ObjectInfo implements Serializable {
       boolean isStatic,
       Map<String, Integer> fieldNameToIndex,
       ArrayList<FieldInfo> fieldList) {
-     if (fieldNameToIndex == null) {
-      fieldNameToIndex = new TreeMap<String, Integer>();
-      if (isStatic) {
-        this.staticFieldNameToIndex = fieldNameToIndex;
-      } else {
-        this.fieldNameToIndex = fieldNameToIndex;
-      }
-    }
     if (fieldList == null) {
       fieldList = new ArrayList<FieldInfo>();
       if (isStatic) {
@@ -66,10 +58,19 @@ public class ObjectInfo implements Serializable {
     return i;
   }
 
+  private Map<String, Integer> createMap(Map<String, Integer> fieldNameToIndex) {
+     if (fieldNameToIndex == null) {
+       return new TreeMap<String, Integer>();
+     } 
+     return fieldNameToIndex;
+  }
+
   public int getIdx(String fieldName, boolean isStatic) {
     if (isStatic) {
+      staticFieldNameToIndex = createMap(staticFieldNameToIndex);
       return get(fieldName, isStatic, staticFieldNameToIndex, staticFieldList);
     }
+    fieldNameToIndex = createMap(fieldNameToIndex);
     return get(fieldName, isStatic, fieldNameToIndex, fieldList);
   }
 
