@@ -1022,8 +1022,8 @@ public class ConcolicInterpreter implements IVisitor {
     } else {
       nReturnWords = 1;
     }
-    Frame tmp;
-    stack.push(tmp = new Frame(nReturnWords));
+    Frame tmp  = new Frame(nReturnWords);
+    stack.push(tmp);
     int len = types.length;
     Value[] tmpValues = new Value[len];
     for (int i = len - 1; i >= 0; i--) {

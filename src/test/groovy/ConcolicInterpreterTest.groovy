@@ -1479,4 +1479,77 @@ class ConcolicInterpreterTest {
     interpreter.visitINEG(new INEG(0, 0))
     assertEquals(new IntValue(-1), frame.peek())
   }
+
+  @Test
+  void testI2B() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.visitI2B(new I2B(0, 0))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testI2C() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.visitI2C(new I2C(0, 0))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testI2S() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.visitI2S(new I2S(0, 0))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testI2F() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.visitI2F(new I2F(0, 0))
+    assertEquals(new FloatValue(1.0F), frame.peek())
+  }
+
+  @Test
+  void testI2L() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.visitI2L(new I2L(0, 0))
+    assertEquals(new LongValue(1L), frame.peek2())
+  }
+
+  @Test
+  void testI2D() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.visitI2D(new I2D(0, 0))
+    assertEquals(new DoubleValue(1.0D), frame.peek2())
+  }
+
+  @Test
+  void testINVOKEVIRTUAL() {
+    ObjectValue obj = new ObjectValue(1)
+    obj.setAddress(10)
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(obj)
+    frame.push(new IntValue(1))
+    interpreter.visitINVOKEVIRTUAL(new INVOKEVIRTUAL(0, 0, 
+      "MyClass", "MyMethod", "(I)I"))
+    Frame newFrame = interpreter.getCurrentFrame()
+    assertEquals(obj, newFrame.getLocal(0))
+    assertEquals(new IntValue(1), newFrame.getLocal(1))
+    assertEquals(PlaceHolder.instance, newFrame.getRet())
+  }
+
+  @Test
+  void testINVOKESTATIC() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(1L))
+    interpreter.visitINVOKESTATIC(new INVOKESTATIC(0, 0, 
+      "MyClass", "MyMethod", "(J)V"))
+    Frame newFrame = interpreter.getCurrentFrame()
+    assertEquals(new LongValue(1L), newFrame.getLocal(0))
+  }
 }
