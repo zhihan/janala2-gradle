@@ -1,7 +1,7 @@
 package janala.logger.inst;
 
 public class MULTIANEWARRAY extends Instruction {
-  String desc;
+  String desc; // Is it used?
   public int dims;
 
   public MULTIANEWARRAY(int iid, int mid, String desc, int dims) {

@@ -6,6 +6,7 @@ import janala.interpreters.Value;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
@@ -41,14 +42,6 @@ public class ObjectInfo implements Serializable {
       boolean isStatic,
       Map<String, Integer> fieldNameToIndex,
       ArrayList<FieldInfo> fieldList) {
-    if (fieldList == null) {
-      fieldList = new ArrayList<FieldInfo>();
-      if (isStatic) {
-        this.staticFieldList = fieldList;
-      } else {
-        this.fieldList = fieldList;
-      }
-    }
     Integer i = fieldNameToIndex.get(fieldName);
     if (i == null) {
       i = fieldList.size();
@@ -58,19 +51,28 @@ public class ObjectInfo implements Serializable {
     return i;
   }
 
-  private Map<String, Integer> createMap(Map<String, Integer> fieldNameToIndex) {
+  private static Map<String, Integer> createMap(Map<String, Integer> fieldNameToIndex) {
      if (fieldNameToIndex == null) {
        return new TreeMap<String, Integer>();
      } 
      return fieldNameToIndex;
   }
 
+  private static ArrayList<FieldInfo> createList(ArrayList<FieldInfo> f) {
+    if (f == null) {
+      return new ArrayList<FieldInfo>();
+    }
+    return f;
+  }
+
   public int getIdx(String fieldName, boolean isStatic) {
     if (isStatic) {
       staticFieldNameToIndex = createMap(staticFieldNameToIndex);
+      staticFieldList = createList(staticFieldList);
       return get(fieldName, isStatic, staticFieldNameToIndex, staticFieldList);
     }
     fieldNameToIndex = createMap(fieldNameToIndex);
+    fieldList = createList(fieldList);
     return get(fieldName, isStatic, fieldNameToIndex, fieldList);
   }
 

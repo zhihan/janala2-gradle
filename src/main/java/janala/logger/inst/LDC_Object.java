@@ -1,10 +1,6 @@
 package janala.logger.inst;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- * Date: 6/30/12
- * Time: 10:08 AM
- */
+
 public class LDC_Object extends Instruction {
   public int c;
 

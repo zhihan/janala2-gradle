@@ -7,8 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ClassTemplate {
-  private final List<String> fields;
-  private final List<String> staticFields;
+  private final LinkedList<String> fields;
+  private final LinkedList<String> staticFields;
 
   private void populateAllFields(Class c) {
     for (Field field: c.getDeclaredFields()) {

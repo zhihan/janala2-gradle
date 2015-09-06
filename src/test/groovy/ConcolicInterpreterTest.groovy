@@ -734,6 +734,32 @@ class ConcolicInterpreterTest {
   }
 
   @Test
+  void testSASTORE() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1)
+    v.setAddress(1) // Arbitrary address
+    frame.push(v)
+    frame.push(new IntValue(0)) // index
+    frame.push(new IntValue(1)) // value
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitSASTORE(new SASTORE(0, 0))
+    assertEquals(new IntValue(1), v.getFields()[0])
+  }
+
+  @Test
+  void testSALOAD() {
+    Frame frame = interpreter.getCurrentFrame()
+    def v = new ObjectValue(1)
+    v.setAddress(1) // Arbitrary address
+    v.setField(0, new IntValue(2))
+    frame.push(v)
+    frame.push(new IntValue(0)) // index
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitSALOAD(new SALOAD(0, 0))
+    assertEquals(new IntValue(2), frame.peek())
+  }
+
+  @Test
   void testCALOAD_Symbol() {
     Frame frame = interpreter.getCurrentFrame()
     def v = new ObjectValue(1)
@@ -1185,6 +1211,16 @@ class ConcolicInterpreterTest {
   }
 
   @Test
+  void testSWAP() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    frame.push(new IntValue(2))
+    interpreter.visitSWAP(new SWAP(0, 0))
+    assertEquals(new IntValue(1), frame.pop())
+    assertEquals(new IntValue(2), frame.pop())
+  }
+
+  @Test
   void testDUP2_X2() {
     Frame frame = interpreter.getCurrentFrame()
     frame.push2(new DoubleValue(2.0D))
@@ -1286,6 +1322,15 @@ class ConcolicInterpreterTest {
     frame.push(new FloatValue(2.0F))
     frame.push(new FloatValue(3.0F))
     interpreter.visitFCMPG(new FCMPG(0, 0))
+    assertEquals(new IntValue(-1), frame.peek())
+  }
+
+  @Test
+  void testLCMPG() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(2L))
+    frame.push2(new LongValue(3L))
+    interpreter.visitLCMP(new LCMP(0, 0))
     assertEquals(new IntValue(-1), frame.peek())
   }
 
@@ -1437,11 +1482,44 @@ class ConcolicInterpreterTest {
   }
 
   @Test
+  void testPUTSTATIC() {
+    when(classDepot.getStaticFieldIndex("MyClass", "myField")).thenReturn(0)
+    when(classDepot.nStaticFields("MyClass")).thenReturn(1)
+    int classIdx = classNames.get("MyClass")
+    ObjectInfo oi = classNames.get(classIdx)
+    int fIdx = oi.getIdx("myField", true)
+    oi.setStaticField(fIdx, new FloatValue(1.0F))
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new FloatValue(1.0F))
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitPUTSTATIC(new PUTSTATIC(0, 0, classIdx, fIdx, "F"))
+    assertEquals(new FloatValue(1.0F), oi.getStaticField(fIdx))
+  }
+
+  @Test
   void testIAND() {
     Frame frame = interpreter.getCurrentFrame()
     frame.push(new IntValue(1))
     frame.push(new IntValue(1))
     interpreter.visitIAND(new IAND(0, 0))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testIOR() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    frame.push(new IntValue(0))
+    interpreter.visitIOR(new IOR(0, 0))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testIXOR() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    frame.push(new IntValue(0))
+    interpreter.visitIXOR(new IXOR(0, 0))
     assertEquals(new IntValue(1), frame.peek())
   }
 
@@ -1453,6 +1531,176 @@ class ConcolicInterpreterTest {
     interpreter.setNext(new SPECIAL(0))
     interpreter.visitIDIV(new IDIV(0, 0))
     assertEquals(new IntValue(2), frame.peek())
+  }
+
+  @Test
+  void testIREM() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(2))
+    frame.push(new IntValue(3))
+    interpreter.setNext(new SPECIAL(0))
+    interpreter.visitIREM(new IREM(0, 0))
+    assertEquals(new IntValue(2), frame.peek())
+  }
+
+  @Test
+  void testIRETURN() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(2))
+    interpreter.visitIRETURN(new IRETURN(0, 0))
+    assertEquals(new IntValue(2), frame.getRet())
+  }
+
+  @Test
+  void testISHL() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    frame.push(new IntValue(1))
+    interpreter.visitISHL(new ISHL(0, 0))
+    assertEquals(new IntValue(2), frame.peek())
+  }
+
+  @Test
+  void testISHR() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(2))
+    frame.push(new IntValue(1))
+    interpreter.visitISHR(new ISHR(0, 0))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testIUSHR() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(2))
+    frame.push(new IntValue(1))
+    interpreter.visitIUSHR(new IUSHR(0, 0))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testLADD() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(1L))
+    frame.push2(new LongValue(1L))
+    interpreter.visitLADD(new LADD(0, 0))
+    assertEquals(new LongValue(2L), frame.peek2())
+  }
+
+  @Test
+  void testLSUB() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(2L))
+    frame.push2(new LongValue(1L))
+    interpreter.visitLSUB(new LSUB(0, 0))
+    assertEquals(new LongValue(1L), frame.peek2())
+  }
+
+  @Test
+  void testLAND() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(1L))
+    frame.push2(new LongValue(1L))
+    interpreter.visitLAND(new LAND(0, 0))
+    assertEquals(new LongValue(1L), frame.peek2())
+  }
+
+  @Test
+  void testLOR() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(1L))
+    frame.push2(new LongValue(0L))
+    interpreter.visitLOR(new LOR(0, 0))
+    assertEquals(new LongValue(1L), frame.peek2())
+  }
+
+  @Test
+  void testLXOR() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(1L))
+    frame.push2(new LongValue(0L))
+    interpreter.visitLXOR(new LXOR(0, 0))
+    assertEquals(new LongValue(1L), frame.peek2())
+  }
+
+  @Test
+  void testLMUL() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(2L))
+    frame.push2(new LongValue(1L))
+    interpreter.visitLMUL(new LMUL(0, 0))
+    assertEquals(new LongValue(2L), frame.peek2())
+  }
+
+  @Test
+  void testLNEG() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(1L))
+    interpreter.visitLNEG(new LNEG(0, 0))
+    assertEquals(new LongValue(-1L), frame.peek2())
+  }
+
+  @Test
+  void testLDIV() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(2L))
+    frame.push2(new LongValue(1L))
+    interpreter.setNext(new SPECIAL(0))
+    interpreter.visitLDIV(new LDIV(0, 0))
+    assertEquals(new LongValue(2L), frame.peek2())
+  }
+
+  @Test
+  void testLREM() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(2L))
+    frame.push2(new LongValue(3L))
+    interpreter.setNext(new SPECIAL(0))
+    interpreter.visitLREM(new LREM(0, 0))
+    assertEquals(new LongValue(2L), frame.peek2())
+  }
+
+  @Test
+  void testLRETURN() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(2L))
+    interpreter.visitLRETURN(new LRETURN(0, 0))
+    assertEquals(new LongValue(2L), frame.getRet())
+  }
+
+  @Test
+  void testLSHL() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(1L))
+    frame.push2(new LongValue(1L))
+    interpreter.visitLSHL(new LSHL(0, 0))
+    assertEquals(new LongValue(2L), frame.peek2())
+  }
+
+  @Test
+  void testLSHR() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(2L))
+    frame.push2(new LongValue(1L))
+    interpreter.visitLSHR(new LSHR(0, 0))
+    assertEquals(new LongValue(1L), frame.peek2())
+  }
+
+  @Test
+  void testLUSHR() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(2L))
+    frame.push2(new LongValue(1L))
+    interpreter.visitLUSHR(new LUSHR(0, 0))
+    assertEquals(new LongValue(1L), frame.peek2())
+  }
+
+  @Test
+  void testLSTORE() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(2L))
+    interpreter.visitLSTORE(new LSTORE(0, 0, 0))
+    assertEquals(new LongValue(2L), frame.getLocal2(0))
   }
 
   @Test
@@ -1505,6 +1753,14 @@ class ConcolicInterpreterTest {
   }
 
   @Test
+  void testATHROW() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.visitATHROW(new ATHROW(0, 0))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
   void testI2F() {
     Frame frame = interpreter.getCurrentFrame()
     frame.push(new IntValue(1))
@@ -1525,6 +1781,30 @@ class ConcolicInterpreterTest {
     Frame frame = interpreter.getCurrentFrame()
     frame.push(new IntValue(1))
     interpreter.visitI2D(new I2D(0, 0))
+    assertEquals(new DoubleValue(1.0D), frame.peek2())
+  }
+
+  @Test
+  void testL2F() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(1))
+    interpreter.visitL2F(new L2F(0, 0))
+    assertEquals(new FloatValue(1.0F), frame.peek())
+  }
+
+  @Test
+  void testL2I() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(1L))
+    interpreter.visitL2I(new L2I(0, 0))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testL2D() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(1L))
+    interpreter.visitL2D(new L2D(0, 0))
     assertEquals(new DoubleValue(1.0D), frame.peek2())
   }
 
@@ -1551,5 +1831,69 @@ class ConcolicInterpreterTest {
       "MyClass", "MyMethod", "(J)V"))
     Frame newFrame = interpreter.getCurrentFrame()
     assertEquals(new LongValue(1L), newFrame.getLocal(0))
+  }
+
+  @Test
+  void testMONITOR() {
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitMONITORENTER(new MONITORENTER(0, 0))
+    interpreter.visitMONITOREXIT(new MONITOREXIT(0, 0))
+  }
+
+  @Test
+  void testNEW() {
+    when(classDepot.getFieldIndex("MyClass", "myField")).thenReturn(0)
+    when(classDepot.nFields("MyClass")).thenReturn(1)
+    int classIdx = classNames.get("MyClass")
+    ObjectInfo oi = classNames.get(classIdx)
+    interpreter.visitNEW(new NEW(0, 0, "MyClass", classIdx))
+
+    assertTrue(interpreter.getCurrentFrame().peek() instanceof ObjectValue)
+  }
+
+  @Test
+  void testNEWARRAY() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitNEWARRAY(new NEWARRAY(0, 0))
+
+    def v = frame.peek()
+    assertTrue(v instanceof ObjectValue)
+    ObjectValue obj = (ObjectValue) v
+    assertEquals(1, obj.getFields().length)
+  }
+
+  @Test
+  void testMULTIANEWARRAY() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(2))
+    frame.push(new IntValue(2))
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitMULTIANEWARRAY(new MULTIANEWARRAY(0, 0, "I", 2))
+
+    def v = frame.peek()
+    assertTrue(v instanceof ObjectValue)
+    ObjectValue obj = (ObjectValue) v
+    assertEquals(2, obj.getFields().length)
+  }
+
+  @Test
+  void testINVOKEMETHOD_ENT() {
+    Frame m = new Frame(1)
+    m.setRet(new IntValue(1))
+    interpreter.getStack().push(m)
+    interpreter.visitINVOKEMETHOD_END(new INVOKEMETHOD_END())
+
+    Frame frame = interpreter.getCurrentFrame()
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testLDC_Object() {
+    interpreter.visitLDC_Object(new LDC_Object(0, 0, 10))
+    Frame frame = interpreter.getCurrentFrame()
+    assertTrue(frame.peek() instanceof ObjectValue)
+    assertTrue(frame.peek() != ObjectValue.NULL)
   }
 }

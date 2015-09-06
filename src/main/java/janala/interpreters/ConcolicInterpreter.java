@@ -20,6 +20,8 @@ import java.util.logging.Logger;
 public class ConcolicInterpreter implements IVisitor {
   private Stack<Frame> stack;
 
+  public Stack<Frame> getStack() { return stack; }
+
   private Frame currentFrame;
   public Frame getCurrentFrame() {
     return currentFrame;
