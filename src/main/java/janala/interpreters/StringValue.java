@@ -3,24 +3,19 @@ package janala.interpreters;
 import janala.config.Config;
 import janala.solvers.History;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- * Date: 6/19/12
- * Time: 12:12 PM
- */
 public class StringValue extends ObjectValue {
-  private String string;
-  private SymbolicStringExpression symbolic;
+  private final String string;
+  private SymbolicStringExpression symbolicExp;
 
   public StringValue(String string, int address) {
     super(100, address);
     this.string = string;
   }
 
-  public StringValue(String string, SymbolicStringExpression symbolic) {
+  public StringValue(String string, SymbolicStringExpression symbolicExp) {
     super(100, -1);
     this.string = string;
-    this.symbolic = symbolic;
+    this.symbolicExp = symbolicExp;
   }
 
   @Override
@@ -29,43 +24,50 @@ public class StringValue extends ObjectValue {
   }
 
   public SymbolicStringExpression getSymbolicExp() {
-    return symbolic;
+    return symbolicExp;
   }
 
   private String escapeRE(String str) {
     return str.replaceAll("([^a-zA-z0-9])", "\\\\$1");
   }
 
+  private Value invokeEquals(Value arg) {
+    if (arg instanceof StringValue) {
+      StringValue other = (StringValue) arg;
+      boolean result = string.equals(other.string);
+      if (symbolicExp != null && other.symbolicExp != null) {
+        return new IntValue(
+          result ? 1 : 0,
+          new SymbolicStringPredicate(
+            SymbolicStringPredicate.COMPARISON_OPS.EQ, symbolicExp, other.symbolicExp));
+      } else if (symbolicExp != null) {
+        return new IntValue(
+          result ? 1 : 0,
+          new SymbolicStringPredicate(
+            SymbolicStringPredicate.COMPARISON_OPS.EQ, symbolic, other.string));
+      } else if (other.symbolicExp != null) {
+        return new IntValue(
+          result ? 1 : 0,
+          new SymbolicStringPredicate(
+            SymbolicStringPredicate.COMPARISON_OPS.EQ, string, other.symbolicExp));
+      } else {
+        return new IntValue(result ? 1 : 0);
+      }
+    } else {
+      // arg is not StringValue type.
+      return new IntValue(0);
+    }
+  }
+
   @Override
   public Value invokeMethod(String name, Value[] args, History history) {
     if (name.equals("equals") && args.length == 1) {
-      if (args[0] instanceof StringValue) {
-        StringValue other = (StringValue) args[0];
-        boolean result = string.equals(other.string);
-        if (symbolic != null && other.symbolic != null) {
-          return new IntValue(
-              result ? 1 : 0,
-              new SymbolicStringPredicate(
-                  SymbolicStringPredicate.COMPARISON_OPS.EQ, symbolic, other.symbolic));
-        } else if (symbolic != null) {
-          return new IntValue(
-              result ? 1 : 0,
-              new SymbolicStringPredicate(
-                  SymbolicStringPredicate.COMPARISON_OPS.EQ, symbolic, other.string));
-        } else if (other.symbolic != null) {
-          return new IntValue(
-              result ? 1 : 0,
-              new SymbolicStringPredicate(
-                  SymbolicStringPredicate.COMPARISON_OPS.EQ, string, other.symbolic));
-        } else {
-          return new IntValue(result ? 1 : 0);
-        }
-      }
+      return invokeEquals(args[0]);
     } else if (name.equals("startsWith") && args.length == 1) {
       if (args[0] instanceof StringValue) {
         StringValue other = (StringValue) args[0];
         boolean result = string.startsWith(other.string);
-        if (symbolic != null) {
+        if (symbolicExp != null) {
           return new IntValue(
               result ? 1 : 0,
               new SymbolicStringPredicate(
@@ -81,7 +83,7 @@ public class StringValue extends ObjectValue {
         StringValue other = (StringValue) args[0];
         IntValue offset = (IntValue) args[1];
         boolean result = string.startsWith(other.string, offset.concrete);
-        if (symbolic != null) {
+        if (symbolicExp != null) {
           return new IntValue(
               result ? 1 : 0,
               new SymbolicStringPredicate(
@@ -122,20 +124,20 @@ public class StringValue extends ObjectValue {
       if (args[0] instanceof StringValue) {
         StringValue other = (StringValue) args[0];
         String result = string.concat(other.string);
-        if (symbolic != null && other.symbolic != null) {
-          return new StringValue(result, symbolic.concat(other.symbolic));
+        if (symbolicExp != null && other.symbolicExp  != null) {
+          return new StringValue(result, symbolicExp.concat(other.symbolicExp));
         } else if (symbolic != null) {
-          return new StringValue(result, symbolic.concatStr(other.string));
-        } else if (other.symbolic != null) {
-          return new StringValue(result, other.symbolic.concatToStr(string));
+          return new StringValue(result, symbolicExp.concatStr(other.string));
+        } else if (other.symbolicExp  != null) {
+          return new StringValue(result, other.symbolicExp.concatToStr(string));
         } else {
           return new StringValue(result, null);
         }
       }
     } else if (name.equals("length") && args.length == 0) {
       int result = string.length();
-      if (symbolic != null) {
-        return symbolic.getField("length");
+      if (symbolicExp != null) {
+        return symbolicExp.getField("length");
       } else {
         return new IntValue(result);
       }
@@ -143,7 +145,7 @@ public class StringValue extends ObjectValue {
       if (args[0] instanceof StringValue) {
         StringValue other = (StringValue) args[0];
         boolean result = string.matches(other.string);
-        if (symbolic != null) {
+        if (symbolicExp != null) {
           return new IntValue(
               result ? 1 : 0,
               new SymbolicStringPredicate(
@@ -160,7 +162,7 @@ public class StringValue extends ObjectValue {
     IntValue length = new IntValue(string.length());
     int ret = symbol;
     symbol = symbol + inc;
-    symbolic = new SymbolicStringExpression(ret, length);
+    symbolicExp = new SymbolicStringExpression(ret, length);
     length.MAKE_SYMBOLIC(history);
 
     Constraint results = length.symbolic.setop(SymbolicInt.COMPARISON_OPS.GE);
