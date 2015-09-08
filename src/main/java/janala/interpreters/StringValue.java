@@ -44,7 +44,7 @@ public class StringValue extends ObjectValue {
         return new IntValue(
           result ? 1 : 0,
           new SymbolicStringPredicate(
-            SymbolicStringPredicate.COMPARISON_OPS.EQ, symbolic, other.string));
+            SymbolicStringPredicate.COMPARISON_OPS.EQ, symbolicExp, other.string));
       } else if (other.symbolicExp != null) {
         return new IntValue(
           result ? 1 : 0,
@@ -72,7 +72,7 @@ public class StringValue extends ObjectValue {
               result ? 1 : 0,
               new SymbolicStringPredicate(
                   SymbolicStringPredicate.COMPARISON_OPS.IN,
-                  symbolic,
+                  symbolicExp,
                   escapeRE(other.string) + ".*"));
         } else {
           return new IntValue(result ? 1 : 0);
@@ -88,7 +88,7 @@ public class StringValue extends ObjectValue {
               result ? 1 : 0,
               new SymbolicStringPredicate(
                   SymbolicStringPredicate.COMPARISON_OPS.IN,
-                  symbolic,
+                  symbolicExp,
                   ".{" + offset.concrete + "}" + escapeRE(other.string) + ".*"));
         } else {
           return new IntValue(result ? 1 : 0);
@@ -97,12 +97,12 @@ public class StringValue extends ObjectValue {
     } else if (name.equals("endsWith") && args.length == 1) {
       StringValue other = (StringValue) args[0];
       boolean result = string.endsWith(other.string);
-      if (symbolic != null) {
+      if (symbolicExp != null) {
         return new IntValue(
             result ? 1 : 0,
             new SymbolicStringPredicate(
                 SymbolicStringPredicate.COMPARISON_OPS.IN,
-                symbolic,
+                symbolicExp,
                 ".*" + escapeRE(other.string)));
       } else {
         return new IntValue(result ? 1 : 0);
@@ -110,12 +110,12 @@ public class StringValue extends ObjectValue {
     } else if (name.equals("contains") && args.length == 1) {
       StringValue other = (StringValue) args[0];
       boolean result = string.contains(other.string);
-      if (symbolic != null) {
+      if (symbolicExp != null) {
         return new IntValue(
             result ? 1 : 0,
             new SymbolicStringPredicate(
                 SymbolicStringPredicate.COMPARISON_OPS.IN,
-                symbolic,
+                symbolicExp,
                 ".*" + escapeRE(other.string) + ".*"));
       } else {
         return new IntValue(result ? 1 : 0);
@@ -126,7 +126,7 @@ public class StringValue extends ObjectValue {
         String result = string.concat(other.string);
         if (symbolicExp != null && other.symbolicExp  != null) {
           return new StringValue(result, symbolicExp.concat(other.symbolicExp));
-        } else if (symbolic != null) {
+        } else if (symbolicExp != null) {
           return new StringValue(result, symbolicExp.concatStr(other.string));
         } else if (other.symbolicExp  != null) {
           return new StringValue(result, other.symbolicExp.concatToStr(string));
@@ -149,7 +149,7 @@ public class StringValue extends ObjectValue {
           return new IntValue(
               result ? 1 : 0,
               new SymbolicStringPredicate(
-                  SymbolicStringPredicate.COMPARISON_OPS.IN, symbolic, other.string));
+                  SymbolicStringPredicate.COMPARISON_OPS.IN, symbolicExp, other.string));
         } else {
           return new IntValue(result ? 1 : 0);
         }
