@@ -8,6 +8,7 @@ import janala.solvers.CVC4Solver.CONSTRAINT_TYPE;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.Map;
 
 public class SymbolicStringPredicate extends Constraint {
@@ -19,9 +20,11 @@ public class SymbolicStringPredicate extends Constraint {
     NOTIN
   };
 
-  COMPARISON_OPS op;
-  Object left;
-  Object right;
+  private final COMPARISON_OPS op;
+  public COMPARISON_OPS getOp() { return op; }
+
+  private final Object left;
+  private final Object right;
 
   public SymbolicStringPredicate(COMPARISON_OPS op, Object left, Object right) {
     this.op = op;
@@ -43,21 +46,22 @@ public class SymbolicStringPredicate extends Constraint {
   @Override
   public Constraint not() {
     SymbolicStringPredicate ret = new SymbolicStringPredicate(this);
+    COMPARISON_OPS retOp = COMPARISON_OPS.NE;
     switch (this.op) {
       case EQ:
-        ret.op = COMPARISON_OPS.NE;
+        retOp = COMPARISON_OPS.NE;
         break;
       case NE:
-        ret.op = COMPARISON_OPS.EQ;
+        retOp = COMPARISON_OPS.EQ;
         break;
       case IN:
-        ret.op = COMPARISON_OPS.NOTIN;
+        retOp = COMPARISON_OPS.NOTIN;
         break;
       case NOTIN:
-        ret.op = COMPARISON_OPS.IN;
+        retOp = COMPARISON_OPS.IN;
         break;
     }
-    return ret;
+    return new SymbolicStringPredicate(retOp, left, right);
   }
 
   @Override
@@ -91,7 +95,7 @@ public class SymbolicStringPredicate extends Constraint {
     return null;
   }
 
-  class ExprAt {
+  private static class ExprAt {
     public boolean isSymbolic;
     public String prefix;
     public int symOrVal;
@@ -103,8 +107,8 @@ public class SymbolicStringPredicate extends Constraint {
     }
   }
 
-  private SymOrInt exprAt(
-      Object sExpr, int i, LinkedHashSet<String> freeVars, Map<String, Long> assignments) {
+  private SymOrInt exprAt(Object sExpr, int i, Set<String> freeVars, 
+    Map<String, Long> assignments) {
     //var j, len, s, idx, tmp, length;
     if (sExpr instanceof String) {
       return new SymOrInt(((String) sExpr).charAt(i));
@@ -139,7 +143,7 @@ public class SymbolicStringPredicate extends Constraint {
       Object left,
       Object right,
       long length,
-      LinkedHashSet<String> freeVars,
+      Set<String> freeVars,
       Map<String, Long> assignments) {
     SymbolicAndConstraint and = null;
 
@@ -162,7 +166,7 @@ public class SymbolicStringPredicate extends Constraint {
   }
 
   public Constraint getFormula(
-      LinkedHashSet<String> freeVars,
+      Set<String> freeVars,
       CONSTRAINT_TYPE mode,
       Map<String, Long> assignments) {
     StringBuilder sb = new StringBuilder();
