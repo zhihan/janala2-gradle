@@ -3,12 +3,12 @@ package janala.interpreters;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClassTemplate {
-  private final LinkedList<String> fields;
-  private final LinkedList<String> staticFields;
+  private final ArrayList<String> fields;
+  private final ArrayList<String> staticFields;
 
   private void populateAllFields(Class c) {
     for (Field field: c.getDeclaredFields()) {
@@ -21,18 +21,22 @@ public class ClassTemplate {
   }
 
   public ClassTemplate(Class c) {
-    fields = new LinkedList<String>();
-    staticFields = new LinkedList<String>();
+    fields = new ArrayList<String>();
+    staticFields = new ArrayList<String>();
     populateAllFields(c);
   }
 
+  public String toString() {
+    return fields.toString();
+  }
+  
   private void addField(String name) {
     fields.add(name);
    }
 
   public void addFields(ClassTemplate pt) {
-    fields.addAll(pt.fields);
-    staticFields.addAll(pt.staticFields);
+    fields.addAll(0, pt.fields);
+    staticFields.addAll(0, pt.staticFields);
   }
 
   private void addStaticField(String name) {

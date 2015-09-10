@@ -22,6 +22,11 @@ public class ConcolicInterpreter implements IVisitor {
 
   public Stack<Frame> getStack() { return stack; }
 
+  public void printCurrentStack() {
+    System.out.println("Frame:");
+    System.out.println(currentFrame);
+  }
+
   private Frame currentFrame;
   public Frame getCurrentFrame() {
     return currentFrame;
@@ -609,7 +614,6 @@ public class ConcolicInterpreter implements IVisitor {
       } else {
         currentFrame.push(ref.getField(fi.getFieldId()));
       }
-
     } catch (Exception e) {
       e.printStackTrace();
     }

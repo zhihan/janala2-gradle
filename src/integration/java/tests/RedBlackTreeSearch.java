@@ -56,15 +56,15 @@ public class RedBlackTreeSearch {
             if (i==N-1) {
                 CATG.event("test1", "a");
             }
+            System.out.println("Inserting " + x);
             tree.treeInsert(new RedBlackTreeNode(x));
-            System.out.println("Inserting "+x);
         }
 
         // We only measure the complexity (i.e. path length) of the
         // final search operation.  That is, we count branches only
         // from this point forward in the execution.
 
-        int x = Main.readInt(0);
+        int x = CATG.readInt(0);
         Main.MakeSymbolic(x);
         System.out.println("Searched "+tree.treeSearch(tree.root(), x));
 

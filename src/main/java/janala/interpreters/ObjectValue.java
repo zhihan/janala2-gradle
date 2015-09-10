@@ -95,4 +95,9 @@ public class ObjectValue extends Value {
   public Value invokeMethod(String name, Value[] args, History history) {
     return PlaceHolder.instance;
   }
+
+  public String toString() {
+    String s =  "ObjectValue @" + Integer.toHexString(address);
+    return s;
+  }
 }

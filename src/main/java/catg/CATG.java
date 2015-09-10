@@ -165,13 +165,13 @@ public class CATG {
   }
 
   public static void event(String test, String eventName) {
-    if (Config.instance.testChecker.check(test)) {
+    if (Config.instance.testChecker != null && Config.instance.testChecker.check(test)) {
       Main.event(eventName);
     }
   }
 
   public static void pathRegex(String test, String regex) {
-    if (Config.instance.testChecker.check(test)) {
+    if (Config.instance.testChecker != null && Config.instance.testChecker.check(test)) {
       Main.pathRegex(regex);
     }
   }

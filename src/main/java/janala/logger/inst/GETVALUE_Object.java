@@ -19,9 +19,9 @@ public class GETVALUE_Object extends Instruction {
   @Override
   public String toString() {
     return "GETVALUE_Object v="
-        + v
-        + " isString="
-        + isString
-        + (isString ? " string=" + string : "");
+      + Integer.toHexString(v)
+      + " isString="
+      + isString
+      + (isString ? " string=" + string : "");
   }
 }

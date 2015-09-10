@@ -30,7 +30,9 @@ public class ClassDepot implements Serializable {
 
   private ClassTemplate getOrCreateTemplate(String cName, Class clazz) {
     ClassTemplate ct = templates.get(cName);
-    if (ct != null) return ct;
+    if (ct != null) {
+      return ct;
+    }
     ct = new ClassTemplate(clazz);
     templates.put(cName, ct);
     Class parent = clazz.getSuperclass();

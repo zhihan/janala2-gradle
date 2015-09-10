@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class SymbolicStringPredicate extends Constraint {
 
-  public enum COMPARISON_OPS {
+  public static enum COMPARISON_OPS {
     EQ,
     NE,
     IN,
@@ -76,9 +76,11 @@ public class SymbolicStringPredicate extends Constraint {
   private String stringfy(Object s) {
     if (s instanceof String) {
       return "\"" + s + "\"";
+    } else if (s == null) {
+      return "null";
     } else {
       return s.toString();
-    }
+    } 
   }
 
   public String toString() {
@@ -92,7 +94,7 @@ public class SymbolicStringPredicate extends Constraint {
       case NOTIN:
         return stringfy(this.left) + " regexnotin " + stringfy(this.right);
     }
-    return null;
+    throw new RuntimeException("Not implemented");
   }
 
   private static class ExprAt {
@@ -273,17 +275,26 @@ public class SymbolicStringPredicate extends Constraint {
 
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof SymbolicStringPredicate)) return false;
+    if (o == null) {
+      return false;
+    }
+    if (o == this) {
+      return true;
+    }
+    if (!(o instanceof SymbolicStringPredicate)) {
+      return false;
+    }
+
     SymbolicStringPredicate tmp = (SymbolicStringPredicate) o;
-    if (this.op != tmp.op) return false;
+    if (this.op != tmp.op) {
+      return false;
+    }
     String s1 = stringfy(left);
     String s2 = stringfy(right);
 
     String s3 = stringfy(tmp.left);
     String s4 = stringfy(tmp.right);
 
-    if (s1.equals(s3) && s2.equals(s4)) return true;
-    if (s1.equals(s4) && s2.equals(s3)) return true;
-    return false;
+    return (s1.equals(s3) && s2.equals(s4));
   }
 }
