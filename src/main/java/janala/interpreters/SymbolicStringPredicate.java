@@ -98,9 +98,9 @@ public class SymbolicStringPredicate extends Constraint {
   }
 
   private static class ExprAt {
-    public boolean isSymbolic;
-    public String prefix;
-    public int symOrVal;
+    final boolean isSymbolic;
+    final String prefix;
+    final int symOrVal;
 
     ExprAt(boolean symbolic, String prefix, int symOrVal) {
       isSymbolic = symbolic;
@@ -111,7 +111,6 @@ public class SymbolicStringPredicate extends Constraint {
 
   private SymOrInt exprAt(Object sExpr, int i, Set<String> freeVars, 
     Map<String, Long> assignments) {
-    //var j, len, s, idx, tmp, length;
     if (sExpr instanceof String) {
       return new SymOrInt(((String) sExpr).charAt(i));
     } else {
@@ -156,7 +155,8 @@ public class SymbolicStringPredicate extends Constraint {
       SymOrInt e1 = exprAt(left, i, freeVars, assignments);
       SymOrInt e2 = exprAt(right, i, freeVars, assignments);
       Constraint c;
-      c = new SymbolicIntCompareConstraint(e1, e2, SymbolicIntCompareConstraint.COMPARISON_OPS.EQ);
+      c = new SymbolicIntCompareConstraint(e1, e2, 
+        SymbolicIntCompareConstraint.COMPARISON_OPS.EQ);
 
       if (i != 0) {
         and = and.AND(c);
@@ -174,7 +174,7 @@ public class SymbolicStringPredicate extends Constraint {
     StringBuilder sb = new StringBuilder();
     long length1, length2;
     int j;
-    //, s1, s2, formula, cmd, length1 = 0, length2 = 0, j;
+    
     IntValue s1 =
         (this.left instanceof String)
             ? new IntValue(((String) this.left).length())
@@ -206,7 +206,6 @@ public class SymbolicStringPredicate extends Constraint {
           } else {
             return SymbolicTrueConstraint.instance;
           }
-          //                    return SymbolicTrueConstraint.instance;
         case IN:
           // @todo regex_escape
           return RegexpEncoder.getLengthFormulaString(
