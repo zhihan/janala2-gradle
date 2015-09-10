@@ -2,9 +2,11 @@ package janala.interpreters;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Set;
+import java.util.Map;
 
 public class SymbolicStringExpression {
-  LinkedList list;
+  private final LinkedList list; // either String or SymbolicStringVar
 
   public SymbolicStringExpression(int sym, IntValue length) {
     this.list = new LinkedList();
@@ -41,10 +43,10 @@ public class SymbolicStringExpression {
       ret.list.addLast(first);
     }
 
-    boolean flag = true;
+    boolean isFirst = true;
     for (Object elem : expr.list) {
-      if (flag) {
-        flag = false;
+      if (isFirst) {
+        isFirst = false;
       } else {
         ret.list.addLast(elem);
       }
@@ -80,9 +82,9 @@ public class SymbolicStringExpression {
       }
       if (elem instanceof SymbolicStringVar) {
         sb.append(elem.toString());
-      } else {
+      } else { 
         sb.append('"');
-        sb.append(elem);
+        sb.append((String)elem);
         sb.append('"');
       }
     }
@@ -99,8 +101,10 @@ public class SymbolicStringExpression {
       for (Object val : this.list) {
         if (val instanceof String) {
           len = new IntValue(((String) val).length());
-        } else {
+        } else if (val instanceof SymbolicStringVar) {
           len = (IntValue) ((SymbolicStringVar) val).getField("length");
+        } else {
+          throw new RuntimeException("Unsupported string type.");
         }
         if (ret == null) {
           ret = len;
@@ -109,6 +113,30 @@ public class SymbolicStringExpression {
         }
       }
       return ret;
+    }
+    return null;
+  }
+
+  public SymOrInt getExprAt(int i, Set<String> freeVars, Map<String, Long> assignments) {
+    int len = list.size();
+    for (Object s : list) {
+      if (s instanceof String) {
+        if (i < ((String) s).length()) {
+          return new SymOrInt(((String) s).charAt(i));
+        } else {
+          i = i - ((String) s).length();
+        }
+      } else {
+        String idx = s.toString();
+        int length =
+        (int) ((SymbolicStringVar) s).getField("length").substituteInLinear(assignments);
+        if (i < length) {
+          freeVars.add("x" + idx + "__" + i);
+          return new SymOrInt("x" + idx + "__" + i);
+        } else {
+          i = i - length;
+        }
+      }
     }
     return null;
   }

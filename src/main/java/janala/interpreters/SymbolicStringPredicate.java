@@ -115,29 +115,8 @@ public class SymbolicStringPredicate extends Constraint {
       return new SymOrInt(((String) sExpr).charAt(i));
     } else {
       SymbolicStringExpression tmp = (SymbolicStringExpression) sExpr;
-      int len = tmp.list.size();
-      for (int j = 0; j < len; j++) {
-        Object s = tmp.list.get(j);
-        if (s instanceof String) {
-          if (i < ((String) s).length()) {
-            return new SymOrInt(((String) s).charAt(i));
-          } else {
-            i = i - ((String) s).length();
-          }
-        } else {
-          String idx = s.toString();
-          int length =
-              (int) ((SymbolicStringVar) s).getField("length").substituteInLinear(assignments);
-          if (i < length) {
-            freeVars.add("x" + idx + "__" + i);
-            return new SymOrInt("x" + idx + "__" + i);
-          } else {
-            i = i - length;
-          }
-        }
-      }
+      return tmp.getExprAt(i, freeVars, assignments);
     }
-    return null;
   }
 
   private Constraint getStringEqualityFormula(
@@ -188,8 +167,17 @@ public class SymbolicStringPredicate extends Constraint {
     if (mode == CONSTRAINT_TYPE.INT) {
       switch (this.op) {
         case EQ:
-          formula = s1.ISUB(s2);
-          return formula.symbolic.setop(SymbolicInt.COMPARISON_OPS.EQ);
+          IntValue val = s1.ISUB(s2);
+          if (val.symbolic != null) {
+            return val.symbolic.setop(SymbolicInt.COMPARISON_OPS.EQ);
+          } else {
+            if (val.getConcrete().equals(0)) {
+              return SymbolicTrueConstraint.instance;
+            } else {
+              return SymbolicFalseConstraint.instance;
+            }
+          }
+          
         case NE:
           SymbolicInt int1 =
               s1.symbolic != null ? s1.symbolic.setop(SymbolicInt.COMPARISON_OPS.GT) : null;
