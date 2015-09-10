@@ -19,6 +19,21 @@ public final class SymbolicIntCompareConstraint extends Constraint {
   public final SymOrInt right;
   public final COMPARISON_OPS op;
 
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) {
+      return false;
+    } else if (o == this) {
+      return true;
+    } else if (o instanceof SymbolicIntCompareConstraint) {
+      SymbolicIntCompareConstraint other = (SymbolicIntCompareConstraint) o;
+      return left.equals(other.left) && right.equals(other.right) &&
+        (op == other.op);
+    } else {
+      return false;
+    }
+  }
+
   public SymbolicIntCompareConstraint(SymOrInt left, SymOrInt right, COMPARISON_OPS op) {
     this.left = left;
     this.right = right;

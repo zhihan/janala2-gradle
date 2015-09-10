@@ -269,7 +269,7 @@ public class SymbolicStringPredicate extends Constraint {
               "~(" + (String) this.right + ")", "x" + this.left + "__", (int) length1);
       }
     }
-    return null;
+    throw new RuntimeException("Unsupported type");
   }
 
   @Override

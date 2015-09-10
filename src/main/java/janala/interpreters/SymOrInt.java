@@ -4,7 +4,7 @@ package janala.interpreters;
 
 // For symbolic name, it must be of the format 'x1', 'x2' where the number is the 
 // index in the affine form. See SymbolicInt.
-public class SymOrInt {
+public final class SymOrInt {
   private final String sym;
   private final long constant;
   public final boolean isSym;
@@ -37,6 +37,22 @@ public class SymOrInt {
       return sym;
     } else {
       return "" + constant;
-    } 
+    }
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) {
+      return false;
+    } else if (o == this) {
+      return true;
+    } else if (o instanceof SymOrInt) {
+      SymOrInt other = (SymOrInt) o;
+      return (sym == other.sym || sym.equals(other.sym)) 
+        && (constant == other.constant) 
+        && (isSym == other.isSym);
+    } else {
+      return false;
+    }
   }
 }
