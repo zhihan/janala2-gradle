@@ -124,11 +124,4 @@ public class RegexpEncoder {
     }
     return collect;
   }
-
-  public static void main(String[] args) {
-    RegExp r = new RegExp("[a-zA-Z]*");
-    Automaton a = r.toAutomaton();
-    System.out.println(a.getShortestExample(false));
-    System.out.println(a.toDot());
-  }
 }

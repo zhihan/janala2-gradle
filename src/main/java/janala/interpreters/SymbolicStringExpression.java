@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.Map;
 
-public class SymbolicStringExpression {
+public final class SymbolicStringExpression {
   private final LinkedList list; // either String or SymbolicStringVar
 
   public SymbolicStringExpression(int sym, IntValue length) {
@@ -15,43 +15,49 @@ public class SymbolicStringExpression {
 
   public SymbolicStringExpression(SymbolicStringExpression sym) {
     this.list = new LinkedList();
-    for (Object elem : sym.list) {
-      this.list.addLast(elem);
-    }
+    this.list.addAll(sym.list);
   }
 
+  public boolean equals(Object o) {
+    if (o == null) {
+      return false;
+    } else if (this == o) {
+      return true;
+    } else if (o instanceof SymbolicStringExpression) {
+      SymbolicStringExpression other = (SymbolicStringExpression)o;
+      return list.equals(other.list);
+    } else {
+      return false;
+    }
+  }
+  
   public SymbolicStringExpression concatStr(String str) {
     SymbolicStringExpression ret = new SymbolicStringExpression(this);
-    Object last = ret.list.getLast();
-    if (last instanceof String) {
-      ret.list.removeLast();
-      ret.list.addLast(last + str);
-    } else {
-      ret.list.addLast(str);
-    }
+    ret.addLast(str);
     return ret;
+  }
+
+  private void addLast(String entry) {
+    Object last = list.getLast();
+    if (last instanceof String) {
+      list.removeLast();
+      list.addLast(last + entry);
+    } else {
+      list.addLast(entry);
+    }
   }
 
   public SymbolicStringExpression concat(SymbolicStringExpression expr) {
     SymbolicStringExpression ret = new SymbolicStringExpression(this);
     Object last = ret.list.getLast();
     Object first = expr.list.getFirst();
-    if (last instanceof String && first instanceof String) {
-      ret.list.removeLast();
-      ret.list.addLast(last + first.toString());
+    if (first instanceof String) {
+      ret.addLast((String)first);
     } else {
       ret.list.addLast(first);
     }
-
-    boolean isFirst = true;
-    for (Object elem : expr.list) {
-      if (isFirst) {
-        isFirst = false;
-      } else {
-        ret.list.addLast(elem);
-      }
-    }
-
+    
+    ret.list.addAll(expr.list.subList(1, expr.list.size()));
     return ret;
   }
 
@@ -114,11 +120,10 @@ public class SymbolicStringExpression {
       }
       return ret;
     }
-    return null;
+    throw new RuntimeException("Not implemented");
   }
 
   public SymOrInt getExprAt(int i, Set<String> freeVars, Map<String, Long> assignments) {
-    int len = list.size();
     for (Object s : list) {
       if (s instanceof String) {
         if (i < ((String) s).length()) {
@@ -128,8 +133,8 @@ public class SymbolicStringExpression {
         }
       } else {
         String idx = s.toString();
-        int length =
-        (int) ((SymbolicStringVar) s).getField("length").substituteInLinear(assignments);
+        int length = (int) ((SymbolicStringVar) s)
+          .getField("length").substituteInLinear(assignments);
         if (i < length) {
           freeVars.add("x" + idx + "__" + i);
           return new SymOrInt("x" + idx + "__" + i);
@@ -138,6 +143,6 @@ public class SymbolicStringExpression {
         }
       }
     }
-    return null;
+    throw new RuntimeException("Cannot find the exp");
   }
 }
