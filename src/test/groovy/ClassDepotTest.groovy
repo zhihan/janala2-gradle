@@ -5,6 +5,9 @@ import static org.junit.Assert.assertTrue
 
 import org.junit.Test
 
+import groovy.transform.CompileStatic
+
+@CompileStatic
 class TestClassForDepot {
   private String id;
   public static sId;
@@ -38,5 +41,18 @@ class ClassDepotTest {
       "janala.interpreters.TestClassForDepot", "sId")
     println("sId is " + sIdx + " static field")
     assertTrue(sIdx >= 0)
+  }
+
+  @Test
+  void testSubClassShouldHaveSuperClassFields() {
+    ClassDepot a = new ClassDepot()
+    int subIdx = a.getFieldIndex("janala.interpreters.TestSubClass", "a")
+    assertTrue(subIdx < 2)
+
+    int superIdx = a.getFieldIndex("janala.interpreters.TestClass", "a")
+    assertEquals(subIdx, superIdx)
+
+    subIdx = a.getFieldIndex("janala.interpreters.TestSubClass", "subA")
+    assertEquals(2, subIdx)
   }
 }
