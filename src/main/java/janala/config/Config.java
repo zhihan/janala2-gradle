@@ -71,7 +71,7 @@ public class Config {
       testLog = properties.getProperty("catg.testLogFile", "test.log");
       cvc3Command = properties.getProperty("catg.cvc3Command", "cvc3");
       cvc4Command = properties.getProperty("catg.cvc4Command", "cvc4");
-      loggerClass = System.getProperty("janala.loggerClass", "janala.logger.FileLogger");
+      loggerClass = System.getProperty("janala.loggerClass", "janala.logger.StringLogger");
       analysisClass =
           properties.getProperty("catg.analysisClass", "janala.logger.DJVM").replace('.', '/');
       solver = properties.getProperty("catg.solverClass", "janala.solvers.YicesSolver2");
@@ -96,7 +96,7 @@ public class Config {
       //ex.printStackTrace();
       // If no property file is given, set up the bare minimum
       analysisClass = "janala/logger/DJVM";
-      loggerClass = "janala.logger.FileLogger";
+      loggerClass = "janala.logger.StringLogger";
       traceFileName = "trace.dat";
       traceAuxFileName = "trace_aux.dat";
       history = "history.dat";
@@ -140,6 +140,10 @@ public class Config {
   }
 
   public Solver getSolver() {
+    if (solver == null || solver.isEmpty()) {
+      return null;
+    }
+
     try {
       Class solverClass = Class.forName(solver);
       Solver ret = (Solver) solverClass.newInstance();

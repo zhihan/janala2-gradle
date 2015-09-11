@@ -3,7 +3,7 @@ package janala.logger;
 import janala.logger.inst.*;
 
 public abstract class AbstractLogger implements Logger {
-  abstract protected void log(Instruction insn); 
+  protected abstract void log(Instruction insn); 
 
   public void LDC(int iid, int mid, int c) {
     log(new LDC_int(iid, mid, c));
@@ -704,6 +704,10 @@ public abstract class AbstractLogger implements Logger {
 
   public void SPECIAL(int i) {
     log(new SPECIAL(i));
+  }
+
+  public void flush() {
+    log(null);
   }
 
 }

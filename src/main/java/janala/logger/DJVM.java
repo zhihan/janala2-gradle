@@ -709,4 +709,8 @@ public class DJVM {
   public static void MAKE_SYMBOLIC() {
     intp.MAKE_SYMBOLIC();
   }
+
+  public static void flush() {
+    intp.flush();
+  }
 }

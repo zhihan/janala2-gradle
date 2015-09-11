@@ -329,19 +329,21 @@ public class History {
       FileUtil.moveFile(Config.instance.history + ".bak", Config.instance.history);
       FileUtil.touch(file);
     } else {
-      if ((i = strategy.solve(history, index, this)) >= 0) {
-        if (FileUtil.exists(file)) {
-          if ((i = strategy.solve(history, history.size(), this)) >= 0) {
-            writeHistory(i);
+      if (strategy != null) {
+        if ((i = strategy.solve(history, index, this)) >= 0) {
+          if (FileUtil.exists(file)) {
+            if ((i = strategy.solve(history, history.size(), this)) >= 0) {
+              writeHistory(i);
+            } else {
+              removeHistory();
+            }
+            FileUtil.remove(file);
           } else {
-            removeHistory();
+            writeHistory(i);
           }
-          FileUtil.remove(file);
         } else {
-          writeHistory(i);
+          removeHistory();
         }
-      } else {
-        removeHistory();
       }
     }
   }

@@ -25,7 +25,6 @@ public class FileLogger extends AbstractLogger {
     }
   }
 
-
   public FileLogger() {
     try {
       outputStream = new ObjectOutputStream(new FileOutputStream(Config.instance.traceFileName));

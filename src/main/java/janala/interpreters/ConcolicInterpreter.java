@@ -46,7 +46,7 @@ public class ConcolicInterpreter implements IVisitor {
     this.cnames = cnames;
     objects = new HashMap<Integer, Value>();
     history = History.readHistory(Config.instance.getSolver());
-    coverage = Coverage.instance;
+    coverage = Coverage.get();
   }
 
   // Used for testing with dependencies.
@@ -206,7 +206,9 @@ public class ConcolicInterpreter implements IVisitor {
   }
 
   public void endExecution() {
-    history.solveAndSave();
+    if (history != null) {
+      history.solveAndSave();
+    }
     Main.writeOldStates();
     Coverage.write();
   }

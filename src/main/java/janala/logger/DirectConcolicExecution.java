@@ -13,6 +13,10 @@ public class DirectConcolicExecution extends AbstractLogger {
   
   private final ConcolicInterpreter intp;
 
+  public ConcolicInterpreter getIntp() {
+    return intp;
+  }
+ 
   public DirectConcolicExecution() {
     this(new ConcolicInterpreter(ClassNames.getInstance()));
   }
@@ -48,6 +52,7 @@ public class DirectConcolicExecution extends AbstractLogger {
     } else {
       next = insn;
       intp.setNext(next);
+      System.out.println("Executing " + inst);
       inst.visit(intp);
       inst = next;
     }
