@@ -179,6 +179,9 @@ public class SymbolicStringPredicate extends Constraint {
           }
           
         case NE:
+          // This quick check is a little confusing. 
+          // Essentially it checks that if left and right size are nonempty strings.
+          
           SymbolicInt int1 =
               s1.symbolic != null ? s1.symbolic.setop(SymbolicInt.COMPARISON_OPS.GT) : null;
           SymbolicInt int2 =
@@ -191,7 +194,7 @@ public class SymbolicStringPredicate extends Constraint {
             return int1;
           } else if (int2 != null) {
             return int2;
-          } else {
+          } else { 
             return SymbolicTrueConstraint.instance;
           }
         case IN:

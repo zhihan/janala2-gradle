@@ -57,10 +57,21 @@ class SymbolicStringPredicateTest {
     assertEquals(expected, a.constraints.get(0))
   }
 
-   @Test
+  @Test
   void testConstraintInt() {
     SymbolicStringPredicate p1 = new SymbolicStringPredicate(
       COMPARISON_OPS.EQ, "a", "b")
+    def s = new HashSet<String>()
+    def m = new HashMap<String, Long>()
+    Constraint con = p1.getFormula(s, CONSTRAINT_TYPE.INT, m)
+    // Only test the length.
+    assertEquals(SymbolicTrueConstraint.instance, con)
+  }
+
+  @Test
+  void testConstraintNEInt() {
+    SymbolicStringPredicate p1 = new SymbolicStringPredicate(
+      COMPARISON_OPS.NE, "a", "b")
     def s = new HashSet<String>()
     def m = new HashMap<String, Long>()
     Constraint con = p1.getFormula(s, CONSTRAINT_TYPE.INT, m)
