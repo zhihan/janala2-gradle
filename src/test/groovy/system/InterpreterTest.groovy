@@ -13,6 +13,7 @@ import janala.instrument.Coverage
 
 import org.junit.Before
 import org.junit.Test
+import org.junit.Ignore
 
 import groovy.transform.CompileStatic
 
@@ -61,6 +62,7 @@ class IntepreterTest {
     assertEquals(0, interpreter.getHistory().getPathConstraint().size())
   }
 
+  @Ignore
   @Test
   void testGreaterThanZeroSymbol() {
     int classIdx = classNames.get("janala/system/IntepreterTest")
@@ -99,6 +101,7 @@ class IntepreterTest {
     return false;
   }
 
+  
   @Test
   void testLessOrEqualZero() {
     int classIdx = classNames.get("janala/system/IntepreterTest")
