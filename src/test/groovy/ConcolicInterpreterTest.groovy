@@ -1896,4 +1896,27 @@ class ConcolicInterpreterTest {
     assertTrue(frame.peek() instanceof ObjectValue)
     assertTrue(frame.peek() != ObjectValue.NULL)
   }
+
+  @Test
+  void testINSTANCEOF() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new ObjectValue(1))
+    interpreter.setNext(new SPECIAL(0)) // exception handling
+    interpreter.visitINSTANCEOF(new INSTANCEOF(0, 0, "SomeClass"))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testLDC_double() {
+    Frame frame = interpreter.getCurrentFrame()
+    interpreter.visitLDC_double(new LDC_double(0, 0, 0.0D))
+    assertEquals(new DoubleValue(0.0D), frame.peek2())
+  }
+
+  @Test
+  void testLDC_float() {
+    Frame frame = interpreter.getCurrentFrame()
+    interpreter.visitLDC_float(new LDC_float(0, 0, 0.0F))
+    assertEquals(new FloatValue(0.0F), frame.peek())
+  }
 }
