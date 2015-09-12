@@ -1919,4 +1919,25 @@ class ConcolicInterpreterTest {
     interpreter.visitLDC_float(new LDC_float(0, 0, 0.0F))
     assertEquals(new FloatValue(0.0F), frame.peek())
   }
+
+  @Test
+  void testTABLESWITCH() {
+    int[] tab = new int[1]
+    tab[0] = 1
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.visitTABLESWITCH(new TABLESWITCH(0, 0, 0, 1, 1, tab))
+  }
+
+  @Test
+  void testLOOKUP(){
+    int[] x = new int[1]
+    x[0] = 1
+    int[] y = new int[1]
+    y[0] = 2
+    def insn = new LOOKUPSWITCH(0, 0, 1, x, y)
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.visitLOOKUPSWITCH(insn)
+  }
 }

@@ -31,7 +31,6 @@ public final class SymOrInt {
     return constant;
   }
 
-  @Override
   public String toString() {
     if (sym != null) {
       return sym;
@@ -40,7 +39,6 @@ public final class SymOrInt {
     }
   }
 
-  @Override
   public boolean equals(Object o) {
     if (o == null) {
       return false;
