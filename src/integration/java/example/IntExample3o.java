@@ -3,18 +3,18 @@ package example;
 import janala.logger.DJVM;
 import janala.logger.DirectConcolicExecution;
 
-public class IntExample2o {
+public class IntExample3o {
   
-  private int greaterThanZero(int x) {
-    if (x > 0) {
-      return 1;
+  private boolean lessThanZero(int x) {
+    if (x <= 0) {
+      return true;
     }
-    return -1;
+    return false;
   }
   
   public static void main(String[] args) {
-    int x = new IntExample2o().greaterThanZero(1);
-    if (x == 1) {
+    boolean x = new IntExample3o().lessThanZero(1);
+    if (x) {
       System.out.println("Greater");
     }
   }

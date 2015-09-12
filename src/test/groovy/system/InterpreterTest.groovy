@@ -58,4 +58,34 @@ class IntepreterTest {
     Value y = interpreter.getCurrentFrame().peek()
     assertEquals(new IntValue(1), y)
   }
+
+  private boolean lessOrEqualZero(int x) {
+    DJVM.ILOAD(0, 0, 1)
+    DJVM.IFGT(1, 0, 6)
+    if (x <= 0) {
+      DJVM.SPECIAL(1)
+      DJVM.ICONST_1(2, 0)
+      DJVM.IRETURN(3, 0)
+      return true;
+    }
+    DJVM.ICONST_0(5, 0)
+    DJVM.IRETURN(6, 0)
+    return false;
+  }
+
+  @Test
+  void testLessOrEqualZero() {
+    int classIdx = classNames.get("janala/system/IntepreterTest")
+
+    DJVM.NEW(0, 1, "janala/system/IntepreterTest", classIdx)
+    DJVM.ICONST_1(1, 1)
+    DJVM.INVOKEVIRTUAL(2, 1, "janala/system/IntepreterTest", "lessOrEqualZero", "(I)Z")
+    boolean x = lessOrEqualZero(1)
+    assertEquals(false, x)
+
+    DJVM.INVOKEMETHOD_END()
+    DJVM.flush()
+    Value y = interpreter.getCurrentFrame().peek()
+    assertEquals(new IntValue(0), y)
+  }
 }
