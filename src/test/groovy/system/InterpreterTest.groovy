@@ -57,6 +57,32 @@ class IntepreterTest {
     DJVM.flush()
     Value y = interpreter.getCurrentFrame().peek()
     assertEquals(new IntValue(1), y)
+    assertEquals(1, interpreter.getHistory().getHistory().size())
+    assertEquals(0, interpreter.getHistory().getPathConstraint().size())
+  }
+
+  @Test
+  void testGreaterThanZeroSymbol() {
+    int classIdx = classNames.get("janala/system/IntepreterTest")
+
+    DJVM.NEW(0, 1, "janala/system/IntepreterTest", classIdx)
+    DJVM.ICONST_1(1, 1)
+    DJVM.ISTORE(2, 1, 1)
+    DJVM.ILOAD(3, 1, 1)
+    DJVM.INVOKESTATIC(4, 1, "janala/Main", "MakeSymbolic", "(I)V")
+    DJVM.INVOKEMETHOD_END()
+    DJVM.ILOAD(5, 1, 1)
+    DJVM.INVOKEVIRTUAL(6, 1, "janala/system/IntepreterTest", "greaterThanZero", "(I)I")
+    int x = greaterThanZero(1)
+    assertEquals(x, 1)
+
+    DJVM.INVOKEMETHOD_END()
+    DJVM.flush()
+    Value y = interpreter.getCurrentFrame().peek()
+
+    assertEquals(new IntValue(1), y)
+    assertEquals(1, interpreter.getHistory().getHistory().size())
+    assertEquals(1, interpreter.getHistory().getPathConstraint().size())
   }
 
   private boolean lessOrEqualZero(int x) {

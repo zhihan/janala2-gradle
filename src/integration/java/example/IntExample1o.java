@@ -2,6 +2,7 @@ package example;
 
 import janala.logger.DJVM;
 import janala.logger.DirectConcolicExecution;
+import janala.Main;
 
 public class IntExample1o {
     
@@ -13,7 +14,10 @@ public class IntExample1o {
     }
 
     public static void main(String[] args) {
-      int x = greaterThanZero(1);
+      int i = 1;
+      Main.MakeSymbolic(i);
+      int x = greaterThanZero(i);
+      
       if (x == 1) {
         System.out.println("Greater");
       }

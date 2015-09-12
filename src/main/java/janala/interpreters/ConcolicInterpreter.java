@@ -35,6 +35,10 @@ public class ConcolicInterpreter implements IVisitor {
   private ClassNames cnames;
   private Map<Integer, Value> objects;
   private History history;
+  public History getHistory() {
+    return history;
+  }
+
   private Instruction next;
   private final Coverage coverage;
 
