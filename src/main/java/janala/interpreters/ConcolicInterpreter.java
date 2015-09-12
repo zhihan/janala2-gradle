@@ -1505,7 +1505,7 @@ public class ConcolicInterpreter implements IVisitor {
     for (int i = inst.min; i <= inst.max; i++) {
       IntValue result = i1.IF_ICMPEQ(new IntValue(i));
       history.checkAndSetBranch(result.concrete == 1, result.symbolic, inst.iid);
-      Coverage.instance.visitBranch(inst.iid + j, result.concrete == 1);
+      coverage.visitBranch(inst.iid + j, result.concrete == 1);
       if (result.concrete == 1) return;
       j++;
     }
