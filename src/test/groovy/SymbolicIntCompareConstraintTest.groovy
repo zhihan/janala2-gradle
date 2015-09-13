@@ -105,5 +105,9 @@ class SymbolicIntCompareConstraintTest {
     def m = new HashMap<String, Long>()
     def con = new SymbolicIntCompareConstraint(a, b, COMPARISON_OPS.EQ)
     assertEquals(con, con.substitute(m))
+
+    m.put("x1", 1L)
+    con = new SymbolicIntCompareConstraint(a, b, COMPARISON_OPS.EQ)
+    assertEquals(SymbolicTrueConstraint.instance, con.substitute(m))
   }
 }
