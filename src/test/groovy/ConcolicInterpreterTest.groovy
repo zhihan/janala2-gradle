@@ -500,6 +500,34 @@ class ConcolicInterpreterTest {
   }
 
   @Test
+  void testGetValueObject_failString() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(PlaceHolder.instance)
+    interpreter.visitGETVALUE_Object(new GETVALUE_Object(10, "A", true))
+    assertEquals(new StringValue("A", 10), frame.peek())
+  }
+
+  @Test
+  void testGetValueObject_failObj() {
+    Frame frame = interpreter.getCurrentFrame()
+    ObjectValue obj = new ObjectValue(1)
+    frame.push(obj)
+    interpreter.visitGETVALUE_Object(new GETVALUE_Object(10, "", false))
+    ObjectValue exp = new ObjectValue(1)
+    exp.setAddress(10)
+    assertEquals(exp, frame.peek())
+  }
+
+  @Test
+  void testGetValueObject_failNull() {
+    Frame frame = interpreter.getCurrentFrame()
+    ObjectValue obj = new ObjectValue(1)
+    frame.push(obj)
+    interpreter.visitGETVALUE_Object(new GETVALUE_Object(0, "", false))
+    assertEquals(ObjectValue.NULL, frame.peek())
+  }
+
+  @Test
   void testGetValueInt_pass() {
     Frame frame = interpreter.getCurrentFrame()
     frame.push(new IntValue(1))
@@ -1704,6 +1732,14 @@ class ConcolicInterpreterTest {
   }
 
   @Test
+  void testLLOAD() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.setLocal2(0, new LongValue(2L))
+    interpreter.visitLLOAD(new LLOAD(0, 0, 0))
+    assertEquals(new LongValue(2L), frame.peek2())
+  }
+
+  @Test
   void testIINC() {
     Frame frame = interpreter.getCurrentFrame()
     frame.setLocal(0, new IntValue(0))
@@ -1940,4 +1976,34 @@ class ConcolicInterpreterTest {
     frame.push(new IntValue(1))
     interpreter.visitLOOKUPSWITCH(insn)
   }
-}
+
+  @Test
+  void testPOP() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(new IntValue(1))
+    interpreter.visitPOP(new POP(0, 0))
+    assertEquals(0, frame.getStackSize())
+  }
+
+  @Test
+  void testPOP2() {
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push2(new LongValue(1L))
+    interpreter.visitPOP2(new POP2(0, 0))
+    assertEquals(0, frame.getStackSize())
+  }
+
+  @Test
+  void testSIPUSH() {
+    Frame frame = interpreter.getCurrentFrame()
+    interpreter.visitSIPUSH(new SIPUSH(0, 0, 1))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testBIPUSH() {
+    Frame frame = interpreter.getCurrentFrame()
+    interpreter.visitBIPUSH(new BIPUSH(0, 0, 1))
+    assertEquals(new IntValue(1), frame.peek())
+  }
+} 

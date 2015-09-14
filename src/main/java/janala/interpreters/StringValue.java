@@ -3,7 +3,7 @@ package janala.interpreters;
 import janala.config.Config;
 import janala.solvers.History;
 
-public class StringValue extends ObjectValue {
+public final class StringValue extends ObjectValue {
   private final String string;
   private SymbolicStringExpression symbolicExp;
 
@@ -16,6 +16,21 @@ public class StringValue extends ObjectValue {
     super(100, -1);
     this.string = string;
     this.symbolicExp = symbolicExp;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) {
+      return false;
+    } else if (o == this) {
+      return true;
+    } else if (o instanceof StringValue) {
+      StringValue other = (StringValue)o;
+      return (this.string == other.string ||
+        this.string.equals(other.string));
+    } else {
+      return false;
+    }
   }
 
   @Override

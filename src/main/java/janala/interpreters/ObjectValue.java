@@ -12,10 +12,25 @@ public class ObjectValue extends Value {
     return fields;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) {
+      return false;
+    } else if (o == this) {
+      return true;
+    } else if (o instanceof ObjectValue) {
+      ObjectValue other = (ObjectValue)o;
+      return (address == other.address && fields.length == other.fields.length);
+    } else {
+      return false;
+    }
+  }
+
   SymbolicObject symbolic;
   public SymbolicObject getSymbolic() {
     return symbolic;
   }
+
   int address; // address 0 is null, address -1 is uninitialized address
   public int getAddress() {
     return address;

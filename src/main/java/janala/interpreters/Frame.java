@@ -7,7 +7,12 @@ public class Frame {
   private ArrayList<Value> locals = new ArrayList<Value>(8);
   private ArrayList<Value> stack = new ArrayList<Value>(8);
 
+  public int getStackSize() {
+    return stack.size();
+  }
+
   public final int nReturnWords;
+
 
   private Value ret;
   public void setRet(Value v) { ret = v; }
