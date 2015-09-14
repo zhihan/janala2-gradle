@@ -52,7 +52,6 @@ public class DirectConcolicExecution extends AbstractLogger {
     } else {
       next = insn;
       intp.setNext(next);
-      System.out.println("Executing " + inst);
       inst.visit(intp);
       inst = next;
     }
