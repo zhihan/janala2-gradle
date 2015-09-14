@@ -74,41 +74,48 @@ public final class StringValue extends ObjectValue {
     }
   }
 
-  @Override
-  public Value invokeMethod(String name, Value[] args, History history) {
-    if (name.equals("equals") && args.length == 1) {
-      return invokeEquals(args[0]);
-    } else if (name.equals("startsWith") && args.length == 1) {
+  private Value invokeStartsWith(Value[] args) {
+    if (args.length == 1) {
       if (args[0] instanceof StringValue) {
         StringValue other = (StringValue) args[0];
         boolean result = string.startsWith(other.string);
         if (symbolicExp != null) {
           return new IntValue(
-              result ? 1 : 0,
-              new SymbolicStringPredicate(
-                  SymbolicStringPredicate.COMPARISON_OPS.IN,
-                  symbolicExp,
-                  escapeRE(other.string) + ".*"));
+            result ? 1 : 0,
+            new SymbolicStringPredicate(
+              SymbolicStringPredicate.COMPARISON_OPS.IN,
+              symbolicExp,
+              escapeRE(other.string) + ".*"));
         } else {
           return new IntValue(result ? 1 : 0);
         }
       }
-    } else if (name.equals("startsWith") && args.length == 2) {
+    } else if (args.length == 2) {
       if (args[0] instanceof StringValue) {
         StringValue other = (StringValue) args[0];
         IntValue offset = (IntValue) args[1];
         boolean result = string.startsWith(other.string, offset.concrete);
         if (symbolicExp != null) {
           return new IntValue(
-              result ? 1 : 0,
-              new SymbolicStringPredicate(
-                  SymbolicStringPredicate.COMPARISON_OPS.IN,
-                  symbolicExp,
-                  ".{" + offset.concrete + "}" + escapeRE(other.string) + ".*"));
+            result ? 1 : 0,
+            new SymbolicStringPredicate(
+              SymbolicStringPredicate.COMPARISON_OPS.IN,
+              symbolicExp,
+              ".{" + offset.concrete + "}" + escapeRE(other.string) + ".*"));
         } else {
           return new IntValue(result ? 1 : 0);
         }
       }
+    }
+    return null;
+  }
+
+  @Override
+  public Value invokeMethod(String name, Value[] args, History history) {
+    if (name.equals("equals") && args.length == 1) {
+      return invokeEquals(args[0]);
+    } else if (name.equals("startsWith")) {
+      return invokeStartsWith(args);
     } else if (name.equals("endsWith") && args.length == 1) {
       StringValue other = (StringValue) args[0];
       boolean result = string.endsWith(other.string);

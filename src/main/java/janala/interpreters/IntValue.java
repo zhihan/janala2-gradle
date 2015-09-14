@@ -41,11 +41,16 @@ public class IntValue extends Value {
     if (other == null ) {
       return false;
     } 
+    if (other == this) {
+      return true;
+    }
     if (other instanceof IntValue) {
       IntValue otherVal = (IntValue) other;
       return (this.concrete == otherVal.concrete &&
-        this.symbolic == otherVal.symbolic && 
-        this.nonIntConstraint == otherVal.nonIntConstraint);
+        (this.symbolic == otherVal.symbolic || 
+          this.symbolic.equals(otherVal.symbolic)) && 
+        (this.nonIntConstraint == otherVal.nonIntConstraint ||
+          this.nonIntConstraint.equals(otherVal.nonIntConstraint)));
     } else {
       return false;
     }
@@ -397,7 +402,9 @@ public class IntValue extends Value {
 
   @Override
   public String toString() {
-    return "IntValue{" + "symbolic=" + symbolic + ", concrete=" + concrete + '}';
+    return "IntValue{" + "symbolic=" + 
+      symbolic + ", concrete=" + concrete + 
+      ", nonIntConstraint=" + nonIntConstraint +  '}';
   }
 
   public Constraint getSymbolic() {
