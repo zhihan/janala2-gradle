@@ -3,7 +3,10 @@ package janala.interpreters;
 import java.util.Map;
 
 public class SymbolicNotConstraint extends Constraint {
-  public Constraint constraint;
+  private final Constraint constraint;
+  public Constraint getConstraint() {
+    return constraint;
+  }
 
   public SymbolicNotConstraint(Constraint c) {
     constraint = c;

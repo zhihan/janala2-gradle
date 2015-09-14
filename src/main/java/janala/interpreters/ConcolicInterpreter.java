@@ -41,26 +41,29 @@ public class ConcolicInterpreter implements IVisitor {
 
   private Instruction next;
   private final Coverage coverage;
+  private final StaticInvocation staticInv;
 
   private final static Logger logger = MyLogger.getLogger(ConcolicInterpreter.class.getName());
 
-  public ConcolicInterpreter(ClassNames cnames) {
+  public ConcolicInterpreter(ClassNames cnames, Config config) {
     stack = new Stack<Frame>();
     stack.add(currentFrame = new Frame(0));
     this.cnames = cnames;
     objects = new HashMap<Integer, Value>();
-    history = History.readHistory(Config.instance.getSolver());
+    history = History.readHistory(config.getSolver());
     coverage = Coverage.get();
+    staticInv = new StaticInvocation(config);
   }
 
   // Used for testing with dependencies.
-  public ConcolicInterpreter(ClassNames cnames, History history, Coverage coverage) {
+  public ConcolicInterpreter(ClassNames cnames, History history, Coverage coverage, Config config) {
     stack = new Stack<Frame>();
     stack.add(currentFrame = new Frame(0));
     this.cnames = cnames;
     objects = new HashMap<Integer, Value>();
     this.history = history; // 
     this.coverage = coverage;
+    staticInv = new StaticInvocation(config);
   } 
 
   private void checkAndSetException() {
@@ -1065,7 +1068,7 @@ public class ConcolicInterpreter implements IVisitor {
       if (isInstance) {
         currentFrame.setRet(instance.invokeMethod(name, tmpValues, history));
       } else {
-        currentFrame.setRet(StaticInvocation.invokeMethod(inst.iid, owner, name, tmpValues, history));
+        currentFrame.setRet(staticInv.invokeMethod(inst.iid, owner, name, tmpValues, history));
       }
     }
   }

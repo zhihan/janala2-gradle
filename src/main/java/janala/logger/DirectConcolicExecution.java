@@ -18,7 +18,7 @@ public class DirectConcolicExecution extends AbstractLogger {
   }
  
   public DirectConcolicExecution() {
-    this(new ConcolicInterpreter(ClassNames.getInstance()));
+    this(new ConcolicInterpreter(ClassNames.getInstance(), Config.instance));
   }
 
   public DirectConcolicExecution(ConcolicInterpreter interpreter) {

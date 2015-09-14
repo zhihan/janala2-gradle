@@ -3,13 +3,13 @@ package janala.interpreters;
 import janala.config.Config;
 import janala.solvers.History;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- * Date: 7/1/12
- * Time: 9:56 AM
- */
-public class StaticInvocation {
-  public static Value invokeMethod(
+public final class StaticInvocation {
+  private final Config config;
+  public StaticInvocation(Config config) {
+    this.config = config;
+  }
+
+  public Value invokeMethod(
       int iid, String owner, String name, Value[] args, History history) {
     if (owner.equals("java/lang/Integer") && name.equals("valueOf")) {
       IntegerObjectValue ret = new IntegerObjectValue();
@@ -58,11 +58,11 @@ public class StaticInvocation {
       history.addInput(symbol, args[0]);
       return PlaceHolder.instance;
     } else if (owner.equals("janala/Main") && name.equals("BeginScope") && args.length == 0) {
-      history.addInput(Config.instance.scopeBeginSymbol, null);
+      history.addInput(config.scopeBeginSymbol, null);
       history.beginScope(iid);
       return PlaceHolder.instance;
     } else if (owner.equals("janala/Main") && name.equals("EndScope") && args.length == 0) {
-      history.addInput(Config.instance.scopeEndSymbol, null);
+      history.addInput(config.scopeEndSymbol, null);
       history.endScope(iid);
       return PlaceHolder.instance;
     } else if (owner.equals("janala/Main")

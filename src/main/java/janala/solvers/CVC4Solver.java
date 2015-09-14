@@ -164,7 +164,7 @@ public class CVC4Solver implements Solver {
       SymbolicNotConstraint not = (SymbolicNotConstraint) con;
       out.print(" NOT ");
       out.print("(");
-      print(not.constraint, out, freeVars, type, soln);
+      print(not.getConstraint(), out, freeVars, type, soln);
       out.print(")");
     } else if (con instanceof SymbolicTrueConstraint) {
       out.print(" TRUE ");

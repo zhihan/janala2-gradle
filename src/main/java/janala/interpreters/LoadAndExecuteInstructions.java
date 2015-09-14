@@ -42,7 +42,7 @@ public class LoadAndExecuteInstructions {
       inputStream.close();
       //cnames.init();
 
-      intp = new ConcolicInterpreter(cnames);
+      intp = new ConcolicInterpreter(cnames, Config.instance);
       inputStream = new ObjectInputStream(new FileInputStream(Config.instance.traceFileName));
 
       Instruction inst, next;

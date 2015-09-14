@@ -146,23 +146,23 @@ public class SymbolicStringPredicate extends Constraint {
     return and;
   }
 
+  private IntValue getLength(Object s) {
+    return  (s instanceof String)
+            ? new IntValue(((String) s).length())
+            : ((SymbolicStringExpression) s).getField("length");
+  }
+
   public Constraint getFormula(
       Set<String> freeVars,
       CONSTRAINT_TYPE mode,
       Map<String, Long> assignments) {
     StringBuilder sb = new StringBuilder();
-    long length1, length2;
     int j;
     
-    IntValue s1 =
-        (this.left instanceof String)
-            ? new IntValue(((String) this.left).length())
-            : ((SymbolicStringExpression) this.left).getField("length");
-    IntValue s2 =
-        (this.right instanceof String)
-            ? new IntValue(((String) this.right).length())
-            : ((SymbolicStringExpression) this.right).getField("length");
-    IntValue formula;
+    IntValue s1 = getLength(left);
+    IntValue s2 = getLength(right);
+    long length1 = s1.substituteInLinear(assignments);
+    long length2 = s2.substituteInLinear(assignments);
 
     if (mode == CONSTRAINT_TYPE.INT) {
       switch (this.op) {
@@ -188,8 +188,7 @@ public class SymbolicStringPredicate extends Constraint {
               s2.symbolic != null ? s2.symbolic.setop(SymbolicInt.COMPARISON_OPS.GT) : null;
           if (int1 != null && int2 != null) {
             SymbolicAndConstraint ret = new SymbolicAndConstraint(int1);
-            ret = ret.AND(int2);
-            return ret;
+            return ret.AND(int2);
           } else if (int1 != null) {
             return int1;
           } else if (int2 != null) {
@@ -209,32 +208,12 @@ public class SymbolicStringPredicate extends Constraint {
     } else if (mode == CONSTRAINT_TYPE.STR) {
       switch (this.op) {
         case EQ:
-          if (s1.symbolic != null) {
-            length1 = s1.substituteInLinear(assignments);
-          } else {
-            length1 = s1.concrete;
-          }
-          if (s2.symbolic != null) {
-            length2 = s2.substituteInLinear(assignments);
-          } else {
-            length2 = s2.concrete;
-          }
           if (length1 != length2) {
             return SymbolicFalseConstraint.instance;
           } else {
             return getStringEqualityFormula(this.left, this.right, length1, freeVars, assignments);
           }
         case NE:
-          if (s1.symbolic != null) {
-            length1 = s1.substituteInLinear(assignments);
-          } else {
-            length1 = s1.concrete;
-          }
-          if (s2.symbolic != null) {
-            length2 = s2.substituteInLinear(assignments);
-          } else {
-            length2 = s2.concrete;
-          }
           if (length1 != length2) {
             return SymbolicTrueConstraint.instance;
           } else {
@@ -243,7 +222,6 @@ public class SymbolicStringPredicate extends Constraint {
           }
           //                    return (length1 !== length2)?"TRUE":"FALSE";
         case IN:
-          length1 = s1.substituteInLinear(assignments);
           for (j = 0; j < length1; j++) {
             freeVars.add("x" + this.left + "__" + j);
           }
@@ -251,7 +229,6 @@ public class SymbolicStringPredicate extends Constraint {
           return RegexpEncoder.getRegexpFormulaString(
               (String) this.right, "x" + this.left + "__", (int) length1);
         case NOTIN:
-          length1 = s1.substituteInLinear(assignments);
           for (j = 0; j < length1; j++) {
             freeVars.add("x" + this.left + "__" + j);
           }

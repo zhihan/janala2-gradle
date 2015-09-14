@@ -3,7 +3,7 @@ package janala.interpreters;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class SymbolicAndConstraint extends Constraint {
+public final class SymbolicAndConstraint extends Constraint {
   public LinkedList<Constraint> constraints;
 
   public SymbolicAndConstraint(Constraint c) {
@@ -12,6 +12,23 @@ public class SymbolicAndConstraint extends Constraint {
   }
 
   private SymbolicAndConstraint() {
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) {
+      return false;
+    }
+    if (o == this) {
+      return true;
+    }
+
+    if (o instanceof SymbolicAndConstraint) {
+      SymbolicAndConstraint other = (SymbolicAndConstraint) o;
+      return (constraints.equals(other.constraints));
+    } else {
+      return false;
+    }
   }
 
   public SymbolicAndConstraint AND(Constraint c) {

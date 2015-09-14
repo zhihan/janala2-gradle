@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.verify
 import static org.mockito.Mockito.when
 
+import janala.config.Config
 import janala.solvers.History
 import janala.solvers.Solver
 import janala.solvers.BranchElement
@@ -35,7 +36,7 @@ class ConcolicInterpreterTest {
     solver = mock(Solver.class)
     history = new History(solver)
     coverage = mock(Coverage.class)
-    interpreter = new ConcolicInterpreter(classNames, history, coverage)
+    interpreter = new ConcolicInterpreter(classNames, history, coverage, new Config())
   }
 
   @Test
