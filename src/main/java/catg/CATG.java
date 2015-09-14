@@ -8,73 +8,45 @@ import java.io.Serializable;
 
 public class CATG {
   public static int abstractInt(String test, int x) {
-    if (Config.instance.testChecker.check(test)) {
-      int y = readInt(x);
-      Main.AbstractEqualsConcrete(Main.compare(y, x));
-      return y;
-    } else {
-      return x;
-    }
+    int y = readInt(x);
+    Main.AbstractEqualsConcrete(Main.compare(y, x));
+    return y;
   }
 
   public static boolean abstractBool(String test, boolean x) {
-    if (Config.instance.testChecker.check(test)) {
       boolean y = readBool(x);
       Main.AbstractEqualsConcrete(Main.compare(y, x));
       return y;
-    } else {
-      return x;
-    }
   }
 
   public static long abstractLong(String test, long x) {
-    if (Config.instance.testChecker.check(test)) {
       long y = readLong(x);
       Main.AbstractEqualsConcrete(Main.compare(y, x));
       return y;
-    } else {
-      return x;
-    }
   }
 
   public static char abstractChar(String test, char x) {
-    if (Config.instance.testChecker.check(test)) {
       char y = readChar(x);
       Main.AbstractEqualsConcrete(Main.compare(y, x));
       return y;
-    } else {
-      return x;
-    }
   }
 
   public static byte abstractByte(String test, byte x) {
-    if (Config.instance.testChecker.check(test)) {
       byte y = readByte(x);
       Main.AbstractEqualsConcrete(Main.compare(y, x));
       return y;
-    } else {
-      return x;
-    }
   }
 
   public static short abstractShort(String test, short x) {
-    if (Config.instance.testChecker.check(test)) {
       short y = readShort(x);
       Main.AbstractEqualsConcrete(Main.compare(y, x));
       return y;
-    } else {
-      return x;
-    }
   }
 
   public static String abstractString(String test, String x) {
-    if (Config.instance.testChecker.check(test)) {
       String y = readString(x);
       Main.AbstractEqualsConcrete(Main.compare(y, x));
       return y;
-    } else {
-      return x;
-    }
   }
 
   public static int[] readIntArray(int length, int x) {
@@ -153,33 +125,23 @@ public class CATG {
   }
 
   public static void BeginScope(String test) {
-    if (Config.instance.testChecker.check(test)) {
-      Main.BeginScope();
-    }
+    Main.BeginScope();
   }
 
   public static void EndScope(String test) {
-    if (Config.instance.testChecker.check(test)) {
-      Main.EndScope();
-    }
+    Main.EndScope();
   }
 
   public static void event(String test, String eventName) {
-    if (Config.instance.testChecker != null && Config.instance.testChecker.check(test)) {
-      Main.event(eventName);
-    }
+    Main.event(eventName);
   }
 
   public static void pathRegex(String test, String regex) {
-    if (Config.instance.testChecker != null && Config.instance.testChecker.check(test)) {
-      Main.pathRegex(regex);
-    }
+    Main.pathRegex(regex);
   }
 
   public static void equivalent(String test, String location, Serializable value) {
-    if (Config.instance.testChecker.check(test)) {
-      Main.equivalent(location, value);
-    }
+    Main.equivalent(location, value);
   }
 
   public static void skipPath() {

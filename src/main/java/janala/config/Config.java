@@ -30,7 +30,6 @@ public class Config {
   public String yicesCommand;
   public String formulaFile;
   public String testLog;
-  public String cvc3Command;
   public String cvc4Command = "cvc4";
   public String[] excludeList;
   public String[] includeList;
@@ -45,7 +44,7 @@ public class Config {
   public int scopeBeginSymbol = -1;
   public int scopeEndSymbol = -2;
   public String test;
-  public TestChecker testChecker;
+  
   public String oldStates;
   public boolean printHistory;
 
@@ -69,7 +68,7 @@ public class Config {
       yicesCommand = properties.getProperty("catg.yicesCommand", "yices");
       formulaFile = properties.getProperty("catg.formulaFile", "formula");
       testLog = properties.getProperty("catg.testLogFile", "test.log");
-      cvc3Command = properties.getProperty("catg.cvc3Command", "cvc3");
+      
       cvc4Command = properties.getProperty("catg.cvc4Command", "cvc4");
       loggerClass = System.getProperty("janala.loggerClass", "janala.logger.StringLogger");
       analysisClass =
@@ -90,7 +89,6 @@ public class Config {
               "catg.testCheckingClass",
               properties.getProperty(
                   "catg.testCheckingClass", "janala.config.DefaultTestCheckerImpl"));
-      testChecker = (TestChecker) loadClass(testCheckingClass);
 
     } catch (IOException ex) {
       //ex.printStackTrace();
@@ -101,24 +99,6 @@ public class Config {
       traceAuxFileName = "trace_aux.dat";
       history = "history.dat";
     }
-  }
-
-  public Object loadClass(String cName) {
-    try {
-      Class clazz = Class.forName(cName);
-      Object ret = clazz.newInstance();
-      return ret;
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-      System.exit(1);
-    } catch (InstantiationException e) {
-      e.printStackTrace();
-      System.exit(1);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-      System.exit(1);
-    }
-    return null;
   }
 
   public Logger getLogger() {
