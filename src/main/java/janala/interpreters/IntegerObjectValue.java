@@ -2,11 +2,6 @@ package janala.interpreters;
 
 import janala.solvers.History;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- * Date: 7/2/12
- * Time: 2:47 PM
- */
 public class IntegerObjectValue extends ObjectValue {
   IntValue intValue;
 

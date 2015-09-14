@@ -27,7 +27,6 @@ public class Config {
   public String history;
   public String coverage;
   public String inputs;
-  public String yicesCommand;
   public String formulaFile;
   public String testLog;
   public String cvc4Command = "cvc4";
@@ -65,7 +64,7 @@ public class Config {
       history = properties.getProperty("catg.historyFile", "history");
       coverage = properties.getProperty("catg.coverageFile", "coverage.catg");
       inputs = properties.getProperty("catg.inputsFile", "inputs");
-      yicesCommand = properties.getProperty("catg.yicesCommand", "yices");
+      
       formulaFile = properties.getProperty("catg.formulaFile", "formula");
       testLog = properties.getProperty("catg.testLogFile", "test.log");
       
@@ -101,10 +100,10 @@ public class Config {
     }
   }
 
-  public Logger getLogger() {
+  private Object getObject(String className) {
     try {
-      Class solverClass = Class.forName(loggerClass);
-      Logger ret = (Logger) solverClass.newInstance();
+      Class clazz = Class.forName(className);
+      Object ret = clazz.newInstance();
       return ret;
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
@@ -117,48 +116,26 @@ public class Config {
       System.exit(1);
     }
     return null;
+  }
+
+  public Logger getLogger() {
+    if (loggerClass == null || loggerClass.isEmpty()) {
+      return null;
+    }
+    return (Logger) getObject(loggerClass);
   }
 
   public Solver getSolver() {
     if (solver == null || solver.isEmpty()) {
       return null;
     }
-
-    try {
-      Class solverClass = Class.forName(solver);
-      Solver ret = (Solver) solverClass.newInstance();
-      return ret;
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-      System.exit(1);
-    } catch (InstantiationException e) {
-      e.printStackTrace();
-      System.exit(1);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-      System.exit(1);
-    }
-    return null;
+    return (Solver) getObject(solver);
   }
 
   public Strategy getStrategy() {
     if (strategy == null || strategy.isEmpty()) {
       return null;
     }
-    try {
-      Class solverClass = Class.forName(strategy);
-      Strategy ret = (Strategy) solverClass.newInstance();
-      return ret;
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-      System.exit(1);
-    } catch (InstantiationException e) {
-      e.printStackTrace();
-      System.exit(1);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-      System.exit(1);
-    }
-    return null;
+    return (Strategy) getObject(strategy);
   }
 }
