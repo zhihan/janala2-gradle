@@ -11,5 +11,5 @@ PWD=`pwd`
 ROOT=`dirname $PWD`
 source "$SCRIPT_DIR/env.sh"
 
-java -cp $CLASSPATH:. -javaagent:${ROOT}/lib/catg-dev.jar $@
+java -cp $CLASSPATH:.:"${ROOT}/build/classes/integration" -javaagent:${ROOT}/lib/catg-dev.jar $@
 

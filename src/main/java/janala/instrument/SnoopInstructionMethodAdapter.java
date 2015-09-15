@@ -525,7 +525,6 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
   public void visitTypeInsn(int opcode, String type) {
     switch (opcode) {
       case NEW:
-        //mv.visitTypeInsn(opcode, type);
         addBipushInsn(mv, instrumentationState.incAndGetId());
         addBipushInsn(mv, instrumentationState.getMid());
         mv.visitLdcInsn(type);
@@ -534,12 +533,9 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
         mv.visitMethodInsn(
             INVOKESTATIC, Config.instance.analysisClass, "NEW", "(IILjava/lang/String;I)V", false);
         mv.visitTypeInsn(opcode, type);
-        calledNew = true;
         addSpecialInsn(mv, 0); // for non-exceptional path
-        addBipushInsn(mv, instrumentationState.incAndGetId());
-        addBipushInsn(mv, instrumentationState.getMid());
-        mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DUP", "(II)V", false);
-        mv.visitInsn(DUP);
+
+        calledNew = true;
         break;
       case ANEWARRAY:
         addTypeInsn(mv, type, opcode, "ANEWARRAY");
@@ -674,14 +670,16 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
         isSuperInitCalled = true;
         mv.visitMethodInsn(opcode, owner, name, desc);
         if (calledNew) {
-          // When new is instrumented it always calls a dup. Even if we do not instrument the init call
-          // we still need to pop the 'this' pointer off the stack.
-          mv.visitInsn(POP);
+          calledNew = false;
         }
       } else {
         addMethodWithTryCatch(opcode, owner, name, desc);
         if (calledNew) {
           calledNew = false;
+          addBipushInsn(mv, instrumentationState.incAndGetId());
+          addBipushInsn(mv, instrumentationState.getMid());
+          mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DUP", "(II)V", false);
+          mv.visitInsn(DUP);
           addValueReadInsn(mv, "Ljava/lang/Object;", "GETVALUE_");
           addBipushInsn(mv, instrumentationState.incAndGetId());
           addBipushInsn(mv, instrumentationState.getMid());

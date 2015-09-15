@@ -110,6 +110,19 @@ public final class StringValue extends ObjectValue {
     return null;
   }
 
+  private Value invokeReplace(Value from, Value to) {
+    if ((from instanceof IntValue) &&
+        (to instanceof IntValue)) {
+      // e.g., replace('a', 'b')
+      char fromChar = (char) ((IntValue) from).concrete;
+      char toChar = (char) ((IntValue) to).concrete;
+      // TODO(zhihan): Consider how to handle expressions.
+      // As of now just use the concrete value.
+      return new StringValue(string.replace(fromChar, toChar), null);
+    }
+    return null;
+  }
+
   @Override
   public Value invokeMethod(String name, Value[] args, History history) {
     if (name.equals("equals") && args.length == 1) {
@@ -176,6 +189,9 @@ public final class StringValue extends ObjectValue {
           return new IntValue(result ? 1 : 0);
         }
       }
+    } else if (name.equals("replace") && args.length == 2) {
+      System.out.println("invoking replace");
+      return invokeReplace(args[0], args[1]);
     }
     return super.invokeMethod(name, args, history);
   }
