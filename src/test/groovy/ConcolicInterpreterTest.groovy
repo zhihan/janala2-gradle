@@ -1916,7 +1916,7 @@ class ConcolicInterpreterTest {
   }
 
   @Test
-  void testINVOKEMETHOD_ENT() {
+  void testINVOKEMETHOD_END() {
     Frame m = new Frame(1)
     m.setRet(new IntValue(1))
     interpreter.getStack().push(m)
@@ -2006,5 +2006,14 @@ class ConcolicInterpreterTest {
     Frame frame = interpreter.getCurrentFrame()
     interpreter.visitBIPUSH(new BIPUSH(0, 0, 1))
     assertEquals(new IntValue(1), frame.peek())
+  }
+
+  @Test
+  void testINVOKEMETHOD_EXCEPTION() {
+    Frame m = new Frame(1)
+    interpreter.getStack().push(m)
+    interpreter.visitINVOKEMETHOD_EXCEPTION(new INVOKEMETHOD_EXCEPTION())
+    Frame frame = interpreter.getCurrentFrame()
+    assertEquals(PlaceHolder.instance, frame.peek())
   }
 } 
