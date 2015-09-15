@@ -867,7 +867,7 @@ class MethodInstrumenterTest {
     
     MethodRecorder expected = new MethodRecorder()
     def ev = expected.getVisitor()
-    int iid = state.getId() - 1
+    int iid = state.getId()
     int mid = state.getMid()
     Utils.addBipushInsn(ev, iid)
     Utils.addBipushInsn(ev, mid)
@@ -883,13 +883,6 @@ class MethodInstrumenterTest {
     ev.visitMethodInsn(Opcodes.INVOKESTATIC, 
       Config.instance.analysisClass, "SPECIAL", "(I)V");
 
-    iid = state.getId()
-    mid = state.getMid()
-    Utils.addBipushInsn(ev, iid)
-    Utils.addBipushInsn(ev, mid)
-    ev.visitMethodInsn(Opcodes.INVOKESTATIC, Config.instance.analysisClass, 
-      "DUP", "(II)V", false);
-    ev.visitInsn(Opcodes.DUP);
     assertEquals(expected, recorder)
   }
 
