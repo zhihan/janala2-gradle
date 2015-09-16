@@ -23,7 +23,9 @@ class CVC4SolverTest {
   void testSymbolicInt(SymbolicInt y, COMPARISON_OPS op, String expected) {
     y.setOp(op)
     def bytes = new ByteArrayOutputStream()
-    solver.print(y, new PrintStream(bytes))
+    def printer = new CVC4Solver.Printer(new HashSet<String>(), 
+      new HashMap<String, Long>(), CVC4Solver.CONSTRAINT_TYPE.INT, new PrintStream(bytes))
+    printer.print(y)
     assertEquals(expected, bytes.toString())
   }
 
@@ -43,7 +45,9 @@ class CVC4SolverTest {
   void testSymbolicCompareInt(SymOrInt x, SymOrInt y, COMPARISON_OPS op, String expected) {
     def con = new SymbolicIntCompareConstraint(x, y, op)
     def bytes = new ByteArrayOutputStream()
-    solver.print(con, new PrintStream(bytes))
+    def printer = new CVC4Solver.Printer(new HashSet<String>(), 
+      new HashMap<String, Long>(), CVC4Solver.CONSTRAINT_TYPE.INT, new PrintStream(bytes))
+    printer.print(con)
     assertEquals(expected, bytes.toString())
   }
 

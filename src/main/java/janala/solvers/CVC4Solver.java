@@ -59,102 +59,131 @@ public class CVC4Solver implements Solver {
     this.pathConstraintIndex = pathConstraintIndex;
   }
 
-  //VisibleForTesting
-  public void print(SymbolicInt c, PrintStream out) {
-    boolean first = true;
-    for (Map.Entry<Integer, Long> it : c.getLinear().entrySet()) {      
-      if (first) {
-        first = false;
-      } else {
-        out.print(" + ");
+  public static class Printer {
+    private final Set<String> freeVars;
+    private final Map<String, Long> soln;
+    private final CONSTRAINT_TYPE type;
+    private final PrintStream out;
+
+    public Printer(Set<String> freeVars, Map<String, Long> sol, CONSTRAINT_TYPE type, 
+      PrintStream out) {
+      this.freeVars = freeVars;
+      this.soln = sol;
+      this.type = type;
+      this.out = out;
+    }
+
+    public void print(SymbolicInt c) {
+      boolean first = true;
+      for (Map.Entry<Integer, Long> it : c.getLinear().entrySet()) {      
+        if (first) {
+          first = false;
+        } else {
+          out.print(" + ");
+        }
+        out.printf("%s*(%d)", "x" + String.valueOf(it.getKey()), it.getValue());
       }
-      out.printf("%s*(%d)", "x" + String.valueOf(it.getKey()), it.getValue());
-    }
     
-    if (c.getConstant() != 0) {
-      out.printf(" + (%d)", c.getConstant());
-    }
-    out.print(" " + c.getOp() + " ");
-    out.print("0");
-  }
+      if (c.getConstant() != 0) {
+        out.printf(" + (%d)", c.getConstant());
+      }
+      out.print(" " + c.getOp() + " ");
+      out.print("0");
 
-  //Visible for testing
-  public void print(SymbolicIntCompareConstraint c, PrintStream out) {
-    out.printf("(%s) - (%s) %s 0", c.left, c.right, c.op);
-  }
-
-  private void print(Constraint con,
-      PrintStream out,
-      Set<String> freeVars,
-      CONSTRAINT_TYPE type,
-      TreeMap<String, Long> soln) {
-    if (con instanceof SymbolicInt) {
-      print((SymbolicInt)con, out);
-      SymbolicInt c = (SymbolicInt) con;
       for (Map.Entry<Integer, Long> it : c.getLinear().entrySet()){
         int integer = it.getKey();
         freeVars.add("x" + integer);
       }
-    } else if (con instanceof SymbolicIntCompareConstraint) {
-      print((SymbolicIntCompareConstraint)con, out);
-      SymbolicIntCompareConstraint c = (SymbolicIntCompareConstraint)con;
+    }
+
+    //Visible for testing
+    public void print(SymbolicIntCompareConstraint c) {
+      out.printf("(%s) - (%s) %s 0", c.left, c.right, c.op);
+
       if (c.left.isSym) {
         freeVars.add(c.left.getSym());
       }
       if (c.right.isSym) {
           freeVars.add(c.right.getSym());
       }
-    } else if (con instanceof SymbolicOrConstraint) {
-      SymbolicOrConstraint or = (SymbolicOrConstraint) con;
+    }
 
-      boolean first2 = true;
+    public void print(SymbolicOrConstraint or){
+      boolean first = true;
       for (Constraint c : or.constraints) {
-        if (first2) {
-          first2 = false;
+        if (first) {
+          first = false;
         } else {
           out.print(" OR ");
         }
         out.print("(");
-        print(c, out, freeVars, type, soln);
+        print(c); // Recursion
         out.print(")");
       }
       if (or.constraints.isEmpty()) {
         out.print(" TRUE ");
       }
-    } else if (con instanceof SymbolicAndConstraint) {
-      SymbolicAndConstraint and = (SymbolicAndConstraint) con;
-
-      boolean first2 = true;
-      for (Constraint c : and.constraints) {
-        if (first2) {
-          first2 = false;
-        } else {
-          out.print(" AND ");
-        }
-        out.print("(");
-        print(c, out, freeVars, type, soln);
-        out.print(")");
-      }
-      if (and.constraints.isEmpty()) {
-        out.print(" FALSE ");
-      }
-    } else if (con instanceof SymbolicNotConstraint) {
-      SymbolicNotConstraint not = (SymbolicNotConstraint) con;
-      out.print(" NOT ");
-      out.print("(");
-      print(not.getConstraint(), out, freeVars, type, soln);
-      out.print(")");
-    } else if (con instanceof SymbolicTrueConstraint) {
-      out.print(" TRUE ");
-    } else if (con instanceof SymbolicFalseConstraint) {
-      out.print(" FALSE ");
-    } else if (con instanceof SymbolicStringPredicate) {
-      SymbolicStringPredicate str = (SymbolicStringPredicate) con;
-      Constraint intConstraint = str.getFormula(freeVars, type, soln);
-      print(intConstraint, out, freeVars, type, soln);
-    } else {
-      throw new RuntimeException("Unimplemented constraint type " + con);
     }
+
+
+    public void print(Constraint con) {
+      if (con instanceof SymbolicInt) {
+        print((SymbolicInt)con);
+
+      } else if (con instanceof SymbolicIntCompareConstraint) {
+        print((SymbolicIntCompareConstraint)con);
+      } else if (con instanceof SymbolicOrConstraint) {
+        print((SymbolicOrConstraint) con);
+
+      } else if (con instanceof SymbolicAndConstraint) {
+        SymbolicAndConstraint and = (SymbolicAndConstraint) con;
+
+        boolean first2 = true;
+        for (Constraint c : and.constraints) {
+          if (first2) {
+            first2 = false;
+          } else {
+            out.print(" AND ");
+          }
+          out.print("(");
+          print(c);
+          out.print(")");
+        }
+        if (and.constraints.isEmpty()) {
+          out.print(" FALSE ");
+        }
+      } else if (con instanceof SymbolicNotConstraint) {
+        SymbolicNotConstraint not = (SymbolicNotConstraint) con;
+        out.print(" NOT ");
+        out.print("(");
+        print(not.getConstraint());
+        out.print(")");
+      } else if (con instanceof SymbolicTrueConstraint) {
+        out.print(" TRUE ");
+      } else if (con instanceof SymbolicFalseConstraint) {
+        out.print(" FALSE ");
+      } else if (con instanceof SymbolicStringPredicate) {
+        SymbolicStringPredicate str = (SymbolicStringPredicate) con;
+        Constraint intConstraint = str.getFormula(freeVars, type, soln);
+        print(intConstraint);
+      } else {
+        throw new RuntimeException("Unimplemented constraint type " + con);
+      }
+    }
+  } 
+
+
+  
+
+ 
+
+  private void print(Constraint con,
+      PrintStream out,
+      Set<String> freeVars,
+      CONSTRAINT_TYPE type,
+      TreeMap<String, Long> soln) {
+   
+    new Printer(freeVars, soln, type, out).print(con);
   }
 
   public void visitSymbolicInt(SymbolicInt c) {}
