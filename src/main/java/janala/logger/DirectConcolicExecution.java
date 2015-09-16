@@ -18,12 +18,15 @@ public class DirectConcolicExecution extends AbstractLogger {
   }
  
   public DirectConcolicExecution() {
-    this(new ConcolicInterpreter(ClassNames.getInstance(), Config.instance));
+    this(new ConcolicInterpreter(ClassNames.getInstance(), Config.instance), true);
   }
 
-  public DirectConcolicExecution(ConcolicInterpreter interpreter) {
+  //VisibleForTesting
+  public DirectConcolicExecution(ConcolicInterpreter interpreter, boolean needToEnd) {
     intp = interpreter;
-    Runtime.getRuntime().addShutdownHook(new Finisher(this));
+    if (needToEnd) {
+      Runtime.getRuntime().addShutdownHook(new Finisher(this));
+    }
   }
   
   private static class Finisher extends Thread {

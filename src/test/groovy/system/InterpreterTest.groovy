@@ -9,7 +9,9 @@ import janala.logger.ClassNames
 import janala.interpreters.ConcolicInterpreter
 import janala.interpreters.IntValue
 import janala.interpreters.Value
+import janala.interpreters.ConcolicInterpreter
 import janala.instrument.Coverage
+import janala.config.Config
 
 import org.junit.Before
 import org.junit.Test
@@ -25,9 +27,10 @@ class IntepreterTest {
 
   @Before
   void setup() {
-    DirectConcolicExecution dc = new DirectConcolicExecution()
+    Config.instance.cvc4Command = "unknown"
+    interpreter = new ConcolicInterpreter(ClassNames.getInstance(), Config.instance)
+    DirectConcolicExecution dc = new DirectConcolicExecution(interpreter, false)
     DJVM.setInterpreter(dc)
-    interpreter = dc.intp
   }
 
   private int greaterThanZero(int x) {
@@ -62,7 +65,6 @@ class IntepreterTest {
     assertEquals(0, interpreter.getHistory().getPathConstraint().size())
   }
 
-  @Ignore
   @Test
   void testGreaterThanZeroSymbol() {
     int classIdx = classNames.get("janala/system/IntepreterTest")

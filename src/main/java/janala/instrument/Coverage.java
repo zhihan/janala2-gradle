@@ -65,7 +65,7 @@ public class Coverage implements Serializable {
     }
   }
 
-  public static void write() {
+  public void write() {
     ObjectOutputStream outputStream;
     try {
       String outputFile = Config.instance.coverage;

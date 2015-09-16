@@ -219,7 +219,7 @@ public class ConcolicInterpreter implements IVisitor {
       history.solveAndSave();
     }
     Main.writeOldStates();
-    Coverage.write();
+    coverage.write();
   }
 
   public void visitAALOAD(AALOAD inst) {
