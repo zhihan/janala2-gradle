@@ -19,7 +19,9 @@ public class Coverage implements Serializable {
   private boolean isNewClass;
 
   public static Coverage instance = null;
+  
   private static final Logger logger = MyLogger.getLogger(Coverage.class.getName());
+  
   private String lastMethod;
   private String lastClassName;
 
@@ -127,11 +129,9 @@ public class Coverage implements Serializable {
         covered.put(key, oldValue | value);
         if ((value & 2) > (oldValue & 2)) {
           nCovered++;
-          //System.out.println(key + " false ");
         }
         if ((value & 1) > (oldValue & 1)) {
           nCovered++;
-          //System.out.println(key + " true ");
         }
       }
     }
@@ -143,7 +143,6 @@ public class Coverage implements Serializable {
     TreeMap<Integer, Integer> methodToCoveredBranches = new TreeMap<Integer, Integer>();
     TreeMap<Integer, Boolean> mcovered = new TreeMap<Integer, Boolean>();
     for (int key : covered.keySet()) {
-      //System.out.println(key);
       int cidmid = GlobalStateForInstrumentation.extractCidMid(key);
       if (!methodToTotalBranches.containsKey(cidmid)) {
         methodToTotalBranches.put(cidmid, 0);

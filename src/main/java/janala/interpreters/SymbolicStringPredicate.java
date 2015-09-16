@@ -9,20 +9,20 @@ import java.util.Map;
 
 public class SymbolicStringPredicate extends Constraint {
 
-  public static enum COMPARISON_OPS {
+  public static enum STRING_COMPARISON_OPS {
     EQ,
     NE,
     IN,
     NOTIN
   };
 
-  private final COMPARISON_OPS op;
-  public COMPARISON_OPS getOp() { return op; }
+  private final STRING_COMPARISON_OPS op;
+  public STRING_COMPARISON_OPS getOp() { return op; }
 
   private final Object left;
   private final Object right;
 
-  public SymbolicStringPredicate(COMPARISON_OPS op, Object left, Object right) {
+  public SymbolicStringPredicate(STRING_COMPARISON_OPS op, Object left, Object right) {
     this.op = op;
     this.left = left;
     this.right = right;
@@ -42,19 +42,19 @@ public class SymbolicStringPredicate extends Constraint {
   @Override
   public Constraint not() {
     SymbolicStringPredicate ret = new SymbolicStringPredicate(this);
-    COMPARISON_OPS retOp = COMPARISON_OPS.NE;
+    STRING_COMPARISON_OPS retOp = STRING_COMPARISON_OPS.NE;
     switch (this.op) {
       case EQ:
-        retOp = COMPARISON_OPS.NE;
+        retOp = STRING_COMPARISON_OPS.NE;
         break;
       case NE:
-        retOp = COMPARISON_OPS.EQ;
+        retOp = STRING_COMPARISON_OPS.EQ;
         break;
       case IN:
-        retOp = COMPARISON_OPS.NOTIN;
+        retOp = STRING_COMPARISON_OPS.NOTIN;
         break;
       case NOTIN:
-        retOp = COMPARISON_OPS.IN;
+        retOp = STRING_COMPARISON_OPS.IN;
         break;
     }
     return new SymbolicStringPredicate(retOp, left, right);
@@ -131,7 +131,7 @@ public class SymbolicStringPredicate extends Constraint {
       SymOrInt e2 = exprAt(right, i, freeVars, assignments);
       Constraint c;
       c = new SymbolicIntCompareConstraint(e1, e2, 
-        SymbolicIntCompareConstraint.COMPARISON_OPS.EQ);
+        COMPARISON_OPS.EQ);
 
       if (i != 0) {
         and = and.AND(c);
@@ -165,7 +165,7 @@ public class SymbolicStringPredicate extends Constraint {
         case EQ:
           IntValue val = s1.ISUB(s2);
           if (val.symbolic != null) {
-            return val.symbolic.setop(SymbolicInt.COMPARISON_OPS.EQ);
+            return val.symbolic.setop(COMPARISON_OPS.EQ);
           } else {
             if (val.getConcrete().equals(0)) {
               return SymbolicTrueConstraint.instance;
@@ -179,9 +179,9 @@ public class SymbolicStringPredicate extends Constraint {
           // Essentially it checks that if left and right size are nonempty strings.
           
           SymbolicInt int1 =
-              s1.symbolic != null ? s1.symbolic.setop(SymbolicInt.COMPARISON_OPS.GT) : null;
+              s1.symbolic != null ? s1.symbolic.setop(COMPARISON_OPS.GT) : null;
           SymbolicInt int2 =
-              s2.symbolic != null ? s2.symbolic.setop(SymbolicInt.COMPARISON_OPS.GT) : null;
+              s2.symbolic != null ? s2.symbolic.setop(COMPARISON_OPS.GT) : null;
           if (int1 != null && int2 != null) {
             SymbolicAndConstraint ret = new SymbolicAndConstraint(int1);
             return ret.AND(int2);

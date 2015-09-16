@@ -57,7 +57,7 @@ public final class LongObjectValue extends ObjectValue {
         LongValue ret = longValue.LSUB(i2.longValue);
         int concreteVal = ret.getConcreteLong() == 0L ? 1 : 0;
         if (ret.getSymbolic() != null) {
-          SymbolicInt retSymbolic = ret.getSymbolic().setop(SymbolicInt.COMPARISON_OPS.EQ);
+          SymbolicInt retSymbolic = ret.getSymbolic().setop(COMPARISON_OPS.EQ);
           return new IntValue((int) concreteVal, retSymbolic);
         } else {
           return new IntValue((int) concreteVal);

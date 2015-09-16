@@ -103,12 +103,12 @@ public class IntValue extends Value {
     if (symbolic == null && nonIntConstraint == null) {
       return result ? IntValue.TRUE : IntValue.FALSE;
     } else if (symbolic != null) {
-      if (symbolic.getOp() == SymbolicInt.COMPARISON_OPS.UN)
+      if (symbolic.getOp() == COMPARISON_OPS.UN)
         return new IntValue(
             result ? 1 : 0,
             result
-                ? symbolic.setop(SymbolicInt.COMPARISON_OPS.EQ)
-                : symbolic.setop(SymbolicInt.COMPARISON_OPS.NE));
+                ? symbolic.setop(COMPARISON_OPS.EQ)
+                : symbolic.setop(COMPARISON_OPS.NE));
       else return new IntValue(result ? 1 : 0, result ? (SymbolicInt) symbolic.not() : symbolic);
     } else {
       return new IntValue(result ? 1 : 0, result ? nonIntConstraint.not() : nonIntConstraint);
@@ -120,12 +120,12 @@ public class IntValue extends Value {
     if (symbolic == null && nonIntConstraint == null) {
       return (concrete != 0) ? IntValue.TRUE : IntValue.FALSE;
     } else if (symbolic != null) {
-      if (symbolic.getOp() == SymbolicInt.COMPARISON_OPS.UN)
+      if (symbolic.getOp() == COMPARISON_OPS.UN)
         return new IntValue(
             result ? 1 : 0,
             result
-                ? symbolic.setop(SymbolicInt.COMPARISON_OPS.NE)
-                : symbolic.setop(SymbolicInt.COMPARISON_OPS.EQ));
+                ? symbolic.setop(COMPARISON_OPS.NE)
+                : symbolic.setop(COMPARISON_OPS.EQ));
       else return new IntValue(result ? 1 : 0, result ? symbolic : (SymbolicInt) symbolic.not());
     } else {
       return new IntValue(result ? 1 : 0, result ? nonIntConstraint : nonIntConstraint.not());
@@ -140,8 +140,8 @@ public class IntValue extends Value {
       return new IntValue(
           result ? 1 : 0,
           result
-              ? symbolic.setop(SymbolicInt.COMPARISON_OPS.LT)
-              : symbolic.setop(SymbolicInt.COMPARISON_OPS.GE));
+              ? symbolic.setop(COMPARISON_OPS.LT)
+              : symbolic.setop(COMPARISON_OPS.GE));
     }
   }
 
@@ -153,8 +153,8 @@ public class IntValue extends Value {
       return new IntValue(
           result ? 1 : 0,
           result
-              ? symbolic.setop(SymbolicInt.COMPARISON_OPS.GE)
-              : symbolic.setop(SymbolicInt.COMPARISON_OPS.LT));
+              ? symbolic.setop(COMPARISON_OPS.GE)
+              : symbolic.setop(COMPARISON_OPS.LT));
     }
   }
 
@@ -166,8 +166,8 @@ public class IntValue extends Value {
       return new IntValue(
           result ? 1 : 0,
           result
-              ? symbolic.setop(SymbolicInt.COMPARISON_OPS.GT)
-              : symbolic.setop(SymbolicInt.COMPARISON_OPS.LE));
+              ? symbolic.setop(COMPARISON_OPS.GT)
+              : symbolic.setop(COMPARISON_OPS.LE));
     }
   }
 
@@ -179,15 +179,15 @@ public class IntValue extends Value {
       return new IntValue(
           result ? 1 : 0,
           result
-              ? symbolic.setop(SymbolicInt.COMPARISON_OPS.LE)
-              : symbolic.setop(SymbolicInt.COMPARISON_OPS.GT));
+              ? symbolic.setop(COMPARISON_OPS.LE)
+              : symbolic.setop(COMPARISON_OPS.GT));
     }
   }
 
   public IntValue IF_ICMPEQ(IntValue i2) {
     boolean result = (concrete == i2.concrete);
-    SymbolicInt.COMPARISON_OPS op =
-        result ? SymbolicInt.COMPARISON_OPS.EQ : SymbolicInt.COMPARISON_OPS.NE;
+    COMPARISON_OPS op =
+        result ? COMPARISON_OPS.EQ : COMPARISON_OPS.NE;
     if (symbolic == null && i2.symbolic == null) {
       return result ? IntValue.TRUE : IntValue.FALSE;
     } else if (symbolic != null && i2.symbolic != null) {
@@ -205,8 +205,8 @@ public class IntValue extends Value {
 
   public IntValue IF_ICMPNE(IntValue i2) {
     boolean result = (concrete != i2.concrete);
-    SymbolicInt.COMPARISON_OPS op =
-        result ? SymbolicInt.COMPARISON_OPS.NE : SymbolicInt.COMPARISON_OPS.EQ;
+    COMPARISON_OPS op =
+        result ? COMPARISON_OPS.NE : COMPARISON_OPS.EQ;
     if (symbolic == null && i2.symbolic == null) {
       return result ? IntValue.TRUE : IntValue.FALSE;
     } else if (symbolic != null && i2.symbolic != null) {
@@ -224,8 +224,8 @@ public class IntValue extends Value {
 
   public IntValue IF_ICMPLT(IntValue i2) {
     boolean result = (concrete < i2.concrete);
-    SymbolicInt.COMPARISON_OPS op =
-        result ? SymbolicInt.COMPARISON_OPS.LT : SymbolicInt.COMPARISON_OPS.GE;
+    COMPARISON_OPS op =
+        result ? COMPARISON_OPS.LT : COMPARISON_OPS.GE;
     if (symbolic == null && i2.symbolic == null) {
       return result ? IntValue.TRUE : IntValue.FALSE;
     } else if (symbolic != null && i2.symbolic != null) {
@@ -243,8 +243,8 @@ public class IntValue extends Value {
 
   public IntValue IF_ICMPGE(IntValue i2) {
     boolean result = (concrete >= i2.concrete);
-    SymbolicInt.COMPARISON_OPS op =
-        result ? SymbolicInt.COMPARISON_OPS.GE : SymbolicInt.COMPARISON_OPS.LT;
+    COMPARISON_OPS op =
+        result ? COMPARISON_OPS.GE : COMPARISON_OPS.LT;
     if (symbolic == null && i2.symbolic == null) {
       return result ? IntValue.TRUE : IntValue.FALSE;
     } else if (symbolic != null && i2.symbolic != null) {
@@ -262,8 +262,8 @@ public class IntValue extends Value {
 
   public IntValue IF_ICMPGT(IntValue i2) {
     boolean result = (concrete > i2.concrete);
-    SymbolicInt.COMPARISON_OPS op =
-        result ? SymbolicInt.COMPARISON_OPS.GT : SymbolicInt.COMPARISON_OPS.LE;
+    COMPARISON_OPS op =
+        result ? COMPARISON_OPS.GT : COMPARISON_OPS.LE;
     if (symbolic == null && i2.symbolic == null) {
       return result ? IntValue.TRUE : IntValue.FALSE;
     } else if (symbolic != null && i2.symbolic != null) {
@@ -281,8 +281,8 @@ public class IntValue extends Value {
 
   public IntValue IF_ICMPLE(IntValue i2) {
     boolean result = (concrete <= i2.concrete);
-    SymbolicInt.COMPARISON_OPS op =
-        result ? SymbolicInt.COMPARISON_OPS.LE : SymbolicInt.COMPARISON_OPS.GT;
+    COMPARISON_OPS op =
+        result ? COMPARISON_OPS.LE : COMPARISON_OPS.GT;
     if (symbolic == null && i2.symbolic == null) {
       return result ? IntValue.TRUE : IntValue.FALSE;
     } else if (symbolic != null && i2.symbolic != null) {

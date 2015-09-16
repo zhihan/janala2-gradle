@@ -3,7 +3,7 @@ package janala.interpreters
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
 
-import janala.interpreters.SymbolicIntCompareConstraint.COMPARISON_OPS
+import janala.interpreters.COMPARISON_OPS
 import org.junit.Test
 
 import groovy.transform.CompileStatic

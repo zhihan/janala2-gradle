@@ -1,9 +1,5 @@
 package janala.interpreters;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- */
-
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.RegExp;
 import dk.brics.automaton.State;
@@ -35,8 +31,8 @@ public class RegexpEncoder {
     String example = a.getShortestExample(accept);
     if (example != null)
       return intCompare(
-          prefix, sym, example.length(), SymbolicIntCompareConstraint.COMPARISON_OPS.GE);
-    else return intCompare(prefix, sym, 0, SymbolicIntCompareConstraint.COMPARISON_OPS.GE);
+          prefix, sym, example.length(), COMPARISON_OPS.GE);
+    else return intCompare(prefix, sym, 0, COMPARISON_OPS.GE);
   }
 
   public static Constraint createFormula(Automaton A, String prefix, int n) {
@@ -54,7 +50,7 @@ public class RegexpEncoder {
   }
 
   private static Constraint intCompare(
-      String prefix, int sym, int constant, SymbolicIntCompareConstraint.COMPARISON_OPS op) {
+      String prefix, int sym, int constant, COMPARISON_OPS op) {
     return new SymbolicIntCompareConstraint(new SymOrInt(prefix + sym), new SymOrInt(constant), op);
   }
 
@@ -88,9 +84,9 @@ public class RegexpEncoder {
       Constraint tmp1 =
           andFormula(
               intCompare(
-                  prefix, i, transition.getMin(), SymbolicIntCompareConstraint.COMPARISON_OPS.GE),
+                  prefix, i, transition.getMin(), COMPARISON_OPS.GE),
               intCompare(
-                  prefix, i, transition.getMax(), SymbolicIntCompareConstraint.COMPARISON_OPS.LE));
+                  prefix, i, transition.getMax(), COMPARISON_OPS.LE));
       Constraint tmp2 = ret.get(next);
       if (tmp2 != null) {
         Constraint tmp3 = orFormula(tmp2, tmp1);

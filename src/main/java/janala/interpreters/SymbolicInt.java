@@ -4,16 +4,6 @@ import java.util.Map;
 import java.util.HashMap;
 
 public final class SymbolicInt extends Constraint {
-  public static enum COMPARISON_OPS {
-    EQ,
-    NE,
-    GT,
-    GE,
-    LT,
-    LE,
-    UN
-  };
-
   private COMPARISON_OPS op;
   public COMPARISON_OPS getOp() {
     return op;

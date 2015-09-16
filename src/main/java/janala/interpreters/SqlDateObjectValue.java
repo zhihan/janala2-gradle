@@ -20,7 +20,7 @@ public class SqlDateObjectValue extends ObjectValue {
         LongValue ret = longValue.LSUB(i2.longValue);
         int concreteVal = ret.getConcreteLong() == 0 ? 1 : 0;
         if (ret.getSymbolic() != null) {
-          SymbolicInt retSymbol = ret.getSymbolic().setop(SymbolicInt.COMPARISON_OPS.EQ);
+          SymbolicInt retSymbol = ret.getSymbolic().setop(COMPARISON_OPS.EQ);
           return new IntValue(concreteVal, retSymbol);
         }
       }
@@ -49,7 +49,7 @@ public class SqlDateObjectValue extends ObjectValue {
           concreteVal = 0;
         }
         return new IntValue(concreteVal, 
-          ret.getSymbolic().setop(SymbolicInt.COMPARISON_OPS.GT));
+          ret.getSymbolic().setop(COMPARISON_OPS.GT));
       }
     } else if (name.equals("before")) {
       if (args[0] instanceof SqlDateObjectValue) {
@@ -62,7 +62,7 @@ public class SqlDateObjectValue extends ObjectValue {
           concreteVal = 0;
         } 
         return new IntValue(concreteVal, 
-          ret.getSymbolic().setop(SymbolicInt.COMPARISON_OPS.LT));
+          ret.getSymbolic().setop(COMPARISON_OPS.LT));
       }
     } else if (name.equals("getTime")) {
       return new LongValue(longValue.getConcreteLong(), longValue.getSymbolic());

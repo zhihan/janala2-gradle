@@ -103,48 +103,48 @@ class SymbolicIntTest {
     @Test
     void testNot() {
         SymbolicInt x1 = new SymbolicInt(1)
-        x1.setOp(SymbolicInt.COMPARISON_OPS.EQ)
+        x1.setOp(COMPARISON_OPS.EQ)
         SymbolicInt y = x1.not()
-        assertEquals(y.getOp(), SymbolicInt.COMPARISON_OPS.NE)
+        assertEquals(y.getOp(), COMPARISON_OPS.NE)
 
-        x1.setOp(SymbolicInt.COMPARISON_OPS.NE)
+        x1.setOp(COMPARISON_OPS.NE)
         y = x1.not()
-        assertEquals(y.getOp(), SymbolicInt.COMPARISON_OPS.EQ)   
+        assertEquals(y.getOp(), COMPARISON_OPS.EQ)   
 
-        x1.setOp(SymbolicInt.COMPARISON_OPS.LT)
+        x1.setOp(COMPARISON_OPS.LT)
         y = x1.not()
-        assertEquals(y.getOp(), SymbolicInt.COMPARISON_OPS.GE)   
+        assertEquals(y.getOp(), COMPARISON_OPS.GE)   
 
-        x1.setOp(SymbolicInt.COMPARISON_OPS.GE)
+        x1.setOp(COMPARISON_OPS.GE)
         y = x1.not()
-        assertEquals(y.getOp(), SymbolicInt.COMPARISON_OPS.LT)
+        assertEquals(y.getOp(), COMPARISON_OPS.LT)
 
-        x1.setOp(SymbolicInt.COMPARISON_OPS.LE)
+        x1.setOp(COMPARISON_OPS.LE)
         y = x1.not()
-        assertEquals(y.getOp(), SymbolicInt.COMPARISON_OPS.GT)   
+        assertEquals(y.getOp(), COMPARISON_OPS.GT)   
 
-        x1.setOp(SymbolicInt.COMPARISON_OPS.GT)
+        x1.setOp(COMPARISON_OPS.GT)
         y = x1.not()
-        assertEquals(y.getOp(), SymbolicInt.COMPARISON_OPS.LE)
+        assertEquals(y.getOp(), COMPARISON_OPS.LE)
 
-        x1.setOp(SymbolicInt.COMPARISON_OPS.UN)
+        x1.setOp(COMPARISON_OPS.UN)
         y = x1.not()
-        assertEquals(y.getOp(), SymbolicInt.COMPARISON_OPS.UN)
+        assertEquals(y.getOp(), COMPARISON_OPS.UN)
     }
 
     @Test
     void testSetop() {
         SymbolicInt x1 = new SymbolicInt(1)
-        x1.setOp(SymbolicInt.COMPARISON_OPS.EQ)
-        SymbolicInt y = x1.setop(SymbolicInt.COMPARISON_OPS.EQ)
-        assertEquals(SymbolicInt.COMPARISON_OPS.NE, y.getOp())
+        x1.setOp(COMPARISON_OPS.EQ)
+        SymbolicInt y = x1.setop(COMPARISON_OPS.EQ)
+        assertEquals(COMPARISON_OPS.NE, y.getOp())
     }
 
     @Test
     void testSubstitue() {
         SymbolicInt x1 = new SymbolicInt(1)
         SymbolicInt y = x1.add(1)
-        y.setOp(SymbolicInt.COMPARISON_OPS.LE) // x1 + 1 <= 0
+        y.setOp(COMPARISON_OPS.LE) // x1 + 1 <= 0
         Constraint z = y.substitute(["x1": 1L])
         assertTrue(z == SymbolicFalseConstraint.instance)
 
@@ -152,7 +152,7 @@ class SymbolicIntTest {
         assertTrue(z2 == SymbolicTrueConstraint.instance)
 
         SymbolicInt a = x1.add(new SymbolicInt(2))
-        a.setOp(SymbolicInt.COMPARISON_OPS.GE) // x1 + x2 >= 0
+        a.setOp(COMPARISON_OPS.GE) // x1 + x2 >= 0
         Constraint b = a.substitute(["x1": 1L])
         System.out.println(b)
         assertTrue(b instanceof SymbolicInt)

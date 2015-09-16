@@ -56,17 +56,17 @@ public final class StringValue extends ObjectValue {
         return new IntValue(
           result ? 1 : 0,
           new SymbolicStringPredicate(
-            SymbolicStringPredicate.COMPARISON_OPS.EQ, symbolicExp, other.symbolicExp));
+            SymbolicStringPredicate.STRING_COMPARISON_OPS.EQ, symbolicExp, other.symbolicExp));
       } else if (symbolicExp != null) {
         return new IntValue(
           result ? 1 : 0,
           new SymbolicStringPredicate(
-            SymbolicStringPredicate.COMPARISON_OPS.EQ, symbolicExp, other.string));
+            SymbolicStringPredicate.STRING_COMPARISON_OPS.EQ, symbolicExp, other.string));
       } else if (other.symbolicExp != null) {
         return new IntValue(
           result ? 1 : 0,
           new SymbolicStringPredicate(
-            SymbolicStringPredicate.COMPARISON_OPS.EQ, string, other.symbolicExp));
+            SymbolicStringPredicate.STRING_COMPARISON_OPS.EQ, string, other.symbolicExp));
       } else {
         return new IntValue(result ? 1 : 0);
       }
@@ -85,7 +85,7 @@ public final class StringValue extends ObjectValue {
           return new IntValue(
             result ? 1 : 0,
             new SymbolicStringPredicate(
-              SymbolicStringPredicate.COMPARISON_OPS.IN,
+              SymbolicStringPredicate.STRING_COMPARISON_OPS.IN,
               symbolicExp,
               escapeRE(other.string) + ".*"));
         } else {
@@ -101,7 +101,7 @@ public final class StringValue extends ObjectValue {
           return new IntValue(
             result ? 1 : 0,
             new SymbolicStringPredicate(
-              SymbolicStringPredicate.COMPARISON_OPS.IN,
+              SymbolicStringPredicate.STRING_COMPARISON_OPS.IN,
               symbolicExp,
               ".{" + offset.concrete + "}" + escapeRE(other.string) + ".*"));
         } else {
@@ -119,7 +119,7 @@ public final class StringValue extends ObjectValue {
       return new IntValue(
         result ? 1 : 0,
         new SymbolicStringPredicate(
-          SymbolicStringPredicate.COMPARISON_OPS.IN,
+          SymbolicStringPredicate.STRING_COMPARISON_OPS.IN,
           symbolicExp,
           ".*" + escapeRE(other.string)));
     } else {
@@ -134,7 +134,7 @@ public final class StringValue extends ObjectValue {
       return new IntValue(
         result ? 1 : 0,
         new SymbolicStringPredicate(
-          SymbolicStringPredicate.COMPARISON_OPS.IN,
+          SymbolicStringPredicate.STRING_COMPARISON_OPS.IN,
           symbolicExp,
           ".*" + escapeRE(other.string) + ".*"));
     } else {
@@ -163,7 +163,7 @@ public final class StringValue extends ObjectValue {
       return new IntValue(
         result ? 1 : 0,
         new SymbolicStringPredicate(
-          SymbolicStringPredicate.COMPARISON_OPS.IN, symbolicExp, other.string));
+          SymbolicStringPredicate.STRING_COMPARISON_OPS.IN, symbolicExp, other.string));
     } else {
       return new IntValue(result ? 1 : 0);
     }
@@ -216,7 +216,7 @@ public final class StringValue extends ObjectValue {
     symbolicExp = new SymbolicStringExpression(ret, length);
     length.MAKE_SYMBOLIC(history);
 
-    Constraint results = length.symbolic.setop(SymbolicInt.COMPARISON_OPS.GE);
+    Constraint results = length.symbolic.setop(COMPARISON_OPS.GE);
     boolean resultc = length.concrete >= 0;
     history.checkAndSetBranch(resultc, results, 0);
     if (resultc) {
@@ -227,7 +227,7 @@ public final class StringValue extends ObjectValue {
         length
             .ISUB(new IntValue(Config.instance.maxStringLength))
             .symbolic
-            .setop(SymbolicInt.COMPARISON_OPS.LE);
+            .setop(COMPARISON_OPS.LE);
     resultc = length.concrete <= Config.instance.maxStringLength;
     history.checkAndSetBranch(resultc, results, 0);
     if (resultc) {

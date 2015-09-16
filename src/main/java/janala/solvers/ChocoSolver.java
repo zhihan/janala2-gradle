@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static janala.interpreters.SymbolicInt.COMPARISON_OPS;
+import janala.interpreters.COMPARISON_OPS;
 
 public class ChocoSolver implements Solver {
   boolean first = true;

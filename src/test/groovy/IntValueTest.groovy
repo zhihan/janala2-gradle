@@ -32,7 +32,7 @@ class IntValueTest {
         assertEquals(a.symbolic, SymbolicFalseConstraint.instance)
 
         SymbolicInt b = new SymbolicInt(1)
-        b.setOp(SymbolicInt.COMPARISON_OPS.EQ)
+        b.setOp(COMPARISON_OPS.EQ)
         IntValue c = new IntValue(1, b)
         assertEquals(1, c.concrete)
         assertEquals(b, c.symbolic)
@@ -84,16 +84,16 @@ class IntValueTest {
         int b = i.MAKE_SYMBOLIC(null)
         IntValue r = i.IFEQ()
         assertEquals(1, r.concrete)
-        assertEquals(SymbolicInt.COMPARISON_OPS.EQ, r.symbolicInt.op)
+        assertEquals(COMPARISON_OPS.EQ, r.symbolicInt.op)
 
         // (0, x == 0) == 0 
         // -> (1, x != 0)
         SymbolicInt x = new SymbolicInt(1)
-        x.setOp(SymbolicInt.COMPARISON_OPS.EQ)
+        x.setOp(COMPARISON_OPS.EQ)
         IntValue j = new IntValue(0, x)
         r = j.IFEQ()
         assertEquals(1, r.concrete)
-        assertEquals(SymbolicInt.COMPARISON_OPS.NE, r.symbolicInt.op)
+        assertEquals(COMPARISON_OPS.NE, r.symbolicInt.op)
     }
 
     @Test
@@ -122,16 +122,16 @@ class IntValueTest {
         int b = i.MAKE_SYMBOLIC(null)
         IntValue r = i.IFNE()
         assertEquals(0, r.concrete)
-        assertEquals(SymbolicInt.COMPARISON_OPS.EQ, r.symbolicInt.op)
+        assertEquals(COMPARISON_OPS.EQ, r.symbolicInt.op)
 
         // (0, x == 0) != 0 
         // -> (0, x == 0)
         SymbolicInt x = new SymbolicInt(1)
-        x.setOp(SymbolicInt.COMPARISON_OPS.EQ)
+        x.setOp(COMPARISON_OPS.EQ)
         IntValue j = new IntValue(0, x)
         r = j.IFNE()
         assertEquals(0, r.concrete)
-        assertEquals(SymbolicInt.COMPARISON_OPS.NE, r.symbolicInt.op)
+        assertEquals(COMPARISON_OPS.NE, r.symbolicInt.op)
     }
 
     @Test
@@ -160,7 +160,7 @@ class IntValueTest {
         int b = i.MAKE_SYMBOLIC(null)
         IntValue r = i.IFLT()
         assertEquals(0, r.concrete)
-        assertEquals(SymbolicInt.COMPARISON_OPS.GE, r.symbolicInt.op)
+        assertEquals(COMPARISON_OPS.GE, r.symbolicInt.op)
 
         // (-1, x) < 0 
         // -> (true, x < 0)
@@ -168,7 +168,7 @@ class IntValueTest {
         IntValue j = new IntValue(-1, x)
         r = j.IFLT()
         assertEquals(1, r.concrete)
-        assertEquals(SymbolicInt.COMPARISON_OPS.LT, r.symbolicInt.op)
+        assertEquals(COMPARISON_OPS.LT, r.symbolicInt.op)
     }
 
     @Test
@@ -187,7 +187,7 @@ class IntValueTest {
         int b = i.MAKE_SYMBOLIC(null)
         IntValue r = i.IFGE()
         assertEquals(1, r.concrete)
-        assertEquals(SymbolicInt.COMPARISON_OPS.GE, r.symbolicInt.op)
+        assertEquals(COMPARISON_OPS.GE, r.symbolicInt.op)
 
         // (-1, x) >= 0 
         // -> (false, x < 0)
@@ -195,7 +195,7 @@ class IntValueTest {
         IntValue j = new IntValue(-1, x)
         r = j.IFGE()
         assertEquals(0, r.concrete)
-        assertEquals(SymbolicInt.COMPARISON_OPS.LT, r.symbolicInt.op)
+        assertEquals(COMPARISON_OPS.LT, r.symbolicInt.op)
     }
 
     @Test
@@ -214,7 +214,7 @@ class IntValueTest {
         int b = i.MAKE_SYMBOLIC(null)
         IntValue r = i.IFLE()
         assertEquals(1, r.concrete)
-        assertEquals(SymbolicInt.COMPARISON_OPS.LE, r.symbolicInt.op)
+        assertEquals(COMPARISON_OPS.LE, r.symbolicInt.op)
 
         // (1, x) <= 0 
         // -> (false, x > 0)
@@ -222,7 +222,7 @@ class IntValueTest {
         IntValue j = new IntValue(1, x)
         r = j.IFLE()
         assertEquals(0, r.concrete)
-        assertEquals(SymbolicInt.COMPARISON_OPS.GT, r.symbolicInt.op)
+        assertEquals(COMPARISON_OPS.GT, r.symbolicInt.op)
     }    
 
     @Test
@@ -241,7 +241,7 @@ class IntValueTest {
         int b = i.MAKE_SYMBOLIC(null)
         IntValue r = i.IFGT()
         assertEquals(0, r.concrete)
-        assertEquals(SymbolicInt.COMPARISON_OPS.LE, r.symbolicInt.op)
+        assertEquals(COMPARISON_OPS.LE, r.symbolicInt.op)
 
         // (1, x) > 0 
         // -> (true, x > 0)
@@ -249,7 +249,7 @@ class IntValueTest {
         IntValue j = new IntValue(1, x)
         r = j.IFGT()
         assertEquals(1, r.concrete)
-        assertEquals(SymbolicInt.COMPARISON_OPS.GT, r.symbolicInt.op)
+        assertEquals(COMPARISON_OPS.GT, r.symbolicInt.op)
     }
 
     @Test
@@ -283,7 +283,7 @@ class IntValueTest {
 
         assertEquals(1, r.concrete)
         assertEquals(2, r.symbolic.linear.size())
-        assertEquals(SymbolicInt.COMPARISON_OPS.EQ, r.symbolic.op)
+        assertEquals(COMPARISON_OPS.EQ, r.symbolic.op)
     }
 
     @Test
@@ -297,12 +297,12 @@ class IntValueTest {
         IntValue r = a.IF_ICMPEQ(b)
         assertEquals(1, r.concrete)
         assertEquals(1, r.symbolic.linear.size())
-        assertEquals(SymbolicInt.COMPARISON_OPS.EQ, r.symbolic.op)
+        assertEquals(COMPARISON_OPS.EQ, r.symbolic.op)
 
         r = b.IF_ICMPEQ(a)
         assertEquals(1, r.concrete)
         assertEquals(1, r.symbolic.linear.size())
-        assertEquals(SymbolicInt.COMPARISON_OPS.EQ, r.symbolic.op)
+        assertEquals(COMPARISON_OPS.EQ, r.symbolic.op)
     }
 
     @Test
@@ -328,7 +328,7 @@ class IntValueTest {
 
         assertEquals(0, r.concrete)
         assertEquals(2, r.symbolic.linear.size())
-        assertEquals(SymbolicInt.COMPARISON_OPS.EQ, r.symbolic.op)
+        assertEquals(COMPARISON_OPS.EQ, r.symbolic.op)
     }
 
     @Test
@@ -342,12 +342,12 @@ class IntValueTest {
         IntValue r = a.IF_ICMPNE(b)
         assertEquals(0, r.concrete)
         assertEquals(1, r.symbolic.linear.size())
-        assertEquals(SymbolicInt.COMPARISON_OPS.EQ, r.symbolic.op)
+        assertEquals(COMPARISON_OPS.EQ, r.symbolic.op)
 
         r = b.IF_ICMPNE(a)
         assertEquals(0, r.concrete)
         assertEquals(1, r.symbolic.linear.size())
-        assertEquals(SymbolicInt.COMPARISON_OPS.EQ, r.symbolic.op)
+        assertEquals(COMPARISON_OPS.EQ, r.symbolic.op)
     }
 
     @Test
@@ -370,7 +370,7 @@ class IntValueTest {
 
         assertEquals(0, r.concrete)
         assertEquals(2, r.symbolic.linear.size())
-        assertEquals(SymbolicInt.COMPARISON_OPS.GE, r.symbolic.op)
+        assertEquals(COMPARISON_OPS.GE, r.symbolic.op)
     }
 
     @Test
@@ -385,7 +385,7 @@ class IntValueTest {
         assertEquals(1, r.concrete)
         assertEquals(1, r.symbolic.linear.size())
         assertEquals(-1, r.symbolic.constant)
-        assertEquals(SymbolicInt.COMPARISON_OPS.LT, r.symbolic.op)
+        assertEquals(COMPARISON_OPS.LT, r.symbolic.op)
 
         // (1, null) < (0, x1) 
         // -> (0, 1 - x1 >= 0)
@@ -394,7 +394,7 @@ class IntValueTest {
         assertEquals(0, r.concrete)
         assertEquals(1, r.symbolic.linear.size())
         assertEquals(1, r.symbolic.constant)
-        assertEquals(SymbolicInt.COMPARISON_OPS.GE, r.symbolic.op)
+        assertEquals(COMPARISON_OPS.GE, r.symbolic.op)
     }
  
     @Test
@@ -417,7 +417,7 @@ class IntValueTest {
 
         assertEquals(1, r.concrete)
         assertEquals(2, r.symbolic.linear.size())
-        assertEquals(SymbolicInt.COMPARISON_OPS.GE, r.symbolic.op)
+        assertEquals(COMPARISON_OPS.GE, r.symbolic.op)
     }
 
     @Test
@@ -432,7 +432,7 @@ class IntValueTest {
         assertEquals(0, r.concrete)
         assertEquals(1, r.symbolic.linear.size())
         assertEquals(-1, r.symbolic.constant)
-        assertEquals(SymbolicInt.COMPARISON_OPS.LT, r.symbolic.op)
+        assertEquals(COMPARISON_OPS.LT, r.symbolic.op)
 
         // (1, null) >= (0, x1) 
         // -> (1, 1 - x1 >= 0)
@@ -441,7 +441,7 @@ class IntValueTest {
         assertEquals(1, r.concrete)
         assertEquals(1, r.symbolic.linear.size())
         assertEquals(1, r.symbolic.constant)
-        assertEquals(SymbolicInt.COMPARISON_OPS.GE, r.symbolic.op)
+        assertEquals(COMPARISON_OPS.GE, r.symbolic.op)
     }
  
     @Test
@@ -464,7 +464,7 @@ class IntValueTest {
 
         assertEquals(0, r.concrete)
         assertEquals(2, r.symbolic.linear.size())
-        assertEquals(SymbolicInt.COMPARISON_OPS.LE, r.symbolic.op)
+        assertEquals(COMPARISON_OPS.LE, r.symbolic.op)
     }
 
     @Test
@@ -479,7 +479,7 @@ class IntValueTest {
         assertEquals(0, r.concrete)
         assertEquals(1, r.symbolic.linear.size())
         assertEquals(-1, r.symbolic.constant)
-        assertEquals(SymbolicInt.COMPARISON_OPS.LE, r.symbolic.op)
+        assertEquals(COMPARISON_OPS.LE, r.symbolic.op)
 
         // (1, null) > (0, x1) 
         // -> (1, 1 - x1 > 0)
@@ -488,7 +488,7 @@ class IntValueTest {
         assertEquals(1, r.concrete)
         assertEquals(1, r.symbolic.linear.size())
         assertEquals(1, r.symbolic.constant)
-        assertEquals(SymbolicInt.COMPARISON_OPS.GT, r.symbolic.op)
+        assertEquals(COMPARISON_OPS.GT, r.symbolic.op)
     }
 
     @Test
@@ -511,7 +511,7 @@ class IntValueTest {
 
         assertEquals(1, r.concrete)
         assertEquals(2, r.symbolic.linear.size())
-        assertEquals(SymbolicInt.COMPARISON_OPS.LE, r.symbolic.op)
+        assertEquals(COMPARISON_OPS.LE, r.symbolic.op)
     }
 
     @Test
@@ -526,7 +526,7 @@ class IntValueTest {
         assertEquals(1, r.concrete)
         assertEquals(1, r.symbolic.linear.size())
         assertEquals(-1, r.symbolic.constant)
-        assertEquals(SymbolicInt.COMPARISON_OPS.LE, r.symbolic.op)
+        assertEquals(COMPARISON_OPS.LE, r.symbolic.op)
 
         // (1, null) <= (0, x1) 
         // -> (0, 1 - x1 > 0)
@@ -535,7 +535,7 @@ class IntValueTest {
         assertEquals(0, r.concrete)
         assertEquals(1, r.symbolic.linear.size())
         assertEquals(1, r.symbolic.constant)
-        assertEquals(SymbolicInt.COMPARISON_OPS.GT, r.symbolic.op)
+        assertEquals(COMPARISON_OPS.GT, r.symbolic.op)
     }
 
     @Test

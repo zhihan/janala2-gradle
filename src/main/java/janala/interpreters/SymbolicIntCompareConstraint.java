@@ -5,16 +5,6 @@ import java.util.Map;
 
 public final class SymbolicIntCompareConstraint extends Constraint {
 
-  static public enum COMPARISON_OPS {
-    EQ,
-    NE,
-    GT,
-    GE,
-    LT,
-    LE,
-    UN
-  };
-
   public final SymOrInt left;
   public final SymOrInt right;
   public final COMPARISON_OPS op;

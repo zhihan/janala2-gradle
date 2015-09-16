@@ -40,7 +40,7 @@ class StringValueTest {
     StringValue s = new StringValue("x", exp)
     Value[] b = new Value[1];
     b[0] = new StringValue("x", 20)
-    def con = new SymbolicStringPredicate(SymbolicStringPredicate.COMPARISON_OPS.EQ,
+    def con = new SymbolicStringPredicate(SymbolicStringPredicate.STRING_COMPARISON_OPS.EQ,
       exp, "x")
 
     assertEquals(new IntValue(1, con), s.invokeMethod("equals", b, null))
@@ -52,7 +52,7 @@ class StringValueTest {
     def exp = new SymbolicStringExpression(1, new IntValue(1))
     Value[] b = new Value[1];
     b[0] = new StringValue("y", exp)
-    def con = new SymbolicStringPredicate(SymbolicStringPredicate.COMPARISON_OPS.EQ,
+    def con = new SymbolicStringPredicate(SymbolicStringPredicate.STRING_COMPARISON_OPS.EQ,
       "x", exp)
     assertEquals(new IntValue(0, con), s.invokeMethod("equals", b, null))
   }
@@ -66,7 +66,7 @@ class StringValueTest {
     def exp2 = new SymbolicStringExpression(2, new IntValue(1)) 
     b[0] = new StringValue("x", exp2)
     
-    def con = new SymbolicStringPredicate(SymbolicStringPredicate.COMPARISON_OPS.EQ,
+    def con = new SymbolicStringPredicate(SymbolicStringPredicate.STRING_COMPARISON_OPS.EQ,
       exp, exp2)
     assertEquals(new IntValue(1, con), s.invokeMethod("equals", b, null))
   }
@@ -97,7 +97,7 @@ class StringValueTest {
     StringValue s = new StringValue("x", exp)
     Value[] b = new Value[1];
     b[0] = new StringValue("x", 20)
-    def con = new SymbolicStringPredicate(SymbolicStringPredicate.COMPARISON_OPS.IN,
+    def con = new SymbolicStringPredicate(SymbolicStringPredicate.STRING_COMPARISON_OPS.IN,
       exp, "x.*")
 
     assertEquals(new IntValue(1, con), s.invokeMethod("startsWith", b, null))
@@ -110,7 +110,7 @@ class StringValueTest {
     Value[] b = new Value[2];
     b[0] = new StringValue("x", 20)
     b[1] = new IntValue(0)
-    def con = new SymbolicStringPredicate(SymbolicStringPredicate.COMPARISON_OPS.IN,
+    def con = new SymbolicStringPredicate(SymbolicStringPredicate.STRING_COMPARISON_OPS.IN,
       exp, ".{0}x.*")
 
     assertEquals(new IntValue(1, con), s.invokeMethod("startsWith", b, null))
@@ -133,7 +133,7 @@ class StringValueTest {
     StringValue s = new StringValue("xy", exp)
     Value[] b = new Value[1];
     b[0] = new StringValue("y", 20)
-    def con = new SymbolicStringPredicate(SymbolicStringPredicate.COMPARISON_OPS.IN,
+    def con = new SymbolicStringPredicate(SymbolicStringPredicate.STRING_COMPARISON_OPS.IN,
       exp, ".*y")
 
     assertEquals(new IntValue(1, con), s.invokeMethod("endsWith", b, null))
@@ -156,7 +156,7 @@ class StringValueTest {
     StringValue s = new StringValue("xy", exp)
     Value[] b = new Value[1];
     b[0] = new StringValue("y", 20)
-    def con = new SymbolicStringPredicate(SymbolicStringPredicate.COMPARISON_OPS.IN,
+    def con = new SymbolicStringPredicate(SymbolicStringPredicate.STRING_COMPARISON_OPS.IN,
       exp, ".*y.*")
 
     assertEquals(new IntValue(1, con), s.invokeMethod("contains", b, null))
@@ -228,7 +228,7 @@ class StringValueTest {
     StringValue s = new StringValue("y", exp)
     Value[] b = new Value[1];
     b[0] = new StringValue("y", 20)
-    def con = new SymbolicStringPredicate(SymbolicStringPredicate.COMPARISON_OPS.IN,
+    def con = new SymbolicStringPredicate(SymbolicStringPredicate.STRING_COMPARISON_OPS.IN,
       exp, "y")
 
     assertEquals(new IntValue(1, con), s.invokeMethod("matches", b, null))

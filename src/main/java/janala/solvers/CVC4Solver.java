@@ -13,6 +13,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.TreeMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,9 +35,14 @@ public class CVC4Solver implements Solver {
     FAIL
   }
 
-  List<InputElement> inputs;
+  private List<InputElement> inputs;
+  public List<InputElement> getInputs() {
+    return inputs;
+  }
+
   List<Constraint> constraints;
   int pathConstraintIndex;
+
   private final static Logger logger = MyLogger.getLogger(CVC4Solver.class.getName());
   private final static Logger tester =
       MyLogger.getTestLogger(Config.mainClass + "." + Config.iteration);
@@ -53,79 +59,51 @@ public class CVC4Solver implements Solver {
     this.pathConstraintIndex = pathConstraintIndex;
   }
 
-  private void print(
-      Constraint con,
+  //VisibleForTesting
+  public void print(SymbolicInt c, PrintStream out) {
+    boolean first = true;
+    for (Map.Entry<Integer, Long> it : c.getLinear().entrySet()) {      
+      if (first) {
+        first = false;
+      } else {
+        out.print(" + ");
+      }
+      out.printf("%s*(%d)", "x" + String.valueOf(it.getKey()), it.getValue());
+    }
+    
+    if (c.getConstant() != 0) {
+      out.printf(" + (%d)", c.getConstant());
+    }
+    out.print(" " + c.getOp() + " ");
+    out.print("0");
+  }
+
+  //Visible for testing
+  public void print(SymbolicIntCompareConstraint c, PrintStream out) {
+    out.printf("(%s) - (%s) %s 0", c.left, c.right, c.op);
+  }
+
+  private void print(Constraint con,
       PrintStream out,
-      LinkedHashSet<String> freeVars,
+      Set<String> freeVars,
       CONSTRAINT_TYPE type,
       TreeMap<String, Long> soln) {
     if (con instanceof SymbolicInt) {
+      print((SymbolicInt)con, out);
       SymbolicInt c = (SymbolicInt) con;
-      boolean first2 = true;
-      for (Map.Entry<Integer, Long> it : c.getLinear().entrySet() ) {
-        
+      for (Map.Entry<Integer, Long> it : c.getLinear().entrySet()){
         int integer = it.getKey();
         freeVars.add("x" + integer);
-        long l = it.getValue();
-        if (first2) {
-          first2 = false;
-        } else {
-          out.print(" + ");
-        }
-        out.print('x');
-        out.print(integer);
-        out.print("*(");
-        out.print(l);
-        out.print(')');
       }
-      if (c.getConstant() != 0) {
-        out.print("+(");
-        out.print(c.getConstant());
-        out.print(')');
-      }
-      if (c.getOp() == SymbolicInt.COMPARISON_OPS.EQ) {
-        out.print(" = ");
-      } else if (c.getOp() == SymbolicInt.COMPARISON_OPS.NE) {
-        out.print(" /= ");
-      } else if (c.getOp() == SymbolicInt.COMPARISON_OPS.LE) {
-        out.print(" <= ");
-      } else if (c.getOp() == SymbolicInt.COMPARISON_OPS.LT) {
-        out.print(" < ");
-      } else if (c.getOp() == SymbolicInt.COMPARISON_OPS.GE) {
-        out.print(" >= ");
-      } else if (c.getOp() == SymbolicInt.COMPARISON_OPS.GT) {
-        out.print(" > ");
-      }
-      out.print("0");
     } else if (con instanceof SymbolicIntCompareConstraint) {
-      SymbolicIntCompareConstraint c = (SymbolicIntCompareConstraint) con;
-      out.print('(');
+      print((SymbolicIntCompareConstraint)con, out);
+      SymbolicIntCompareConstraint c = (SymbolicIntCompareConstraint)con;
       if (c.left.isSym) {
         freeVars.add(c.left.getSym());
       }
-      out.print(c.left);
-      out.print(')');
-      out.print('-');
-      out.print('(');
       if (c.right.isSym) {
-        freeVars.add(c.right.getSym());
+          freeVars.add(c.right.getSym());
       }
-      out.print(c.right);
-      out.print(')');
-      if (c.op == SymbolicIntCompareConstraint.COMPARISON_OPS.EQ) {
-        out.print(" = ");
-      } else if (c.op == SymbolicIntCompareConstraint.COMPARISON_OPS.NE) {
-        out.print(" /= ");
-      } else if (c.op == SymbolicIntCompareConstraint.COMPARISON_OPS.LE) {
-        out.print(" <= ");
-      } else if (c.op == SymbolicIntCompareConstraint.COMPARISON_OPS.LT) {
-        out.print(" < ");
-      } else if (c.op == SymbolicIntCompareConstraint.COMPARISON_OPS.GE) {
-        out.print(" >= ");
-      } else if (c.op == SymbolicIntCompareConstraint.COMPARISON_OPS.GT) {
-        out.print(" > ");
-      }
-      out.print("0");
     } else if (con instanceof SymbolicOrConstraint) {
       SymbolicOrConstraint or = (SymbolicOrConstraint) con;
 

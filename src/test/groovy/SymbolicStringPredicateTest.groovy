@@ -3,7 +3,7 @@ package janala.interpreters
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
 import janala.solvers.CVC4Solver.CONSTRAINT_TYPE
-import janala.interpreters.SymbolicStringPredicate.COMPARISON_OPS
+import janala.interpreters.SymbolicStringPredicate.STRING_COMPARISON_OPS
 
 import org.junit.Test
 
@@ -15,17 +15,17 @@ class SymbolicStringPredicateTest {
   @Test
   void testNot() {
     SymbolicStringPredicate p1 = new SymbolicStringPredicate(
-      COMPARISON_OPS.EQ, "a", "b")
+      STRING_COMPARISON_OPS.EQ, "a", "b")
     SymbolicStringPredicate p2 = new SymbolicStringPredicate(
-      COMPARISON_OPS.NE, "a", "b")
+      STRING_COMPARISON_OPS.NE, "a", "b")
     
     assertEquals(p2, p1.not())
     assertEquals(p1, p2.not())
 
     SymbolicStringPredicate p3 = new SymbolicStringPredicate(
-      COMPARISON_OPS.IN, "a", "b")
+      STRING_COMPARISON_OPS.IN, "a", "b")
     SymbolicStringPredicate p4 = new SymbolicStringPredicate(
-      COMPARISON_OPS.NOTIN, "a", "b")
+      STRING_COMPARISON_OPS.NOTIN, "a", "b")
     
     assertEquals(p4, p3.not())
     assertEquals(p3, p4.not())
@@ -34,26 +34,26 @@ class SymbolicStringPredicateTest {
   @Test
   void testStringfy() {
     SymbolicStringPredicate p1 = new SymbolicStringPredicate(
-      COMPARISON_OPS.EQ, "a", "b")
+      STRING_COMPARISON_OPS.EQ, "a", "b")
     assertEquals('"a" == "b"', p1.toString())
 
     p1 = new SymbolicStringPredicate(
-      COMPARISON_OPS.NE, "a", new Integer(1))
+      STRING_COMPARISON_OPS.NE, "a", new Integer(1))
     assertEquals('"a" != 1', p1.toString())
 
     p1 = new SymbolicStringPredicate(
-      COMPARISON_OPS.IN, "a", null)
+      STRING_COMPARISON_OPS.IN, "a", null)
     assertEquals('"a" regexin null', p1.toString())
 
     p1 = new SymbolicStringPredicate(
-      COMPARISON_OPS.NOTIN, "a", null)
+      STRING_COMPARISON_OPS.NOTIN, "a", null)
     assertEquals('"a" regexnotin null', p1.toString())
   }
 
   @Test
   void testConstraintStr() {
     SymbolicStringPredicate p1 = new SymbolicStringPredicate(
-      COMPARISON_OPS.EQ, "a", "b")
+      STRING_COMPARISON_OPS.EQ, "a", "b")
     def s = new HashSet<String>()
     def m = new HashMap<String, Long>()
     Constraint con = p1.getFormula(s, CONSTRAINT_TYPE.STR, m)
@@ -65,14 +65,14 @@ class SymbolicStringPredicateTest {
     char bChar = 'b'
     def expected = new SymbolicIntCompareConstraint(
       new SymOrInt((long)aChar), new SymOrInt((long)bChar), 
-      SymbolicIntCompareConstraint.COMPARISON_OPS.EQ)
+      COMPARISON_OPS.EQ)
     assertEquals(expected, a.constraints.get(0))
   }
 
   @Test
   void testConstraintStr_length() {
     SymbolicStringPredicate p1 = new SymbolicStringPredicate(
-      COMPARISON_OPS.EQ, "a", "bb")
+      STRING_COMPARISON_OPS.EQ, "a", "bb")
     def s = new HashSet<String>()
     def m = new HashMap<String, Long>()
     Constraint con = p1.getFormula(s, CONSTRAINT_TYPE.STR, m)
@@ -82,7 +82,7 @@ class SymbolicStringPredicateTest {
   @Test
   void testConstraintStrNE() {
     SymbolicStringPredicate p1 = new SymbolicStringPredicate(
-      COMPARISON_OPS.NE, "a", "b")
+      STRING_COMPARISON_OPS.NE, "a", "b")
     def s = new HashSet<String>()
     def m = new HashMap<String, Long>()
     Constraint con = p1.getFormula(s, CONSTRAINT_TYPE.STR, m)
@@ -93,7 +93,7 @@ class SymbolicStringPredicateTest {
     char bChar = 'b'
     def eqCon = new SymbolicIntCompareConstraint(
       new SymOrInt((long)aChar), new SymOrInt((long)bChar), 
-      SymbolicIntCompareConstraint.COMPARISON_OPS.EQ)
+      COMPARISON_OPS.EQ)
     def expected = new SymbolicAndConstraint(eqCon)
     assertEquals(expected, a.constraint)
   }
@@ -101,7 +101,7 @@ class SymbolicStringPredicateTest {
   @Test
   void testConstraintStrNE_length() {
     SymbolicStringPredicate p1 = new SymbolicStringPredicate(
-      COMPARISON_OPS.NE, "a", "bb")
+      STRING_COMPARISON_OPS.NE, "a", "bb")
     def s = new HashSet<String>()
     def m = new HashMap<String, Long>()
     Constraint con = p1.getFormula(s, CONSTRAINT_TYPE.STR, m)
@@ -112,7 +112,7 @@ class SymbolicStringPredicateTest {
   @Test
   void testConstraintInt() {
     SymbolicStringPredicate p1 = new SymbolicStringPredicate(
-      COMPARISON_OPS.EQ, "a", "b")
+      STRING_COMPARISON_OPS.EQ, "a", "b")
     def s = new HashSet<String>()
     def m = new HashMap<String, Long>()
     Constraint con = p1.getFormula(s, CONSTRAINT_TYPE.INT, m)
@@ -123,7 +123,7 @@ class SymbolicStringPredicateTest {
   @Test
   void testConstraintNEInt() {
     SymbolicStringPredicate p1 = new SymbolicStringPredicate(
-      COMPARISON_OPS.NE, "a", "b")
+      STRING_COMPARISON_OPS.NE, "a", "b")
     def s = new HashSet<String>()
     def m = new HashMap<String, Long>()
     Constraint con = p1.getFormula(s, CONSTRAINT_TYPE.INT, m)
