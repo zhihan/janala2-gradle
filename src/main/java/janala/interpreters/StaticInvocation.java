@@ -1,5 +1,7 @@
 package janala.interpreters;
 
+import static janala.interpreters.ObjectValue.ADDRESS_UNKNOWN;
+
 import janala.config.Config;
 import janala.solvers.History;
 
@@ -14,15 +16,13 @@ public final class StaticInvocation {
     if (owner.equals("java/lang/Integer") && name.equals("valueOf")) {
       if (args[0] instanceof IntValue) {
         IntValue intValue = (IntValue) args[0];
-        return new IntegerObjectValue(intValue, 10);
+        return new IntegerObjectValue(intValue, ADDRESS_UNKNOWN); 
       } 
-      return null;
     } else if (owner.equals("java/lang/Long") && name.equals("valueOf")) {
       if (args[0] instanceof LongValue) {
         LongValue longValue = (LongValue) args[0];
-        return new LongObjectValue(longValue, 20);
+        return new LongObjectValue(longValue, ADDRESS_UNKNOWN);
       }
-      return null;
     } else if (owner.equals("java/sql/Date") && name.equals("valueOf")) {
       SqlDateObjectValue ret = new SqlDateObjectValue();
       if (args[0] instanceof StringValue) {
@@ -55,6 +55,7 @@ public final class StaticInvocation {
       return PlaceHolder.instance;
     } else if (owner.equals("janala/Main") && name.equals("MakeSymbolic") && args.length == 1) {
       int symbol = args[0].MAKE_SYMBOLIC(history);
+      System.out.println("Add input");
       history.addInput(symbol, args[0]);
       return PlaceHolder.instance;
     } else if (owner.equals("janala/Main") && name.equals("BeginScope") && 

@@ -4,6 +4,9 @@ import janala.solvers.History;
 
 public final class IntegerObjectValue extends ObjectValue {
   private IntValue intValue;
+  public IntValue getIntValue() {
+    return intValue;
+  }
 
   public IntegerObjectValue() {
     super(100, -1);
@@ -57,17 +60,22 @@ public final class IntegerObjectValue extends ObjectValue {
         IntValue ret = intValue.ISUB(i2.intValue);
         ret.concrete = ret.concrete == 0 ? 1 : 0;
         if (ret.symbolic != null) {
+          System.out.println("Here " + ret);
           ret.symbolic = ret.symbolic.setop(SymbolicInt.COMPARISON_OPS.EQ);
-          return ret;
         }
+        return ret;
       }
     } else if (name.equals("compareTo")) {
       if (args[0] instanceof IntegerObjectValue) {
         IntegerObjectValue i2 = (IntegerObjectValue) args[0];
         IntValue ret = intValue.ISUB(i2.intValue);
-        if (ret.concrete > 0) ret.concrete = 1;
-        else if (ret.concrete == 0) ret.concrete = 0;
-        else ret.concrete = -1;
+        if (ret.concrete > 0) {
+          ret.concrete = 1;
+        } else if (ret.concrete == 0) {
+          ret.concrete = 0;
+        } else {
+          ret.concrete = -1;
+        }
         return ret;
       }
     }

@@ -2,8 +2,9 @@ package janala.interpreters;
 
 import janala.solvers.History;
 
-public class LongObjectValue extends ObjectValue {
-  LongValue longValue;
+public final class LongObjectValue extends ObjectValue {
+  private LongValue longValue;
+  public Value getLongValue() { return longValue; }
 
   public LongObjectValue() {
     super(100, -1);
@@ -57,8 +58,9 @@ public class LongObjectValue extends ObjectValue {
         int concreteVal = ret.getConcreteLong() == 0L ? 1 : 0;
         if (ret.getSymbolic() != null) {
           SymbolicInt retSymbolic = ret.getSymbolic().setop(SymbolicInt.COMPARISON_OPS.EQ);
-          IntValue ret2 = new IntValue((int) concreteVal, retSymbolic);
-          return ret2;
+          return new IntValue((int) concreteVal, retSymbolic);
+        } else {
+          return new IntValue((int) concreteVal);
         }
       }
     } else if (name.equals("compareTo")) {

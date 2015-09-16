@@ -1,5 +1,7 @@
 package janala.interpreters;
 
+import static janala.interpreters.ObjectValue.ADDRESS_UNKNOWN;
+
 import janala.Main;
 import janala.config.Config;
 import janala.instrument.Coverage;
@@ -649,7 +651,8 @@ public class ConcolicInterpreter implements IVisitor {
     Value peek = currentFrame.peek();
     Value tmp;
     if (peek == PlaceHolder.instance
-        || (((ObjectValue) peek).address != -1 && ((ObjectValue) peek).address != inst.v)) {
+        || (((ObjectValue) peek).address != ADDRESS_UNKNOWN &&
+            ((ObjectValue) peek).address != inst.v)) {
       logger.log(Level.FINE, "** Failed to match " + currentFrame.peek() + " and " + inst.v);
       currentFrame.pop();
       tmp = objects.get(inst.v);
@@ -665,12 +668,14 @@ public class ConcolicInterpreter implements IVisitor {
         }
         objects.put(inst.v, tmp);
       }
-    } else if (((ObjectValue) peek).address == -1) {
+    } else if (((ObjectValue) peek).address == ADDRESS_UNKNOWN) {
+      // set the address of the object
       if (inst.v == 0) {
         logger.log(Level.FINE, "** Failed to match {0} and " + inst.v, currentFrame.peek());
         currentFrame.pop();
         currentFrame.push(ObjectValue.NULL);
       } else {
+        // Need to obtain the Object address
         ((ObjectValue) peek).setAddress(inst.v);
         objects.put(inst.v, peek);
       }

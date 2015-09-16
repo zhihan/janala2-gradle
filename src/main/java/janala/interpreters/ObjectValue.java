@@ -3,7 +3,9 @@ package janala.interpreters;
 import janala.solvers.History;
 
 public class ObjectValue extends Value {
-  final public static ObjectValue NULL = new ObjectValue(0, 0);
+  public static final ObjectValue NULL = new ObjectValue(0, 0);
+  
+  public static final int ADDRESS_UNKNOWN = -1;
   
   // For array object, fields are the content of the array.
   // For plain object, fields are the instance variables.
