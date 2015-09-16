@@ -2,18 +2,46 @@ package janala.interpreters;
 
 import janala.solvers.History;
 
-public class IntegerObjectValue extends ObjectValue {
-  IntValue intValue;
+public final class IntegerObjectValue extends ObjectValue {
+  private IntValue intValue;
 
   public IntegerObjectValue() {
     super(100, -1);
   }
 
+  public IntegerObjectValue(IntValue x, int address) {
+    super(100, address);
+    intValue = x;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) {
+      return false;
+    }
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof IntegerObjectValue) {
+      IntegerObjectValue other = (IntegerObjectValue) o;
+      return (intValue.equals(other.intValue));
+    } else if (o instanceof IntValue) {
+      IntValue otherVal = (IntValue) o;
+      return intValue.equals(otherVal);
+    } else {
+      return false;
+    }
+  }
+
+
   @Override
   public Value invokeMethod(String name, Value[] args, History history) {
     if (name.equals("<init>")) {
-      if (args[0] instanceof IntValue) this.intValue = (IntValue) args[0];
-      else this.intValue = new IntValue(Integer.parseInt(((StringValue) args[0]).getConcrete()));
+      if (args[0] instanceof IntValue) {
+        this.intValue = (IntValue) args[0];
+      } else if (args[0] instanceof StringValue) {
+        this.intValue = new IntValue(Integer.parseInt(((StringValue) args[0]).getConcrete()));
+      }
       return PlaceHolder.instance;
     } else if (name.equals("intValue")) {
       return intValue;

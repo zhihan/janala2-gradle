@@ -9,6 +9,30 @@ public class LongObjectValue extends ObjectValue {
     super(100, -1);
   }
 
+  public LongObjectValue(LongValue v, int address) {
+    super(100, address);
+    longValue = v;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) {
+      return false;
+    }
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof LongObjectValue) {
+      LongObjectValue other = (LongObjectValue) o;
+      return (longValue.equals(other.longValue));
+    } else if (o instanceof LongValue) {
+      LongValue otherVal = (LongValue) o;
+      return longValue.equals(otherVal);
+    } else {
+      return false;
+    }
+  }
+
   @Override
   public Value invokeMethod(String name, Value[] args, History history) {
     if (name.equals("<init>")) {

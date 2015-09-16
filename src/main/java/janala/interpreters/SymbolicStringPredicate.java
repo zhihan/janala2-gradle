@@ -1,9 +1,5 @@
 package janala.interpreters;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- */
-
 import janala.solvers.CVC4Solver.CONSTRAINT_TYPE;
 
 import java.util.ArrayList;

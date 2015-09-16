@@ -204,7 +204,6 @@ public final class StringValue extends ObjectValue {
     } else if (name.equals("matches") && args.length == 1) {
       return invokeMatches(args[0]);
     } else if (name.equals("replace") && args.length == 2) {
-      System.out.println("invoking replace");
       return invokeReplace(args[0], args[1]);
     }
     return super.invokeMethod(name, args, history);

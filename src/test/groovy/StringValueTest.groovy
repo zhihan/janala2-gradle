@@ -233,4 +233,16 @@ class StringValueTest {
 
     assertEquals(new IntValue(1, con), s.invokeMethod("matches", b, null))
   }
+
+  @Test
+  void testStringReplace() {
+    StringValue s = new StringValue("x", 10)
+    Value[] b = new Value[2];
+    char a = (char) 'x'
+    char y = (char) 'y'
+    b[0] = new IntValue((int)a)
+    b[1] = new IntValue((int)y)
+
+    assertEquals(new StringValue("y", null), s.invokeMethod("replace", b, null))
+  }
 }

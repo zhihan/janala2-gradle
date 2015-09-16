@@ -5,24 +5,24 @@ import janala.solvers.History;
 
 public final class StaticInvocation {
   private final Config config;
+  
   public StaticInvocation(Config config) {
     this.config = config;
   }
 
-  public Value invokeMethod(
-      int iid, String owner, String name, Value[] args, History history) {
+  public Value invokeMethod(int iid, String owner, String name, Value[] args, History history) {
     if (owner.equals("java/lang/Integer") && name.equals("valueOf")) {
-      IntegerObjectValue ret = new IntegerObjectValue();
       if (args[0] instanceof IntValue) {
-        ret.intValue = (IntValue) args[0];
-        return ret;
-      }
+        IntValue intValue = (IntValue) args[0];
+        return new IntegerObjectValue(intValue, 10);
+      } 
+      return null;
     } else if (owner.equals("java/lang/Long") && name.equals("valueOf")) {
-      LongObjectValue ret = new LongObjectValue();
       if (args[0] instanceof LongValue) {
-        ret.longValue = (LongValue) args[0];
-        return ret;
+        LongValue longValue = (LongValue) args[0];
+        return new LongObjectValue(longValue, 20);
       }
+      return null;
     } else if (owner.equals("java/sql/Date") && name.equals("valueOf")) {
       SqlDateObjectValue ret = new SqlDateObjectValue();
       if (args[0] instanceof StringValue) {
@@ -57,11 +57,13 @@ public final class StaticInvocation {
       int symbol = args[0].MAKE_SYMBOLIC(history);
       history.addInput(symbol, args[0]);
       return PlaceHolder.instance;
-    } else if (owner.equals("janala/Main") && name.equals("BeginScope") && args.length == 0) {
+    } else if (owner.equals("janala/Main") && name.equals("BeginScope") && 
+      (args == null || args.length == 0)) {
       history.addInput(config.scopeBeginSymbol, null);
       history.beginScope(iid);
       return PlaceHolder.instance;
-    } else if (owner.equals("janala/Main") && name.equals("EndScope") && args.length == 0) {
+    } else if (owner.equals("janala/Main") && name.equals("EndScope") && 
+      (args == null || args.length == 0)) {
       history.addInput(config.scopeEndSymbol, null);
       history.endScope(iid);
       return PlaceHolder.instance;
