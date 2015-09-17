@@ -14,17 +14,18 @@ public class SymbolicOrConstraint extends Constraint {
 
   public SymbolicOrConstraint(Constraint c) {
     constraints = new LinkedList<Constraint>();
-    if (c != null) constraints.add(c);
+    if (c != null) {
+      constraints.add(c);
+    }
   }
 
   private SymbolicOrConstraint(SymbolicOrConstraint c) {
-    constraints = new LinkedList<Constraint>();
-    constraints.addAll(c.constraints);
+    this(c.constraints);
   }
 
   public SymbolicOrConstraint OR(Constraint c) {
     if (c != null) {
-      SymbolicOrConstraint ret = new SymbolicOrConstraint(this);
+      SymbolicOrConstraint ret = new SymbolicOrConstraint(constraints);
       ret.constraints.add(c);
       return ret;
     } else {

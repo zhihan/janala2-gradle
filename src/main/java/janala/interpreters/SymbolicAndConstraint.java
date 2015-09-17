@@ -8,7 +8,14 @@ public final class SymbolicAndConstraint extends Constraint {
 
   public SymbolicAndConstraint(Constraint c) {
     constraints = new LinkedList<Constraint>();
-    if (c != null) constraints.add(c);
+    if (c != null) {
+      constraints.add(c);
+    }
+  }
+
+  public SymbolicAndConstraint(LinkedList<Constraint> cons) {
+    constraints = new LinkedList<Constraint>();
+    constraints.addAll(cons);
   }
 
   private SymbolicAndConstraint() {
@@ -33,7 +40,7 @@ public final class SymbolicAndConstraint extends Constraint {
 
   public SymbolicAndConstraint AND(Constraint c) {
     if (c != null) {
-      SymbolicAndConstraint ret = new SymbolicAndConstraint(this);
+      SymbolicAndConstraint ret = new SymbolicAndConstraint(constraints);
       ret.constraints.add(c);
       return ret;
     } else {

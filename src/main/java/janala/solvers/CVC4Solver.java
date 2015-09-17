@@ -73,7 +73,7 @@ public class CVC4Solver implements Solver {
       this.out = out;
     }
 
-    public void print(SymbolicInt c) {
+    public void printSymInt(SymbolicInt c) {
       boolean first = true;
       for (Map.Entry<Integer, Long> it : c.getLinear().entrySet()) {      
         if (first) {
@@ -97,7 +97,7 @@ public class CVC4Solver implements Solver {
     }
 
     //Visible for testing
-    public void print(SymbolicIntCompareConstraint c) {
+    public void printIntCompare(SymbolicIntCompareConstraint c) {
       out.printf("(%s) - (%s) %s 0", c.left, c.right, c.op);
 
       if (c.left.isSym) {
@@ -108,56 +108,60 @@ public class CVC4Solver implements Solver {
       }
     }
 
-    public void print(SymbolicOrConstraint or){
+    public void printOr(SymbolicOrConstraint or){
+      if (or.constraints.isEmpty()) {
+        out.print(" TRUE ");
+      } else {
+        boolean first = true;
+        for (Constraint c : or.constraints) {
+          if (first) {
+            first = false;
+          } else {
+            out.print(" OR ");
+          }
+          out.print("(");
+          print(c); // Recursion
+          out.print(")");
+        }
+      }      
+    }
+
+    public void printAnd(SymbolicAndConstraint and) {
+      if (and.constraints.isEmpty()) {
+        out.print(" FALSE ");
+        return;
+      } 
       boolean first = true;
-      for (Constraint c : or.constraints) {
+      for (Constraint c : and.constraints) {
         if (first) {
           first = false;
         } else {
-          out.print(" OR ");
+          out.print(" AND ");
         }
         out.print("(");
-        print(c); // Recursion
+        print(c);
         out.print(")");
-      }
-      if (or.constraints.isEmpty()) {
-        out.print(" TRUE ");
-      }
+      }      
     }
 
+    public void printNot(SymbolicNotConstraint not) {
+      out.print(" NOT ");
+      out.print("(");
+      print(not.getConstraint());
+      out.print(")");
+    }
 
     public void print(Constraint con) {
       if (con instanceof SymbolicInt) {
-        print((SymbolicInt)con);
-
+         printSymInt((SymbolicInt)con);
       } else if (con instanceof SymbolicIntCompareConstraint) {
-        print((SymbolicIntCompareConstraint)con);
+        printIntCompare((SymbolicIntCompareConstraint)con);
       } else if (con instanceof SymbolicOrConstraint) {
-        print((SymbolicOrConstraint) con);
-
+        printOr((SymbolicOrConstraint) con);
       } else if (con instanceof SymbolicAndConstraint) {
-        SymbolicAndConstraint and = (SymbolicAndConstraint) con;
-
-        boolean first2 = true;
-        for (Constraint c : and.constraints) {
-          if (first2) {
-            first2 = false;
-          } else {
-            out.print(" AND ");
-          }
-          out.print("(");
-          print(c);
-          out.print(")");
-        }
-        if (and.constraints.isEmpty()) {
-          out.print(" FALSE ");
-        }
+        printAnd((SymbolicAndConstraint) con);
       } else if (con instanceof SymbolicNotConstraint) {
-        SymbolicNotConstraint not = (SymbolicNotConstraint) con;
-        out.print(" NOT ");
-        out.print("(");
-        print(not.getConstraint());
-        out.print(")");
+        printNot((SymbolicNotConstraint) con);
       } else if (con instanceof SymbolicTrueConstraint) {
         out.print(" TRUE ");
       } else if (con instanceof SymbolicFalseConstraint) {
@@ -171,11 +175,6 @@ public class CVC4Solver implements Solver {
       }
     }
   } 
-
-
-  
-
- 
 
   private void print(Constraint con,
       PrintStream out,
