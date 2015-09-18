@@ -1878,7 +1878,7 @@ class ConcolicInterpreterTest {
     Frame frame = interpreter.getCurrentFrame()
     frame.push(obj)
     frame.push(new IntValue(1))
-    interpreter.visitINVOKEVIRTUAL(new INVOKEVIRTUAL(0, 0, 
+    interpreter.visitINVOKEINTERFACE(new INVOKEINTERFACE(0, 0, 
       "MyClass", "MyMethod", "(I)I"))
     Frame newFrame = interpreter.getCurrentFrame()
     assertEquals(obj, newFrame.getLocal(0))
@@ -1893,7 +1893,7 @@ class ConcolicInterpreterTest {
     Frame frame = interpreter.getCurrentFrame()
     frame.push(obj)
     frame.push(new IntValue(1))
-    interpreter.visitINVOKEVIRTUAL(new INVOKEVIRTUAL(0, 0, 
+    interpreter.visitINVOKESPECIAL(new INVOKESPECIAL(0, 0, 
       "MyClass", "<init>", "(I)V"))
     Frame newFrame = interpreter.getCurrentFrame()
     assertEquals(obj, newFrame.getLocal(0))
