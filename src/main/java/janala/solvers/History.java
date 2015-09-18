@@ -461,11 +461,10 @@ public class History {
     BranchElement current = (BranchElement) history.get(index);
     Constraint ret = null;
     if (current.pathConstraintIndex != -1) {
+      assert current.pathConstraintIndex == (pathConstraint.size() -1);
       ret = pathConstraint.remove(pathConstraint.size() - 1);
     }
-    if (index <= history.size() - 1) {
-      history.remove(index);
-    }
+    history.remove(index);
     return ret;
   }
 
