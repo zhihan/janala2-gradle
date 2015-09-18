@@ -9,6 +9,7 @@ import org.junit.Test
 import org.junit.Before
 import janala.interpreters.IntValue
 import janala.interpreters.Value
+import janala.interpreters.StringValue
 import janala.interpreters.SymbolicInt
 import janala.interpreters.SymOrInt
 import janala.interpreters.SymbolicAndConstraint
@@ -17,6 +18,7 @@ import janala.interpreters.SymbolicOrConstraint
 import janala.interpreters.SymbolicFalseConstraint
 import janala.interpreters.SymbolicTrueConstraint
 import janala.interpreters.SymbolicIntCompareConstraint
+import janala.interpreters.SymbolicStringExpression
 import janala.interpreters.SymbolicStringPredicate
 import janala.interpreters.SymbolicStringPredicate.STRING_COMPARISON_OPS
 import janala.interpreters.COMPARISON_OPS
@@ -164,11 +166,34 @@ class CVC4SolverTest {
 
   @Test
   void testPrintInput() {
-    Value x = new IntValue(2)
+    SymbolicInt x1 = new SymbolicInt(1)
+    Value x = new IntValue(2, x1)
     InputElement in1 = new InputElement(1, x)
-    solver.setInputs([in1])
+    SymbolicStringExpression exp = new SymbolicStringExpression(1, new IntValue(2))
+    StringValue s = new StringValue("xy", exp)
+    InputElement in2 = new InputElement(2, s)
+    solver.setInputs([in1, in2])
     def bytes = new ByteArrayOutputStream()
     solver.printInputs(new PrintStream(bytes), new TreeMap<String, Long>())
+    println(bytes.toString())
     assertTrue(bytes.toString().contains("2"))
+    assertTrue(bytes.toString().contains("xy"))
+  }
+
+  @Test
+  void testPrintFormula() {
+    SymbolicInt x1 = new SymbolicInt(1)
+    x1.setOp(COMPARISON_OPS.EQ)
+    SymbolicInt x2 = new SymbolicInt(2)
+    x2.setOp(COMPARISON_OPS.EQ)
+    solver.setPathConstraint([(Constraint)x1, (Constraint)x2])
+    solver.setPathConstraintIndex(1)
+    def bytes = new ByteArrayOutputStream()
+    solver.printFormula(new PrintStream(bytes), new TreeMap<String, Long>(), new TreeSet<String>(),
+      "extra", CVC4Solver.CONSTRAINT_TYPE.STR)
+    println(bytes.toString())
+    assertTrue(bytes.toString().contains("ASSERT extra;"))
+    assertTrue(bytes.toString().contains("ASSERT x1*(1) = 0;"))
+    assertTrue(bytes.toString().contains("CHECKSAT x2*(1) /= 0;"))
   }
 }

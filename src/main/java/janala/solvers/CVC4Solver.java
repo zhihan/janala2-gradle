@@ -301,6 +301,9 @@ public class CVC4Solver implements Solver {
           if (val instanceof StringValue) {
             StringValue sval = (StringValue) val;
             String old = sval.getConcrete();
+
+            assert sval.getSymbolicExp() != null;
+            
             IntValue tmp = sval.getSymbolicExp().getField("length");
             int len = (int) (long) tmp.substituteInLinear(soln);
             StringBuilder ret = new StringBuilder();
