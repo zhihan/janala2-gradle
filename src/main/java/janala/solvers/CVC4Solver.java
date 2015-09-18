@@ -40,6 +40,17 @@ public class CVC4Solver implements Solver {
     return inputs;
   }
 
+
+  private final FileUtil fileUtil;
+
+  public CVC4Solver(FileUtil fileUtil) {
+    this.fileUtil = fileUtil;
+  }
+
+  public CVC4Solver() {
+    fileUtil = new FileUtil();
+  }
+  
   List<Constraint> constraints;
   int pathConstraintIndex;
 
@@ -180,7 +191,7 @@ public class CVC4Solver implements Solver {
       PrintStream out,
       Set<String> freeVars,
       CONSTRAINT_TYPE type,
-      TreeMap<String, Long> soln) {
+      Map<String, Long> soln) {
    
     new Printer(freeVars, soln, type, out).print(con);
   }
@@ -216,11 +227,40 @@ public class CVC4Solver implements Solver {
     return false;
   }
 
+  public boolean printFormula(PrintStream out, Map<String, Long> soln, Set<String> freeVars,
+    String extra, CONSTRAINT_TYPE type) {
+    boolean allTrue = true;
+    for (int i = 0; i < pathConstraintIndex; i++) {
+      out.print("ASSERT ");
+      Constraint tmp = constraints.get(i).substitute(soln);
+      if (tmp != SymbolicTrueConstraint.instance) {
+        allTrue = false;
+      }
+      print(tmp, out, freeVars, type, soln);
+      out.println(";");
+    }
+    if (extra != null) {
+      out.print("ASSERT ");
+      out.print(extra);
+      out.println(";");
+    }
+
+    out.print("CHECKSAT ");
+
+      //System.out.println("Constraint "+pathConstraintIndex+": !" + constraints.get(pathConstraintIndex));
+    Constraint notCon = constraints.get(pathConstraintIndex).not().substitute(soln);
+    if (notCon != SymbolicTrueConstraint.instance) {
+      allTrue = false;
+    }
+    print(notCon, out, freeVars, type, soln);
+    out.println(";");
+    out.println("COUNTERMODEL;");
+    return allTrue;
+  }
+
   private RESULT_TYPE writeFormula(
       String extra, CONSTRAINT_TYPE type, TreeMap<String, Long> soln) {
     try {
-      boolean allTrue = true;
-      Constraint tmp;
       PrintStream out =
           new PrintStream(
               new BufferedOutputStream(new FileOutputStream(Config.instance.formulaFile + ".tmp")));
@@ -229,32 +269,7 @@ public class CVC4Solver implements Solver {
       }
 
       LinkedHashSet<String> freeVars = new LinkedHashSet<String>();
-      for (int i = 0; i < pathConstraintIndex; i++) {
-        out.print("ASSERT ");
-        //System.out.println("Constraint "+i+":" + constraints.get(i));
-        tmp = constraints.get(i).substitute(soln);
-        if (tmp != SymbolicTrueConstraint.instance) {
-          allTrue = false;
-        }
-        print(tmp, out, freeVars, type, soln);
-        out.println(";");
-      }
-      if (extra != null) {
-        out.print("ASSERT ");
-        out.print(extra);
-        out.println(";");
-      }
-
-      out.print("CHECKSAT ");
-
-      //System.out.println("Constraint "+pathConstraintIndex+": !" + constraints.get(pathConstraintIndex));
-      tmp = constraints.get(pathConstraintIndex).not().substitute(soln);
-      if (tmp != SymbolicTrueConstraint.instance) {
-        allTrue = false;
-      }
-      print(tmp, out, freeVars, type, soln);
-      out.println(";");
-      out.println("COUNTERMODEL;");
+      boolean allTrue = printFormula(out, soln, freeVars, extra, type);
       out.close();
 
       concatFile(
@@ -268,56 +283,56 @@ public class CVC4Solver implements Solver {
     }
   }
 
-  private void writeInputs(TreeMap<String, Long> soln) {
-    try {
-      FileUtil.moveFile(Config.instance.inputs, Config.instance.inputs + ".bak");
-      PrintStream out =
-          new PrintStream(new BufferedOutputStream(new FileOutputStream(Config.instance.inputs)));
-
-      for (InputElement ielem : inputs) {
-        Integer sym = ielem.symbol;
-        Value val = ielem.value;
-        if (sym.intValue() == Config.instance.scopeBeginSymbol) {
-          out.println(Config.instance.scopeBeginMarker);
-        } else if (sym.intValue() == Config.instance.scopeEndSymbol) {
-          out.println(Config.instance.scopeEndMarker);
-        } else {
+  public void printInputs(PrintStream out, Map<String, Long> soln) {
+    for (InputElement ielem : inputs) {
+      Integer sym = ielem.symbol;
+      Value val = ielem.value;
+      if (sym.intValue() == Config.instance.scopeBeginSymbol) {
+        out.println(Config.instance.scopeBeginMarker);
+      } else if (sym.intValue() == Config.instance.scopeEndSymbol) {
+        out.println(Config.instance.scopeEndMarker);
+      } else {
           //System.out.println("sym "+sym);
-          Long l = soln.get("x" + sym);
-          if (l != null) {
-            out.println(l);
+        Long l = soln.get("x" + sym);
+        if (l != null) {
+          out.println(l);
             //System.out.println("l = " + l);
-          } else {
-            if (val instanceof StringValue) {
-              StringValue sval = (StringValue) val;
-              String old = sval.getConcrete();
-              IntValue tmp = sval.getSymbolicExp().getField("length");
-              int len = (int) (long) tmp.substituteInLinear(soln);
-              StringBuilder ret = new StringBuilder();
-              for (int i = 0; i < len; i++) {
-                Long v = soln.get("x" + sym + "__" + i);
+        } else {
+          if (val instanceof StringValue) {
+            StringValue sval = (StringValue) val;
+            String old = sval.getConcrete();
+            IntValue tmp = sval.getSymbolicExp().getField("length");
+            int len = (int) (long) tmp.substituteInLinear(soln);
+            StringBuilder ret = new StringBuilder();
+            for (int i = 0; i < len; i++) {
+              Long v = soln.get("x" + sym + "__" + i);
 
-                char c;
-                if (v != null) {
-                  c = (char) (long) v;
-                  //System.out.println("--1");
-                } else if (i < old.length()) {
-                  //System.out.println("--2"+old+" "+old.length());
-                  c = old.charAt(i);
-                } else {
-                  //System.out.println("--3");
-                  c = 'a';
-                }
-                ret.append(c);
-                //System.out.println("~~~~~~~~~~~~~~~\"" + ret + "\"");
+              char c;
+              if (v != null) {
+                c = (char) (long) v;
+              } else if (i < old.length()) {
+                c = old.charAt(i);
+              } else {
+                c = 'a';
               }
-              out.println(ret);
-            } else {
-              out.println(val.getConcrete());
+              ret.append(c);
             }
+            out.println(ret);
+          } else {
+            out.println(val.getConcrete());
           }
         }
       }
+    }
+  }
+
+  private void writeInputs(TreeMap<String, Long> soln) {
+    try {
+      fileUtil.moveFile(Config.instance.inputs, Config.instance.inputs + ".bak");
+      PrintStream out =
+          new PrintStream(new BufferedOutputStream(new FileOutputStream(Config.instance.inputs)));
+
+      printInputs(out, soln);
 
       out.close();
     } catch (IOException ioe) {
@@ -462,7 +477,21 @@ public class CVC4Solver implements Solver {
     }
   }
 
-  static public void concatFile(
+  //VisbleForTest
+  public void concatStreams(List<PrintStream> ps, Set<String> freeVars, String from, boolean cvc4)  throws java.io.IOException {
+    for (PrintStream pw : ps) {
+      if (cvc4) {
+        pw.println("OPTION \"produce-models\";");
+      }
+      for (String var : freeVars) {
+        pw.print(var);
+        pw.println(" :INT;");
+      }
+      fileUtil.copyContent(from, pw);
+    }
+  }
+
+  public void concatFile(
       LinkedHashSet<String> freeVars, String from, String to, boolean cvc4)
       throws java.io.IOException {
     List<PrintStream> ps = new ArrayList<PrintStream>();
@@ -475,24 +504,7 @@ public class CVC4Solver implements Solver {
       ps.add(System.out);
     }
 
-    for (PrintStream pw : ps) {
-      if (cvc4) {
-        pw.println("OPTION \"produce-models\";");
-      }
-      for (String var : freeVars) {
-        pw.print(var);
-        pw.println(" :INT;");
-      }
-
-      BufferedReader br = new BufferedReader(new FileReader(from));
-      String line = br.readLine();
-      while (line != null) {
-        pw.println(line);
-        line = br.readLine();
-      }
-      br.close();
-    }
-
+    concatStreams(ps, freeVars, from, cvc4);
     toStream.close();
   }
 }

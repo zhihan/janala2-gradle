@@ -40,14 +40,16 @@ public class History {
 
   private LinkedList<InputElement> inputs;
   private Strategy strategy = Config.instance.getStrategy();
-
-  public History(Solver solver) {
+  private final FileUtil fileUtil;
+  
+  public History(Solver solver, FileUtil fileUtil) {
     history = new ArrayList<Element>(1024);
     pathConstraint = new ArrayList<Constraint>(1024);
     inputs = new LinkedList<InputElement>();
     index = 0;
     this.solver = solver;
     this.ignore = false;
+    this.fileUtil = fileUtil;
   }
 
   public SymbolicOrValue assumeOrBegin(IntValue arg) {
@@ -128,12 +130,12 @@ public class History {
       return readHistory(solver, new FileInputStream(Config.instance.history));
     } catch (Exception ex) {
       logger.log(Level.WARNING, "", ex);
-      return new History(solver);
+      return new History(solver, new FileUtil());
     }
   }
 
   public static History readHistory(Solver solver, InputStream is) {
-    History ret = new History(solver);
+    History ret = new History(solver, new FileUtil());
     
     try {
       ObjectInputStream inputStream = new ObjectInputStream(is);
@@ -325,19 +327,19 @@ public class History {
     if (predictionFailed) {
       System.out.println("***********");
       // backtrack
-      FileUtil.moveFile(Config.instance.inputs + ".bak", Config.instance.inputs);
-      FileUtil.moveFile(Config.instance.history + ".bak", Config.instance.history);
-      FileUtil.touch(file);
+      fileUtil.moveFile(Config.instance.inputs + ".bak", Config.instance.inputs);
+      fileUtil.moveFile(Config.instance.history + ".bak", Config.instance.history);
+      fileUtil.touch(file);
     } else {
       if (strategy != null) {
         if ((i = strategy.solve(history, index, this)) >= 0) {
-          if (FileUtil.exists(file)) {
+          if (fileUtil.exists(file)) {
             if ((i = strategy.solve(history, history.size(), this)) >= 0) {
               writeHistory(i);
             } else {
               removeHistory();
             }
-            FileUtil.remove(file);
+            fileUtil.remove(file);
           } else {
             writeHistory(i);
           }
@@ -429,7 +431,7 @@ public class History {
 
   private void writeHistory(int i) {
     cleanup(i);
-    FileUtil.moveFile(Config.instance.history, Config.instance.history + ".bak");
+    fileUtil.moveFile(Config.instance.history, Config.instance.history + ".bak");
     try {
       OutputStream ostream = new FileOutputStream(Config.instance.history);
       writeHistory(ostream);

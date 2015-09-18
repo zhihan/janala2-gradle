@@ -1,9 +1,14 @@
 package janala.solvers
 
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
+import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.verify
 
 import org.junit.Test
 import org.junit.Before
+import janala.interpreters.IntValue
+import janala.interpreters.Value
 import janala.interpreters.SymbolicInt
 import janala.interpreters.SymOrInt
 import janala.interpreters.SymbolicAndConstraint
@@ -16,16 +21,19 @@ import janala.interpreters.SymbolicStringPredicate
 import janala.interpreters.SymbolicStringPredicate.STRING_COMPARISON_OPS
 import janala.interpreters.COMPARISON_OPS
 import janala.interpreters.Constraint
+import janala.utils.FileUtil
 
 import groovy.transform.CompileStatic
 
 @CompileStatic
 class CVC4SolverTest {
   CVC4Solver solver
+  FileUtil fileUtil
 
   @Before
   void setup() {
-    solver = new CVC4Solver()
+    fileUtil = mock(FileUtil.class)
+    solver = new CVC4Solver(fileUtil)
   }
 
   private void testSymbolicInt(SymbolicInt y, COMPARISON_OPS op, String expected) {
@@ -140,5 +148,27 @@ class CVC4SolverTest {
       new HashMap<String, Long>(), CVC4Solver.CONSTRAINT_TYPE.STR, new PrintStream(bytes))
     printer.print(con)
     assertEquals("((97) - (98) = 0)", bytes.toString())
+  }
+
+  @Test
+  void testConcatStream() {
+    def bytes = new ByteArrayOutputStream()
+    def ps = [new PrintStream(bytes)]
+    def a = new TreeSet<String>()
+    a.addAll(["x1", "x2"])
+    solver.concatStreams(ps, a, "from", true)
+    assertTrue(bytes.toString().contains("x1"))
+    assertTrue(bytes.toString().contains("x1"))
+    verify(fileUtil).copyContent("from", ps[0])
+  }
+
+  @Test
+  void testPrintInput() {
+    Value x = new IntValue(2)
+    InputElement in1 = new InputElement(1, x)
+    solver.setInputs([in1])
+    def bytes = new ByteArrayOutputStream()
+    solver.printInputs(new PrintStream(bytes), new TreeMap<String, Long>())
+    assertTrue(bytes.toString().contains("2"))
   }
 }

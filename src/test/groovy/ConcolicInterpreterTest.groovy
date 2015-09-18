@@ -15,6 +15,7 @@ import janala.logger.ClassNames
 import janala.logger.ObjectInfo
 import janala.logger.inst.*
 import janala.instrument.Coverage
+import janala.utils.FileUtil
 
 import org.junit.Before
 import org.junit.Test
@@ -34,7 +35,7 @@ class ConcolicInterpreterTest {
     classDepot = mock(ClassDepot.class)
     classNames = new ClassNames(classDepot)
     solver = mock(Solver.class)
-    history = new History(solver)
+    history = new History(solver, new FileUtil())
     coverage = mock(Coverage.class)
     interpreter = new ConcolicInterpreter(classNames, history, coverage, new Config())
   }

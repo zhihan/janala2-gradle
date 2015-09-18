@@ -2,7 +2,7 @@ package janala.solvers;
 
 import janala.interpreters.Value;
 
-public class InputElement extends Element {
+public final class InputElement extends Element {
   final int symbol;
   final Value value;
 

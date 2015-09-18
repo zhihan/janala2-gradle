@@ -3,9 +3,12 @@ package janala.utils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class FileUtil {
-  public static void moveFile(String src, String dst) {
+  public void moveFile(String src, String dst) {
     File sf1 = new File(src);
     File df1 = new File(dst);
     df1.delete();
@@ -32,5 +35,15 @@ public class FileUtil {
   public static void remove(String src) {
     File file = new File(src);
     file.delete();
+  }
+
+  public void copyContent(String from, PrintStream to) throws IOException {
+    BufferedReader reader = new BufferedReader(new FileReader(from));
+    String line = reader.readLine();
+    while (line != null) {
+      to.println(line);
+      line = reader.readLine();
+    }
+    reader.close();
   }
 }

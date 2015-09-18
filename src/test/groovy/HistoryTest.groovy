@@ -11,6 +11,7 @@ import static org.mockito.Matchers.eq
 import janala.interpreters.IntValue
 import janala.interpreters.Constraint
 import janala.interpreters.SymbolicInt
+import janala.utils.FileUtil
 import org.junit.Test
 import org.junit.Before
 
@@ -19,13 +20,15 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 class HistoryTest {
+  FileUtil fileUtil
   History history
   Solver solver // A mock solver
 
   @Before
   void setup() {
+    fileUtil = mock(FileUtil.class)
     solver = mock(Solver.class)
-    history = new History(solver)
+    history = new History(solver, fileUtil)
   }
 
 
