@@ -40,14 +40,16 @@ public class CVC4Solver implements Solver {
     return inputs;
   }
 
-
+  private final Config config;
   private final FileUtil fileUtil;
-
-  public CVC4Solver(FileUtil fileUtil) {
+  
+  public CVC4Solver(Config config, FileUtil fileUtil) {
+    this.config = config;
     this.fileUtil = fileUtil;
   }
 
   public CVC4Solver() {
+    config = Config.instance;
     fileUtil = new FileUtil();
   }
   
@@ -263,7 +265,7 @@ public class CVC4Solver implements Solver {
     try {
       PrintStream out =
           new PrintStream(
-              new BufferedOutputStream(new FileOutputStream(Config.instance.formulaFile + ".tmp")));
+              new BufferedOutputStream(new FileOutputStream(config.formulaFile + ".tmp")));
       if (quickUnsatCheck(type)) {
         return RESULT_TYPE.FALSE;
       }
@@ -273,7 +275,7 @@ public class CVC4Solver implements Solver {
       out.close();
 
       concatFile(
-          freeVars, Config.instance.formulaFile + ".tmp", Config.instance.formulaFile, true);
+          freeVars, config.formulaFile + ".tmp", config.formulaFile, true);
       return allTrue ? RESULT_TYPE.TRUE : RESULT_TYPE.UNKNOWN;
     } catch (IOException ioe) {
       ioe.printStackTrace();
@@ -287,10 +289,10 @@ public class CVC4Solver implements Solver {
     for (InputElement ielem : inputs) {
       Integer sym = ielem.symbol;
       Value val = ielem.value;
-      if (sym.intValue() == Config.instance.scopeBeginSymbol) {
-        out.println(Config.instance.scopeBeginMarker);
-      } else if (sym.intValue() == Config.instance.scopeEndSymbol) {
-        out.println(Config.instance.scopeEndMarker);
+      if (sym.intValue() == config.scopeBeginSymbol) {
+        out.println(config.scopeBeginMarker);
+      } else if (sym.intValue() == config.scopeEndSymbol) {
+        out.println(config.scopeEndMarker);
       } else {
           //System.out.println("sym "+sym);
         Long l = soln.get("x" + sym);
@@ -331,9 +333,9 @@ public class CVC4Solver implements Solver {
 
   private void writeInputs(TreeMap<String, Long> soln) {
     try {
-      fileUtil.moveFile(Config.instance.inputs, Config.instance.inputs + ".bak");
+      fileUtil.moveFile(config.inputs, config.inputs + ".bak");
       PrintStream out =
-          new PrintStream(new BufferedOutputStream(new FileOutputStream(Config.instance.inputs)));
+          new PrintStream(new BufferedOutputStream(new FileOutputStream(config.inputs)));
 
       printInputs(out, soln);
 
@@ -345,17 +347,17 @@ public class CVC4Solver implements Solver {
     }
   }
 
-  private String processInputs(BufferedReader br, TreeMap<String, Long> soln) {
+  public String processInputs(BufferedReader br, Map<String, Long> soln) {
     String line = null;
     String negatedSolution = null;
 
     try {
-      if (Config.instance.printFormulaAndSolutions) {
+      if (config.printFormulaAndSolutions) {
         System.out.println("-----------Solution-------------");
       }
 
       line = br.readLine();
-      if (Config.instance.printFormulaAndSolutions) {
+      if (config.printFormulaAndSolutions) {
         System.out.println(line);
       }
       if (!line.startsWith("sat")) {
@@ -363,12 +365,12 @@ public class CVC4Solver implements Solver {
           logger.log(Level.SEVERE, line);
           logger.log(
               Level.SEVERE,
-              "Call to CVC4 failed (concolic.cvc4 = " + Config.instance.cvc4Command + ")");
+              "Call to CVC4 failed (concolic.cvc4 = " + config.cvc4Command + ")");
           Runtime.getRuntime().halt(1);
         }
         logger.log(Level.INFO, "-- Infeasible");
         while ((line = br.readLine()) != null) {
-          if (Config.instance.printFormulaAndSolutions) {
+          if (config.printFormulaAndSolutions) {
             System.out.println(line);
           }
         }
@@ -376,7 +378,7 @@ public class CVC4Solver implements Solver {
         return null;
       } else {
         while ((line = br.readLine()) != null) {
-          if (Config.instance.printFormulaAndSolutions) {
+          if (config.printFormulaAndSolutions) {
             System.out.println(line);
           }
 
@@ -451,7 +453,7 @@ public class CVC4Solver implements Solver {
       ProcessBuilder builder =
           new ProcessBuilder(
               new String[] {
-                Config.instance.cvc4Command, "--lang", "cvc4", Config.instance.formulaFile
+                config.cvc4Command, "--lang", "cvc4", config.formulaFile
               });
 
       builder.redirectErrorStream(true);
@@ -502,7 +504,7 @@ public class CVC4Solver implements Solver {
     PrintStream toStream = new PrintStream(new BufferedOutputStream(new FileOutputStream(to)));
     ps.add(toStream);
 
-    if (Config.instance.printFormulaAndSolutions) {
+    if (config.printFormulaAndSolutions) {
       System.out.println("-----------Formula-------------");
       ps.add(System.out);
     }

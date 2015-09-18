@@ -252,7 +252,7 @@ public class Main {
     for (i = 0; i < len; i++) {
       char c = eventName.charAt(i);
       pathsState = pathsState.step(c);
-      //System.out.println("Stepping on '"+c+"'");
+      
       if (pathsState == null) {
         System.out.println(
             "Pruning path as event prefix '"

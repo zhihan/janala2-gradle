@@ -137,7 +137,7 @@ class SymbolicIntTest {
         SymbolicInt x1 = new SymbolicInt(1)
         x1.setOp(COMPARISON_OPS.EQ)
         SymbolicInt y = x1.setop(COMPARISON_OPS.EQ)
-        assertEquals(COMPARISON_OPS.NE, y.getOp())
+        assertEquals(COMPARISON_OPS.EQ, y.getOp())
     }
 
     @Test

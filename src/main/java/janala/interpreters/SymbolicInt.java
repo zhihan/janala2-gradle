@@ -155,7 +155,8 @@ public final class SymbolicInt extends Constraint {
     SymbolicInt ret = new SymbolicInt(this);
     if (ret.op != COMPARISON_OPS.UN) {
       if (op == COMPARISON_OPS.EQ) { // (x op 0)==0 is same as !(x op 0)
-        ret = ret.not();
+        // ret = ret.not();
+        ret.op = op;
       } else if (op != COMPARISON_OPS.NE) {
         throw new RuntimeException("Cannot process non-logical constraint.");
       }

@@ -268,6 +268,7 @@ public class History {
 
   public void checkAndSetBranch(boolean result, Constraint constraint, int iid) {
     BranchElement current;
+    
     if (index < history.size()) {
       Element tmp = history.get(index);
       if (isEnd(tmp) || ignore) {
@@ -286,6 +287,7 @@ public class History {
         logger.log(
             Level.WARNING,
             "At old iid " + tmp.getIid() + " at iid " + iid + " constraint " + constraint);
+        Thread.dumpStack();
         int len = history.size();
         for (int j = len - 1; j >= index; j--) {
           history.remove(j);

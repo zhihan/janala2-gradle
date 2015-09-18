@@ -60,7 +60,6 @@ public final class IntegerObjectValue extends ObjectValue {
         IntValue ret = intValue.ISUB(i2.intValue);
         ret.concrete = ret.concrete == 0 ? 1 : 0;
         if (ret.symbolic != null) {
-          System.out.println("Here " + ret);
           ret.symbolic = ret.symbolic.setop(COMPARISON_OPS.EQ);
         }
         return ret;

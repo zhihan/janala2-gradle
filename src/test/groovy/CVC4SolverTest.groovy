@@ -24,6 +24,7 @@ import janala.interpreters.SymbolicStringPredicate.STRING_COMPARISON_OPS
 import janala.interpreters.COMPARISON_OPS
 import janala.interpreters.Constraint
 import janala.utils.FileUtil
+import janala.config.Config
 
 import groovy.transform.CompileStatic
 
@@ -31,11 +32,13 @@ import groovy.transform.CompileStatic
 class CVC4SolverTest {
   CVC4Solver solver
   FileUtil fileUtil
+  Config config
 
   @Before
   void setup() {
     fileUtil = mock(FileUtil.class)
-    solver = new CVC4Solver(fileUtil)
+    config = new Config()
+    solver = new CVC4Solver(config, fileUtil)
   }
 
   private void testSymbolicInt(SymbolicInt y, COMPARISON_OPS op, String expected) {
@@ -195,5 +198,33 @@ class CVC4SolverTest {
     assertTrue(bytes.toString().contains("ASSERT extra;"))
     assertTrue(bytes.toString().contains("ASSERT x1*(1) = 0;"))
     assertTrue(bytes.toString().contains("CHECKSAT x2*(1) /= 0;"))
+  }
+
+  @Test
+  void testProcessInputUnsat() {
+    config.printFormulaAndSolutions = true
+    String result = """unsat
+    Whatever!
+    """
+    InputStream istr = new ByteArrayInputStream(result.getBytes())
+    def r = solver.processInputs(new BufferedReader(new InputStreamReader(istr)), 
+      new TreeMap<String, Long>())
+    assertEquals(null, r)
+  }
+
+  @Test
+  void testProcessInputSat() {
+    config.printFormulaAndSolutions = true
+    String result = """sat
+x1 : INT = 0;
+x2 : INT = 1;"""
+    InputStream istr = new ByteArrayInputStream(result.getBytes())
+    def soln = new TreeMap<String, Long>()
+    def r = solver.processInputs(new BufferedReader(new InputStreamReader(istr)), 
+      soln)
+    println(soln)
+    assertEquals(0L, soln.get("x1"))
+    assertEquals(1L, soln.get("x2"))
+    assertEquals("(NOT ((x1 = 0 ) AND (x2 = 1 )))", r)  
   }
 }
