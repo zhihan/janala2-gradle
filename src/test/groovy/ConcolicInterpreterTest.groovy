@@ -1870,6 +1870,36 @@ class ConcolicInterpreterTest {
     assertEquals(new LongValue(1L), newFrame.getLocal(0))
   }
 
+
+  @Test
+  void testINVOKEINTERFACE() {
+    ObjectValue obj = new ObjectValue(1)
+    obj.setAddress(10)
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(obj)
+    frame.push(new IntValue(1))
+    interpreter.visitINVOKEVIRTUAL(new INVOKEVIRTUAL(0, 0, 
+      "MyClass", "MyMethod", "(I)I"))
+    Frame newFrame = interpreter.getCurrentFrame()
+    assertEquals(obj, newFrame.getLocal(0))
+    assertEquals(new IntValue(1), newFrame.getLocal(1))
+    assertEquals(PlaceHolder.instance, newFrame.getRet())
+  }
+  
+  @Test
+  void testINVOKESPECIAL() {
+    ObjectValue obj = new ObjectValue(1)
+    obj.setAddress(10)
+    Frame frame = interpreter.getCurrentFrame()
+    frame.push(obj)
+    frame.push(new IntValue(1))
+    interpreter.visitINVOKEVIRTUAL(new INVOKEVIRTUAL(0, 0, 
+      "MyClass", "<init>", "(I)V"))
+    Frame newFrame = interpreter.getCurrentFrame()
+    assertEquals(obj, newFrame.getLocal(0))
+    assertEquals(new IntValue(1), newFrame.getLocal(1))
+  }
+  
   @Test
   void testMONITOR() {
     interpreter.setNext(new SPECIAL(0)) // exception handling
