@@ -65,7 +65,10 @@ public class RedBlackTreeSearch {
         // from this point forward in the execution.
 
         int x = CATG.readInt(0);
-        Main.MakeSymbolic(x);
+        // The call is redundant because MakeSymbolic is already called in
+        // CATG.readInt;
+        //
+        // Main.MakeSymbolic(x);
         System.out.println("Searched "+tree.treeSearch(tree.root(), x));
 
     }

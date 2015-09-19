@@ -116,9 +116,9 @@ public class IntValue extends Value {
   }
 
   public IntValue IFNE() {
-    boolean result = concrete != 0;
+    boolean result = (concrete != 0);
     if (symbolic == null && nonIntConstraint == null) {
-      return (concrete != 0) ? IntValue.TRUE : IntValue.FALSE;
+      return result ? IntValue.TRUE : IntValue.FALSE;
     } else if (symbolic != null) {
       if (symbolic.getOp() == COMPARISON_OPS.UN)
         return new IntValue(
