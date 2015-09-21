@@ -102,7 +102,6 @@ class IntepreterTest {
     DJVM.IRETURN(6, 0)
     return false;
   }
-
   
   @Test
   void testLessOrEqualZero() {
@@ -119,4 +118,56 @@ class IntepreterTest {
     Value y = interpreter.getCurrentFrame().peek()
     assertEquals(new IntValue(0), y)
   }
+
+  private int booleanAnd(boolean x, boolean y) {
+    DJVM.ILOAD(0, 0, 1)
+    DJVM.IFEQ(1, 0, 10)
+    if (x) {
+      DJVM.ILOAD(2, 0, 2)
+      DJVM.IFEQ(3, 0, 10)
+      if (y) {
+        DJVM.ICONST_1(4, 0)
+        DJVM.IRETURN(5, 0)
+        return 1;
+      }
+    }
+    DJVM.ICONST_0(6, 0)
+    DJVM.IRETURN(7, 0)
+    return 0;
+  }
+
+  @Test
+  void testBooleanAndTrue() {
+    int classIdx = classNames.get("janala/system/IntepreterTest")
+
+    DJVM.NEW(0, 1, "janala/system/IntepreterTest", classIdx)
+    DJVM.ICONST_1(1, 1)
+    DJVM.ICONST_1(1, 1)
+    DJVM.INVOKEVIRTUAL(2, 1, "janala/system/IntepreterTest", "booleanAnd", "(ZZ)I")
+    int x = booleanAnd(true, true)
+    assertEquals(1, x)
+
+    DJVM.INVOKEMETHOD_END()
+    DJVM.flush()
+    Value y = interpreter.getCurrentFrame().peek()
+    assertEquals(new IntValue(1), y)
+  }
+
+  @Test
+  void testBooleanAndFalse() {
+    int classIdx = classNames.get("janala/system/IntepreterTest")
+
+    DJVM.NEW(0, 1, "janala/system/IntepreterTest", classIdx)
+    DJVM.ICONST_1(1, 0)
+    DJVM.ICONST_1(1, 1)
+    DJVM.INVOKEVIRTUAL(2, 1, "janala/system/IntepreterTest", "booleanAnd", "(ZZ)I")
+    int x = booleanAnd(false, true)
+    assertEquals(0, x)
+
+    DJVM.INVOKEMETHOD_END()
+    DJVM.flush()
+    Value y = interpreter.getCurrentFrame().peek()
+    assertEquals(new IntValue(0), y)
+  }
+
 }

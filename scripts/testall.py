@@ -46,15 +46,15 @@ tests = ["5 tests.test_q1_q4_min",
     "4 tests.StringTest7",
     "4 tests.StringTest8",
     "4 tests.StringTest9",
-    "5 tests.StringSubStringTest2",
-    "6 tests.StringComplexTest1",
-    "4 tests.StringComplexTest3",
+    "6 tests.StringSubStringTest2", # used to be 5
+    "6 tests.StringComplexTest1",  # used to be 6
+    "7 tests.StringComplexTest3",  # used to be 3
     "3 tests.StringRegexTest1",
     "3 tests.StringRegexTest2",
-    "3 tests.StringRegexTest3",
-    "5 tests.StringLengthTest1",
-    "3 tests.StringLengthTest2",
-    "3 tests.StringLengthTest3",
+    "4 tests.StringRegexTest3",  # Used to be 3
+    "6 tests.StringLengthTest1",  # used to be 5
+    "6 tests.StringLengthTest2",  # used to be 3
+    "5 tests.StringLengthTest3",  # used to be 3
     "3 tests.StringMapTest",
     "4 tests.LongTest",
     "7 tests.LongTest3",

@@ -80,7 +80,7 @@ def concolic ():
             return
         else:
             with open("../test.log", 'a') as f:
-                f.write("****************** {} ({}) failed!!!\n".format(yourpgm, iters))
+                f.write("****************** {} ({}) passed at {}.\n".format(yourpgm, iters, i))
             return
     with open("../test.log", 'a') as f:
         f.write("****************** {} ({}) failed!!!\n".format(yourpgm, iters))
