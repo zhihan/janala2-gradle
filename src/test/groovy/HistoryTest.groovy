@@ -12,6 +12,7 @@ import janala.interpreters.IntValue
 import janala.interpreters.Constraint
 import janala.interpreters.SymbolicInt
 import janala.utils.FileUtil
+import janala.config.Config
 import org.junit.Test
 import org.junit.Before
 
@@ -28,7 +29,7 @@ class HistoryTest {
   void setup() {
     fileUtil = mock(FileUtil.class)
     solver = mock(Solver.class)
-    history = new History(solver, fileUtil)
+    history = new History(solver, fileUtil, new Config())
   }
 
 
@@ -177,5 +178,20 @@ class HistoryTest {
 
     assertEquals(history.getHistory().toString(), 
       readHistory.getHistory().toString())
+  }
+  
+  @Test
+  void testBackup() {
+    Constraint c = new SymbolicInt(1)
+    history.checkAndSetBranch(true, c, 0)
+    history.setLastBranchDone()
+    def os = new ByteArrayOutputStream()
+    history.writeHistory(os)
+    
+    def istream = new ByteArrayInputStream(os.toByteArray())
+    def ostream = new ByteArrayOutputStream()
+    
+    History.createBacktrackHistory(0, istream, ostream)
+    assertEquals(os.toByteArray(), ostream.toByteArray())
   }
 }

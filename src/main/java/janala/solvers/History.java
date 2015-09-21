@@ -14,7 +14,9 @@ import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** A collection of import check points (element) and the corresponding constraints */
+/** 
+ * A collection of import check points (element) and the corresponding constraints 
+ */
 public class History {
   private final static Logger logger = MyLogger.getLogger(History.class.getName());
   private final static Logger tester =
@@ -38,11 +40,13 @@ public class History {
   private boolean ignore;
   private boolean predictionFailed = false;
 
-  private LinkedList<InputElement> inputs;
-  private Strategy strategy = Config.instance.getStrategy();
+  private final Config config;
+  private final LinkedList<InputElement> inputs;
+  private final Strategy strategy;
   private final FileUtil fileUtil;
   
-  public History(Solver solver, FileUtil fileUtil) {
+  public History(Solver solver, FileUtil fileUtil, Config config) {
+    this.config = config;
     history = new ArrayList<Element>(1024);
     pathConstraint = new ArrayList<Constraint>(1024);
     inputs = new LinkedList<InputElement>();
@@ -50,6 +54,7 @@ public class History {
     this.solver = solver;
     this.ignore = false;
     this.fileUtil = fileUtil;
+    this.strategy = config.getStrategy();
   }
 
   public SymbolicOrValue assumeOrBegin(IntValue arg) {
@@ -83,44 +88,39 @@ public class History {
     return PlaceHolder.instance;
   }
 
-  public static void createBackTrackHistory(int skipIndex) {
+  @SuppressWarnings("unchecked")
+  public static void createBackTrackHistory(int skipIndex, String fileName) throws Exception {
+    History.createBacktrackHistory(skipIndex, new FileInputStream(fileName), 
+        new FileOutputStream(fileName + ".bak"));    
+  }
+  
+  @SuppressWarnings("unchecked")
+  public static void createBacktrackHistory(int skipIndex, InputStream is, OutputStream os) {
     ObjectInputStream inputStream = null;
-    ArrayList<Element> history;
-    System.out.println("back up history begin");
+    
     try {
-      inputStream = new ObjectInputStream(new FileInputStream(Config.instance.history));
+      inputStream = new ObjectInputStream(is);
       Object tmp = inputStream.readObject();
-      System.out.println("back up history 2");
       if (tmp instanceof ArrayList) {
-        history = (ArrayList) tmp;
+        ArrayList<Element> history = (ArrayList<Element>) tmp;
         ((BranchElement) history.get(skipIndex)).setDone(true);
-        System.out.println("back up history 3");
         ObjectOutputStream outputStream;
-        try {
-          outputStream =
-              new ObjectOutputStream(new FileOutputStream(Config.instance.history + ".bak"));
-          outputStream.writeObject(history);
-          outputStream.close();
-          System.out.println("backed up history");
-
-        } catch (IOException e) {
-          logger.log(Level.SEVERE, "", e);
-          System.out.println("back up history 5" + e);
-          e.printStackTrace();
-          System.exit(1);
-        }
+        outputStream = new ObjectOutputStream(os);
+        outputStream.writeObject(history);
+        outputStream.close();
+      } else {
+        logger.log(Level.SEVERE, "History is not in the right format!");
       }
     } catch (Exception e) {
+      logger.log(Level.SEVERE, "", e);
       e.printStackTrace();
-      System.out.println("back up history 4" + e);
-
     } finally {
       try {
         if (inputStream != null) {
           inputStream.close();
         }
       } catch (IOException ex) {
-        logger.log(Level.WARNING, "", ex);
+        logger.log(Level.SEVERE, "", ex);
       }
     }
   }
@@ -130,12 +130,12 @@ public class History {
       return readHistory(solver, new FileInputStream(Config.instance.history));
     } catch (Exception ex) {
       logger.log(Level.WARNING, "", ex);
-      return new History(solver, new FileUtil());
+      return new History(solver, new FileUtil(), Config.instance);
     }
   }
 
   public static History readHistory(Solver solver, InputStream is) {
-    History ret = new History(solver, new FileUtil());
+    History ret = new History(solver, new FileUtil(), Config.instance);
     
     try {
       ObjectInputStream inputStream = new ObjectInputStream(is);
@@ -157,7 +157,7 @@ public class History {
 
   public void print() {
     int i = 0;
-    if (Config.instance.printHistory) {
+    if (config.printHistory) {
       System.out.println("History");
       System.out.println("-------");
       for (Element e : history) {
@@ -319,7 +319,7 @@ public class History {
   public void solveAndSave() {
     int i = 0;
     String file = "backtrackFlag";
-    if (Config.instance.printConstraints) {
+    if (config.printConstraints) {
       for (Constraint c : pathConstraint) {
         System.out.println(i + ":" + c);
         i++;
@@ -329,8 +329,8 @@ public class History {
     if (predictionFailed) {
       System.out.println("***********");
       // backtrack
-      fileUtil.moveFile(Config.instance.inputs + ".bak", Config.instance.inputs);
-      fileUtil.moveFile(Config.instance.history + ".bak", Config.instance.history);
+      fileUtil.moveFile(config.inputs + ".bak", config.inputs);
+      fileUtil.moveFile(config.history + ".bak", config.history);
       fileUtil.touch(file);
     } else {
       if (strategy != null) {
@@ -412,7 +412,7 @@ public class History {
   }
 
   private void removeHistory() {
-    File f = new File(Config.instance.history);
+    File f = new File(config.history);
     f.delete();
     logger.log(Level.INFO, "Done with search.");
   }
@@ -433,9 +433,9 @@ public class History {
 
   private void writeHistory(int i) {
     cleanup(i);
-    fileUtil.moveFile(Config.instance.history, Config.instance.history + ".bak");
+    fileUtil.moveFile(config.history, config.history + ".bak");
     try {
-      OutputStream ostream = new FileOutputStream(Config.instance.history);
+      OutputStream ostream = new FileOutputStream(config.history);
       writeHistory(ostream);
     } catch (IOException ex) {
       logger.log(Level.SEVERE, "", ex);

@@ -23,6 +23,7 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 class ConcolicInterpreterTest {
+  private Config config
   private ClassDepot classDepot
   private ClassNames classNames
   private ConcolicInterpreter interpreter
@@ -32,12 +33,13 @@ class ConcolicInterpreterTest {
  
   @Before
   void setup() {
+    config = new Config()
     classDepot = mock(ClassDepot.class)
     classNames = new ClassNames(classDepot)
     solver = mock(Solver.class)
-    history = new History(solver, new FileUtil())
+    history = new History(solver, new FileUtil(), config)
     coverage = mock(Coverage.class)
-    interpreter = new ConcolicInterpreter(classNames, history, coverage, new Config())
+    interpreter = new ConcolicInterpreter(classNames, history, coverage, config)
   }
 
   @Test
