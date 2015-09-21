@@ -18,13 +18,14 @@ public class FileUtil {
 
   public void touch(String src) {
     File file = new File(src);
-    if (!file.exists())
+    if (!file.exists()) {
       try {
         new FileOutputStream(file).close();
       } catch (IOException e) {
         e.printStackTrace();
         System.exit(1);
       }
+    }
   }
 
   public boolean exists(String src) {
