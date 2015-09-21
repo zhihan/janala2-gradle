@@ -318,7 +318,7 @@ public class History {
 
   public void solveAndSave() {
     int i = 0;
-    String file = "backtrackFlag";
+    
     if (config.printConstraints) {
       for (Constraint c : pathConstraint) {
         System.out.println(i + ":" + c);
@@ -326,22 +326,23 @@ public class History {
       }
     }
     print();
+
+    String backtrackFile = "backtrackFlag";
     if (predictionFailed) {
-      System.out.println("***********");
       // backtrack
       fileUtil.moveFile(config.inputs + ".bak", config.inputs);
       fileUtil.moveFile(config.history + ".bak", config.history);
-      fileUtil.touch(file);
+      fileUtil.touch(backtrackFile);
     } else {
       if (strategy != null) {
         if ((i = strategy.solve(history, index, this)) >= 0) {
-          if (fileUtil.exists(file)) {
+          if (fileUtil.exists(backtrackFile)) {
             if ((i = strategy.solve(history, history.size(), this)) >= 0) {
               writeHistory(i);
             } else {
               removeHistory();
             }
-            fileUtil.remove(file);
+            fileUtil.remove(backtrackFile);
           } else {
             writeHistory(i);
           }
@@ -448,7 +449,6 @@ public class History {
       outputStream = new ObjectOutputStream(os);
       outputStream.writeObject(history);
       outputStream.close();
-
     } catch (IOException e) {
       logger.log(Level.SEVERE, "", e);
       throw new RuntimeException("fail");
