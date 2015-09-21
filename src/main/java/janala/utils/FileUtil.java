@@ -16,7 +16,7 @@ public class FileUtil {
     sf1.renameTo(df1);
   }
 
-  public static void touch(String src) {
+  public void touch(String src) {
     File file = new File(src);
     if (!file.exists())
       try {
@@ -27,12 +27,12 @@ public class FileUtil {
       }
   }
 
-  public static boolean exists(String src) {
+  public boolean exists(String src) {
     File file = new File(src);
     return file.exists();
   }
 
-  public static void remove(String src) {
+  public void remove(String src) {
     File file = new File(src);
     file.delete();
   }

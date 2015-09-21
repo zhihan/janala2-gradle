@@ -3,8 +3,7 @@ package janala.solvers;
 public class MethodElement extends Element {
   final boolean isBegin;
   final boolean isAbstracted;
-
-  int iid;
+  final int iid;
 
   @Override
   public int getIid() { return iid; }

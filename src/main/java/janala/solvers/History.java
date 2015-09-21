@@ -88,7 +88,6 @@ public class History {
     return PlaceHolder.instance;
   }
 
-  @SuppressWarnings("unchecked")
   public static void createBackTrackHistory(int skipIndex, String fileName) throws Exception {
     History.createBacktrackHistory(skipIndex, new FileInputStream(fileName), 
         new FileOutputStream(fileName + ".bak"));    
@@ -125,6 +124,7 @@ public class History {
     }
   }
 
+  /** Read history from the history file in the configuration. */
   public static History readHistory(Solver solver) {
     try {
       return readHistory(solver, new FileInputStream(Config.instance.history));
@@ -134,7 +134,8 @@ public class History {
     }
   }
 
-  public static History readHistory(Solver solver, InputStream is) {
+@SuppressWarnings("unchecked")
+public static History readHistory(Solver solver, InputStream is) {
     History ret = new History(solver, new FileUtil(), Config.instance);
     
     try {
@@ -142,7 +143,7 @@ public class History {
       try {
         Object tmp = inputStream.readObject();
         if (tmp instanceof ArrayList) {
-          ret.history = (ArrayList) tmp;
+          ret.history = (ArrayList<Element>) tmp;
         }
       } catch (Exception ex) {
         logger.log(Level.WARNING, "", ex);

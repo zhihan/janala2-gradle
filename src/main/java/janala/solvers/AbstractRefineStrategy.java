@@ -6,9 +6,6 @@ import janala.instrument.Coverage;
 import java.util.List;
 import java.util.LinkedList;
 
-/**
- * Author: Koushik Sen (ksen@cs.berkeley.edu)
- */
 public class AbstractRefineStrategy extends Strategy {
   @Override
   public int solve(List<Element> history, int historySize, History solver) {
@@ -107,7 +104,6 @@ public class AbstractRefineStrategy extends Strategy {
         history.remove(j);
       }
     }
-    //        System.out.println(history);
   }
 
   private int findUnsatBeginScopeIndex(List<Element> history, int historySize) {
