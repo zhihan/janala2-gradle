@@ -13,18 +13,13 @@ public class AbstractRefineStrategy extends Strategy {
     int beginIndex = oldBeginIndex = findUnsatBeginScopeIndex(history, historySize);
     if (Main.skipPath) {
       beginIndex = -1;
-      System.out.println(
-          "************************ Skipping path ************************************");
     }
     int endIndex = findMatchingEndScopeIndex(history, historySize, beginIndex);
     int ret;
     if (oldBeginIndex == -1 && !Main.skipPath) {
       Coverage.instance.commitBranches();
-      System.out.println("******************* Found a real input. *************************");
       Main.setRealInput(true);
     } else {
-      System.out.println(
-          "******************* Found an intermediate input.  It should not be used for testing. *************************");
       Main.setRealInput(false);
     }
     while ((ret = searchWithIfPossibleAssert(history, beginIndex, endIndex, historySize, solver))
@@ -32,15 +27,14 @@ public class AbstractRefineStrategy extends Strategy {
       if (beginIndex == -1) {
         return ret;
       }
-      beginIndex = findPreviousBeginScopeIndex(history, historySize, beginIndex);
+      beginIndex = findPreviousBeginScopeIndex(history, beginIndex);
       endIndex = findMatchingEndScopeIndex(history, historySize, beginIndex);
     }
     return ret;
   }
 
-  private int findPreviousBeginScopeIndex(
-      List<Element> history, int historySize, int beginScopeIndex) {
-    int ret = -1;
+  private int findPreviousBeginScopeIndex(List<Element> history, int beginScopeIndex) {
+    int ret = -1; // Assume
     for (int i = 0; i <= beginScopeIndex; i++) {
       Element tmp = history.get(i);
       if (tmp instanceof MethodElement) {
@@ -70,6 +64,25 @@ public class AbstractRefineStrategy extends Strategy {
     return -1;
   }
 
+  private int findMatchingEndScopeIndex(List<Element> history, int historySize, int beginScopeIndex) {
+    int scopeIdx = 0;
+    for (int i = beginScopeIndex + 1; i < historySize; i++) {
+      Element tmp = history.get(i);
+      if (tmp instanceof MethodElement) {
+        if (((MethodElement) tmp).isBegin) {
+          scopeIdx++;
+        } else {
+          if (scopeIdx == 0) {
+            return i;
+          } else {
+            scopeIdx--;
+          }
+        }
+      }
+    }
+    return historySize;
+  }
+
   class RemovalPair {
     int b, e;
 
@@ -79,27 +92,27 @@ public class AbstractRefineStrategy extends Strategy {
     }
   }
 
+  private List<RemovalPair> findRanges(List<Element> history, int from, int to) {
+    List<RemovalPair> toBeRemovedRanges = new LinkedList<RemovalPair>();
+    
+    int bi = findNextBeginScopeIndex(history, from, to);
+    while (bi != -1) {
+      int ei = findMatchingEndScopeIndex(history, to, bi);
+      toBeRemovedRanges.add(new RemovalPair(bi, ei));
+      bi = findNextBeginScopeIndex(history, ei, to);
+    }
+    return toBeRemovedRanges;
+  }
+  
   private void removeElements(
-      List<Element> history, int low, int high, int i, int historySize) {
-    int from = low;
-    int bi, ei;
-
-    LinkedList<RemovalPair> toBeRemovedRanges = new LinkedList<RemovalPair>();
-
-    while ((bi = findNextBeginScopeIndex(history, from, i)) != -1) {
-      ei = findMatchingEndScopeIndex(history, i, bi);
-      toBeRemovedRanges.addFirst(new RemovalPair(bi, ei));
-      from = ei;
-    }
-    toBeRemovedRanges.addFirst(new RemovalPair(i, high));
-
-    from = high;
-    while ((bi = findNextBeginScopeIndex(history, from, historySize)) != -1) {
-      ei = findMatchingEndScopeIndex(history, historySize, bi);
-      toBeRemovedRanges.addFirst(new RemovalPair(bi, ei));
-      from = ei;
-    }
-    for (RemovalPair pair : toBeRemovedRanges) {
+      List<Element> history, int low, int high, int idx, int historySize) {
+    
+    List<RemovalPair> toRemove = findRanges(history, low, idx);
+    toRemove.add(new RemovalPair(idx, high));
+    toRemove.addAll(findRanges(history, high, historySize));
+    
+    for (int i = toRemove.size() - 1; i >= 0; i--) {
+      RemovalPair pair = toRemove.get(i);
       for (int j = pair.e - 1; j > pair.b; j--) {
         history.remove(j);
       }
@@ -114,26 +127,6 @@ public class AbstractRefineStrategy extends Strategy {
       }
     }
     return -1;
-  }
-
-  private int findMatchingEndScopeIndex(
-      List<Element> history, int historySize, int beginScopeIndex) {
-    int skip = 0;
-    for (int i = beginScopeIndex + 1; i < historySize; i++) {
-      Element tmp = history.get(i);
-      if (tmp instanceof MethodElement) {
-        if (((MethodElement) tmp).isBegin) {
-          skip++;
-        } else {
-          if (skip == 0) {
-            return i;
-          } else {
-            skip--;
-          }
-        }
-      }
-    }
-    return historySize;
   }
 
   public int searchWithIfPossibleAssert(

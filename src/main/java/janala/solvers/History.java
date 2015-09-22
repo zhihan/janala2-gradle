@@ -41,7 +41,7 @@ public class History {
   private boolean predictionFailed = false;
 
   private final Config config;
-  private final LinkedList<InputElement> inputs;
+  private final List<InputElement> inputs;
   private final Strategy strategy;
   private final FileUtil fileUtil;
   
@@ -71,7 +71,9 @@ public class History {
     SymbolicOrValue b2 = second;
     SymbolicOrConstraint tmp;
     boolean res = first.concrete != 0;
-    if (!res && last != null) last = last.not();
+    if (!res && last != null) {
+    	last = last.not();
+    }
     tmp = b2.symbolic.OR(last);
     return new SymbolicOrValue(res || b2.concrete, tmp);
   }
@@ -208,12 +210,8 @@ public static History readHistory(Solver solver, InputStream is) {
                 + " history.size() "
                 + history.size());
         logger.log(Level.WARNING, "At old iid " + tmp.getIid() + " at iid " + iid + " beginScope");
-        int len = history.size();
-        for (int j = len - 1; j >= index; j--) {
-          history.remove(j);
-        }
         current = new MethodElement(true, iid);
-        history.add(current);
+        clearAndSet(current);
       } else {
         current = (MethodElement) tmp;
         current.isValidExpansion = true;
@@ -245,12 +243,8 @@ public static History readHistory(Solver solver, InputStream is) {
                 + " history.size() "
                 + history.size());
         logger.log(Level.WARNING, "At old iid " + tmp.getIid() + " at iid " + iid + " endScope");
-        int len = history.size();
-        for (int j = len - 1; j >= index; j--) {
-          history.remove(j);
-        }
         current = new MethodElement(false, iid);
-        history.add(current);
+        clearAndSet(current);
       } else {
         current = (MethodElement) tmp;
       }
@@ -265,6 +259,15 @@ public static History readHistory(Solver solver, InputStream is) {
 
   public void abstractData(boolean isEqual, int iid) {
     lastScope.isValidExpansion = lastScope.isValidExpansion && isEqual;
+  }
+  
+  /** Remove elements after index and set the element at index. */
+  private void clearAndSet(Element e) {
+    int len = history.size();
+    for (int j = len - 1; j >= index; j--) {
+      history.remove(j);
+    }
+    history.add(e); 
   }
 
   public void checkAndSetBranch(boolean result, Constraint constraint, int iid) {
@@ -288,13 +291,8 @@ public static History readHistory(Solver solver, InputStream is) {
         logger.log(
             Level.WARNING,
             "At old iid " + tmp.getIid() + " at iid " + iid + " constraint " + constraint);
-        Thread.dumpStack();
-        int len = history.size();
-        for (int j = len - 1; j >= index; j--) {
-          history.remove(j);
-        }
         current = new BranchElement(result, false, -1, iid);
-        history.add(current);
+        clearAndSet(current);
       } else {
         current = (BranchElement) tmp;
       }
@@ -475,7 +473,7 @@ public static History readHistory(Solver solver, InputStream is) {
   }
 
   public void addInput(int symbol, Value value) {
-    inputs.addLast(new InputElement(symbol, value));
+    inputs.add(new InputElement(symbol, value));
   }
 
   public void setLastBranchDone() {
@@ -485,9 +483,7 @@ public static History readHistory(Solver solver, InputStream is) {
   }
 
   public void setLastForceTruth() {
-    System.out.println("Set Last Force True in");
     if (index >= 1 && index - 1 < history.size()) {
-      System.out.println("Set Last Force True set");
       ((BranchElement) history.get(index - 1)).isForceTruth = true;
     }
   }

@@ -55,7 +55,6 @@ public final class StaticInvocation {
       return PlaceHolder.instance;
     } else if (owner.equals("janala/Main") && name.equals("MakeSymbolic") && args.length == 1) {
       int symbol = args[0].MAKE_SYMBOLIC(history);
-      System.out.println("Add input");
       history.addInput(symbol, args[0]);
       return PlaceHolder.instance;
     } else if (owner.equals("janala/Main") && name.equals("BeginScope") && 
@@ -81,7 +80,6 @@ public final class StaticInvocation {
       return history.assumeOrEnd(iid, (SymbolicOrValue) args[0]);
      } else if (owner.equals("janala/Main") && name.equals("Ignore") && args.length == 0) {
       return history.ignore();
-      //return PlaceHolder.instance;
     }
 
     return PlaceHolder.instance;

@@ -48,6 +48,5 @@ public class RandomPathStrategy extends Strategy {
         }
       }
     }
-    //return -1;
   }
 }
