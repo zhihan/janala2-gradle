@@ -1,31 +1,60 @@
 package janala.instrument;
 
-import janala.config.Config;
 import janala.utils.MyLogger;
 
 import java.io.*;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Coverage implements Serializable {
-  private HashMap<String, Integer> classNameToCid;
-  private TreeMap<Integer, String> cidmidToName;
+  private final HashMap<String, Integer> classNameToCid;
+  private final TreeMap<Integer, String> cidmidToName;
   private int nBranches;
   private int nCovered;
-  private TreeMap<Integer, Integer> covered;
-  private TreeMap<Integer, Integer> tmpCovered;
+  private final TreeMap<Integer, Integer> covered;
+  private final TreeMap<Integer, Integer> tmpCovered; // transient
   private boolean isNewClass;
 
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) {
+      return false;
+    }
+    if (o == this) {
+      return true;
+    }
+    
+    if (o instanceof Coverage) {
+      Coverage other = (Coverage)o;
+      return classNameToCid.equals(other.classNameToCid) && 
+          cidmidToName.equals(other.cidmidToName) && 
+          covered.equals(other.covered) &&
+          (nBranches == other.nBranches) &&
+          (nCovered == other.nCovered);
+    } else {
+      return false;
+    }
+  }
+  
+  @Override
+  public String toString() {
+    return "nBranches=" + nBranches + ", nCovered=" + nCovered + ", classNameToCid=" +
+        classNameToCid.toString() + ", cidmidToName=" + cidmidToName.toString() + 
+        ", covered=" + covered.toString() + ", tmpCovered=" + tmpCovered.toString();
+  }
+  
+  private String lastMethod;
+  private String lastClassName;
+   
   public static Coverage instance = null;
   
   private static final Logger logger = MyLogger.getLogger(Coverage.class.getName());
   
-  private String lastMethod;
-  private String lastClassName;
-
-  private Coverage() {
+  
+  public Coverage() {
     classNameToCid = new HashMap<String, Integer>();
     nBranches = 0;
     nCovered = 0;
@@ -40,48 +69,56 @@ public class Coverage implements Serializable {
     }
     return instance;
   }
-
-  public static void read() {
-    if (instance == null) {
-      ObjectInputStream inputStream = null;
-
-      try {
-        inputStream = new ObjectInputStream(new FileInputStream(Config.instance.coverage));
-        Object tmp = inputStream.readObject();
-        if (tmp instanceof Coverage) {
-          instance = (Coverage) tmp;
-        } else {
-          instance = new Coverage();
-        }
-      } catch (Exception e) {
-        instance = new Coverage();
-      } finally {
+  
+  /** Parse a coverage object from an input stream */
+  public static Coverage parse(InputStream is) {
+    ObjectInputStream inputStream = null;
+    try {
+      inputStream = new ObjectInputStream(is);
+      Object tmp = inputStream.readObject();
+      inputStream.close();
+      if (tmp instanceof Coverage) {
+        return (Coverage) tmp;
+      } else {
+        return new Coverage();
+      }
+    } catch (Exception e) {
+      if (inputStream != null) {
         try {
-          if (inputStream != null) {
-            inputStream.close();
-          }
-        } catch (IOException ex) {
-          logger.log(Level.WARNING, "", ex);
+          inputStream.close();
+        } catch (IOException unused) {
         }
       }
+      return new Coverage();
     }
   }
 
-  public void write() {
+  public static void read(String fileName) {
+    try {
+      instance = parse(new FileInputStream(fileName));
+    } catch (Exception e) {
+      instance = new Coverage();
+    }
+  }
+  
+  public void write(OutputStream os) throws IOException {
+    ObjectOutputStream outputStream = new ObjectOutputStream(os);
+    instance.tmpCovered.clear();
+    outputStream.writeObject(instance);
+    outputStream.close();
+  }
+
+  public void write(String outputFile) {
     ObjectOutputStream outputStream;
     try {
-      String outputFile = Config.instance.coverage;
-      if (outputFile == null) return;
-      
-      outputStream = new ObjectOutputStream(new FileOutputStream(Config.instance.coverage));
-      instance.tmpCovered.clear();
-      outputStream.writeObject(instance);
-      outputStream.close();
-
-    } catch (IOException e) {
+      if (outputFile != null) {
+        write(new FileOutputStream(outputFile));
+      }
+    } catch (Exception e) {
       logger.log(Level.SEVERE, "", e);
-      System.exit(1);
+      throw new RuntimeException("Error happened while writing coverage");
     }
+     
   }
 
   public int getCid(String cname) {
@@ -121,7 +158,7 @@ public class Coverage implements Serializable {
     tmpCovered.put(iid, tmpCovered.get(iid) | (side ? 1 : 2));
   }
 
-  public void commitBranches() {
+  public void commitBranches(boolean print) {
     for (int key : tmpCovered.keySet()) {
       int value = tmpCovered.get(key);
       if (covered.containsKey(key)) {
@@ -135,13 +172,15 @@ public class Coverage implements Serializable {
         }
       }
     }
-    printCoverage();
+    if (print) {
+      printCoverage(System.out);
+    }
   }
 
-  public void printCoverage() {
-    TreeMap<Integer, Integer> methodToTotalBranches = new TreeMap<Integer, Integer>();
-    TreeMap<Integer, Integer> methodToCoveredBranches = new TreeMap<Integer, Integer>();
-    TreeMap<Integer, Boolean> mcovered = new TreeMap<Integer, Boolean>();
+  public void printCoverage(PrintStream out) {
+    Map<Integer, Integer> methodToTotalBranches = new TreeMap<Integer, Integer>();
+    Map<Integer, Integer> methodToCoveredBranches = new TreeMap<Integer, Integer>();
+    Map<Integer, Boolean> mcovered = new TreeMap<Integer, Boolean>();
     for (int key : covered.keySet()) {
       int cidmid = GlobalStateForInstrumentation.extractCidMid(key);
       if (!methodToTotalBranches.containsKey(cidmid)) {
@@ -152,28 +191,28 @@ public class Coverage implements Serializable {
       methodToTotalBranches.put(cidmid, methodToTotalBranches.get(cidmid) + 2);
       int value = covered.get(key);
       if (value > 0) {
-        if ((value & 2) > 0)
+        if ((value & 2) > 0) {
           methodToCoveredBranches.put(cidmid, methodToCoveredBranches.get(cidmid) + 1);
-        if ((value & 1) > 0)
+        }
+        if ((value & 1) > 0) {
           methodToCoveredBranches.put(cidmid, methodToCoveredBranches.get(cidmid) + 1);
+        }
         mcovered.put(cidmid, true);
       }
     }
     int mtotals = 0;
-    int nM = 0;
     for (int key : methodToTotalBranches.keySet()) {
       if (mcovered.get(key)) {
         mtotals += methodToTotalBranches.get(key);
-        nM++;
       }
     }
-    System.out.println(
+    out.println(
         "Branch coverage with respect to covered classes = "
             + (100.0 * nCovered / nBranches)
             + "%");
-    System.out.println(
+    out.println(
         "Branch coverage with respect to covered methods = " + (100.0 * nCovered / mtotals) + "%");
-    System.out.println("Total branches in covered methods = " + mtotals);
+    out.println("Total branches in covered methods = " + mtotals);
   }
 
   public void setLastMethod(String lastMethod) {

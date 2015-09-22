@@ -44,6 +44,7 @@ public class ConcolicInterpreter implements IVisitor {
   private Instruction next;
   private final Coverage coverage;
   private final StaticInvocation staticInv;
+  private final Config config;
 
   private final static Logger logger = MyLogger.getLogger(ConcolicInterpreter.class.getName());
 
@@ -55,6 +56,7 @@ public class ConcolicInterpreter implements IVisitor {
     history = History.readHistory(config.getSolver());
     coverage = Coverage.get();
     staticInv = new StaticInvocation(config);
+    this.config = config;
   }
 
   // Used for testing with dependencies.
@@ -66,6 +68,7 @@ public class ConcolicInterpreter implements IVisitor {
     this.history = history; // 
     this.coverage = coverage;
     staticInv = new StaticInvocation(config);
+    this.config = config;
   } 
 
   private void checkAndSetException() {
@@ -219,7 +222,7 @@ public class ConcolicInterpreter implements IVisitor {
       history.solveAndSave();
     }
     Main.writeOldStates();
-    coverage.write();
+    coverage.write(config.coverage);
   }
 
   public void visitAALOAD(AALOAD inst) {

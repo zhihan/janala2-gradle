@@ -17,7 +17,7 @@ public class AbstractRefineStrategy extends Strategy {
     int endIndex = findMatchingEndScopeIndex(history, historySize, beginIndex);
     int ret;
     if (oldBeginIndex == -1 && !Main.skipPath) {
-      Coverage.instance.commitBranches();
+      Coverage.instance.commitBranches(false);
       Main.setRealInput(true);
     } else {
       Main.setRealInput(false);
