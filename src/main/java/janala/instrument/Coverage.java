@@ -10,6 +10,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Coverage implements Serializable {
+  private static final long serialVersionUID = 1L;
+  
   private final HashMap<String, Integer> classNameToCid;
   private final TreeMap<Integer, String> cidmidToName;
   private int nBranches;
@@ -103,13 +105,12 @@ public class Coverage implements Serializable {
   
   public void write(OutputStream os) throws IOException {
     ObjectOutputStream outputStream = new ObjectOutputStream(os);
-    instance.tmpCovered.clear();
-    outputStream.writeObject(instance);
+    this.tmpCovered.clear();
+    outputStream.writeObject(this);
     outputStream.close();
   }
 
   public void write(String outputFile) {
-    ObjectOutputStream outputStream;
     try {
       if (outputFile != null) {
         write(new FileOutputStream(outputFile));

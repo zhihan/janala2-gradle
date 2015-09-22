@@ -20,7 +20,7 @@ class CoverageTest {
     cov.visitBranch(0, true) // Make sure it is non-empty
     cov.commitBranches(false)
     
-    def bytes = new ByteArrayOutputStream()
+    OutputStream bytes = new ByteArrayOutputStream()
     cov.write(bytes)
     def ins = new ByteArrayInputStream(bytes.toByteArray())
     Coverage cov2 = Coverage.parse(ins)
