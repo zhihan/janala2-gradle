@@ -25,13 +25,13 @@ class ChocoSolverTest {
   }
 
   @Test
-	void testSolver() {
+  void testSolver() {
     SymbolicInt x1 = new SymbolicInt(1)
-    
-    InputElement input = new InputElement(1, new IntValue(0))
-	x1.setOp(COMPARISON_OPS.NE)
 
-	List<Constraint> constraints = []
+    InputElement input = new InputElement(1, new IntValue(0))
+    x1.setOp(COMPARISON_OPS.NE)
+
+    List<Constraint> constraints = []
     constraints.add(x1)
     println(constraints)
     List<InputElement> inputs = [input]
@@ -41,5 +41,5 @@ class ChocoSolverTest {
     solver.setPathConstraint(constraints)
     def x = solver.solve()
     assertFalse(x)
-	}
+  }
 }

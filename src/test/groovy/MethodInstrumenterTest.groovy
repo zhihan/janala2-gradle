@@ -1113,4 +1113,103 @@ class MethodInstrumenterTest {
      testFieldInsn(Opcodes.PUTFIELD, "PUTFIELD", "janala/interpreters/TestClass", "a",
       "I", false, false)
   }
+
+  @Test
+  void testIincInsn() {
+    ma.visitIincInsn(1, 1)
+
+    MethodRecorder expected = new MethodRecorder()
+    def ev = expected.getVisitor()
+    Utils.addBipushInsn(ev, state.getId())
+    Utils.addBipushInsn(ev, state.getMid())
+    Utils.addBipushInsn(ev, 1)
+    Utils.addBipushInsn(ev, 1)
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC, Config.instance.analysisClass, 
+      "IINC", "(IIII)V", false)
+    ev.visitIincInsn(1, 1)
+
+    assertEquals(expected, recorder)
+  }
+
+  @Test
+  void testTableSwitchInsn() {
+    Label defaultLabel = new Label()
+    Label[] labels = new Label[1]
+    labels[0] = new Label()
+    ma.visitTableSwitchInsn(0, 0, defaultLabel, labels)
+
+    MethodRecorder expected = new MethodRecorder()
+    def ev = expected.getVisitor()
+
+    Utils.addBipushInsn(ev, state.getId())
+    Utils.addBipushInsn(ev, state.getMid())
+    Utils.addBipushInsn(ev, 0)
+    Utils.addBipushInsn(ev, 0)
+    Utils.addBipushInsn(ev, System.identityHashCode(defaultLabel))
+    Utils.addBipushInsn(ev, 1)
+    ev.visitIntInsn(Opcodes.NEWARRAY, Opcodes.T_INT);
+    ev.visitInsn(Opcodes.DUP)
+    Utils.addBipushInsn(ev, 0)
+
+    Utils.addBipushInsn(ev, System.identityHashCode(labels[0])); 
+    ev.visitInsn(Opcodes.IASTORE);
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC, 
+      Config.instance.analysisClass, "TABLESWITCH", "(IIIII[I)V", false);
+    ev.visitTableSwitchInsn(0, 0, defaultLabel, labels);
+
+    assertEquals(expected, recorder)
+  }
+
+  @Test
+  void testLookupSwitchInsn() {
+    Label defaultLabel = new Label()
+    Label[] labels = new Label[1]
+    labels[0] = new Label()
+    int[] keys = new int[1]
+    keys[0] = 0
+    ma.visitLookupSwitchInsn(defaultLabel, keys, labels)
+
+    MethodRecorder expected = new MethodRecorder()
+    def ev = expected.getVisitor()
+
+    Utils.addBipushInsn(ev, state.getId())
+    Utils.addBipushInsn(ev, state.getMid())
+    Utils.addBipushInsn(ev, System.identityHashCode(defaultLabel))
+    Utils.addBipushInsn(ev, 1)
+    ev.visitIntInsn(Opcodes.NEWARRAY, Opcodes.T_INT)
+    ev.visitInsn(Opcodes.DUP)
+    Utils.addBipushInsn(ev, 0)
+    Utils.addBipushInsn(ev, 0)
+    ev.visitInsn(Opcodes.IASTORE)
+
+    Utils.addBipushInsn(ev, 1)
+    ev.visitIntInsn(Opcodes.NEWARRAY, Opcodes.T_INT)
+    ev.visitInsn(Opcodes.DUP)
+    Utils.addBipushInsn(ev, 0)
+    Utils.addBipushInsn(ev, System.identityHashCode(labels[0]))
+    ev.visitInsn(Opcodes.IASTORE)
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC,
+      Config.instance.analysisClass, "LOOKUPSWITCH", "(III[I[I)V", false);
+    ev.visitLookupSwitchInsn(defaultLabel, keys, labels);
+
+    assertEquals(expected, recorder)
+  }
+
+  @Test
+  void testMultiNewArray() {
+    ma.visitMultiANewArrayInsn("I", 2)
+
+    MethodRecorder expected = new MethodRecorder()
+    def ev = expected.getVisitor()
+    Utils.addBipushInsn(ev, state.getId())
+    Utils.addBipushInsn(ev, state.getMid())
+    ev.visitLdcInsn("I")
+    Utils.addBipushInsn(ev, 2)
+    ev.visitMethodInsn(Opcodes.INVOKESTATIC,
+      Config.instance.analysisClass, "MULTIANEWARRAY", "(IILjava/lang/String;I)V", false)
+    ev.visitMultiANewArrayInsn("I", 2)
+    Utils.addSpecialInsn(ev, 0)
+
+    assertEquals(expected, recorder)
+  }
 }

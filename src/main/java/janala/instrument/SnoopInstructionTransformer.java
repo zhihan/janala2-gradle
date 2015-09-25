@@ -46,7 +46,6 @@ public class SnoopInstructionTransformer implements ClassFileTransformer {
     boolean toInstrument = !shouldExclude(cname);
 
     if (toInstrument) {
-      System.out.println("begin transform " + cname);
       Coverage.read(Config.instance.coverage);
       GlobalStateForInstrumentation.instance.setCid(Coverage.instance.getCid(cname));
       ClassReader cr = new ClassReader(cbuf);
