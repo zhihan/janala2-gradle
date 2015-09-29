@@ -664,6 +664,8 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
   public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
     if (opcode == INVOKESPECIAL && name.equals("<init>")) {
       if (isInit) {
+        // This code is already inside an init method.
+        //
         // Constructor calls to <init> method of the super class. If this is the
         // case, there is no need to wrap the method call in try catch block as
         // it uses uninitialized this object.
@@ -676,15 +678,7 @@ public class SnoopInstructionMethodAdapter extends MethodVisitor implements Opco
         addMethodWithTryCatch(opcode, owner, name, desc);
         if (calledNew) {
           calledNew = false;
-          addBipushInsn(mv, instrumentationState.incAndGetId());
-          addBipushInsn(mv, instrumentationState.getMid());
-          mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "DUP", "(II)V", false);
-          mv.visitInsn(DUP);
           addValueReadInsn(mv, "Ljava/lang/Object;", "GETVALUE_");
-          addBipushInsn(mv, instrumentationState.incAndGetId());
-          addBipushInsn(mv, instrumentationState.getMid());
-          mv.visitMethodInsn(INVOKESTATIC, Config.instance.analysisClass, "POP", "(II)V", false);
-          mv.visitInsn(POP);
         }
       }
     } else {
