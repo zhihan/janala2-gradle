@@ -37,15 +37,11 @@ public final class ClassRunner {
   }
 
   public static void main(String[] args) throws Exception {
-    if (args.length != 2) {
+    if (args.length != 1) {
       System.out.println("Usage java janala.utils.ClassRunner <test-class>");
     }
 
-    ClassRunner runner = new ClassRunner(args[1]);
-    if (args[0].equals("offline")) {
-      runner.runWithAnnotation();
-    } else {
-      runner.run();
-    }
+    ClassRunner runner = new ClassRunner(args[0]);
+    runner.runWithAnnotation();
   }
 }

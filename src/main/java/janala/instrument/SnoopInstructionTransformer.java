@@ -25,7 +25,7 @@ public class SnoopInstructionTransformer implements ClassFileTransformer {
 
   /** packages that should be exluded from the instrumentation */
   private static boolean shouldExclude(String cname) {
-    String[] exclude = {"sun", "java", "jdk", "com/google/monitoring",
+    String[] exclude = {"com/sun", "sun", "java", "jdk", "com/google/monitoring",
                         "janala", "dk/brics"};
     for (String e : exclude) {
       if (cname.startsWith(e)) {
