@@ -1,0 +1,73 @@
+tests.test_q1_q4_min (5) passed
+tests.test_q1_q4 (9) passed
+tests.test_q0_q4 (3) passed
+tests.BoolFlow (3) passed
+tests.BoolFlow2 (2) passed
+tests.BoolTest (3) passed
+tests.BoolTest2 (5) passed
+tests.BoolTest3 (5) passed
+tests.Array1 (3) passed
+tests.Array2 (3) passed
+tests.Array3 (3) passed
+tests.Array4 (2) passed
+tests.StringEquals (3) passed
+tests.StringTest2 (4) passed
+tests.StringTest3 (4) passed
+tests.StringTest4 (4) passed
+tests.StringTest5 (3) passed
+tests.StringTest6 (4) passed
+tests.StringTest7 (4) passed
+tests.StringTest8 (4) passed
+tests.StringTest9 (4) passed
+tests.StringSubStringTest2 (6) passed
+****************** tests.StringComplexTest1 (6) passed at 7.
+****************** tests.StringComplexTest3 (7) passed at 5.
+tests.StringRegexTest1 (3) passed
+tests.StringRegexTest2 (3) passed
+tests.StringRegexTest3 (4) passed
+tests.StringLengthTest1 (6) passed
+tests.StringLengthTest2 (6) passed
+tests.StringLengthTest3 (5) passed
+tests.StringMapTest (3) passed
+tests.LongTest (4) passed
+tests.LongTest3 (7) passed
+tests.TimestampTest (4) passed
+tests.Testme (4) passed
+tests.TestmeInteger (4) passed
+tests.TestmeLong (4) passed
+tests.NonLinear (5) passed
+tests.BoolTest2 (5) passed
+tests.SwitchTest (8) passed
+tests.SwitchTest2 (3) passed
+tests.Linear (5) passed
+tests.SimpleDBTest (3) passed
+tests.DBUpdateTest (17) passed
+tests.DBSelectTest (17) passed
+tests.DBDeleteTest (17) passed
+tests.DBDateSelectTest (17) passed
+tests.DBInsertTest (6) passed
+tests.OrAssumptionTest (5) passed
+tests.OrAssumptionTest2 (4) passed
+tests.AssertIfPossibleTest1 (5) passed
+tests.AssertIfPossibleTest2 (10) passed
+tests.ManyColumnsOrRecords (79) passed
+tests.AbstractionTest1 (7) passed
+tests.AbstractionTest2 (14) passed
+tests.SortedListInsert2 (14) passed
+tests.SortedListInsert3 (11) passed
+tests.DataAnnotation6 (7) passed
+tests.DataAnnotation7 (5) passed
+****************** tests.ManyColumnsRecords2 (100) passed at 25.
+tests.QSort (29) passed
+tests.QSortLong (29) passed
+tests.InsertionSort (25) passed
+tests.MergeSortJDK15 (121) passed
+tests.BinaryTreeSearch (76) passed
+tests.HeapInsertJDK15 (13) passed
+tests.QuickSortJDK15 (25) passed
+****************** tests.RedBlackTreeSearch (217) failed!!!
+tests.SortedListInsert (121) passed
+tests.BellmanFord (206) passed
+tests.Dijkstra (157) passed
+****************** tests.BookStoreNoSQL (100) passed at 2.
+****************** tests.Dijkstra (100) failed!!!

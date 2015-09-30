@@ -13,4 +13,13 @@ popd > /dev/null
 ROOT=`dirname $SCRIPT_DIR`
 source "$SCRIPT_DIR/env.sh"
 
-java -cp $CLASSPATH:.:"${ROOT}/build/classes/integration" -javaagent:${ROOT}/lib/catg-dev.jar janala.utils.Runner $@
+if [ "$#" -eq 1 ]; then
+  java -cp $CLASSPATH:.:"${ROOT}/build/classes/integration" \
+    -javaagent:${ROOT}/lib/catg-dev.jar janala.utils.ClassRunner $@
+elif [ "$#" -eq 2 ]; then
+  java -cp $CLASSPATH:.:"${ROOT}/build/classes/integration" \
+    -javaagent:${ROOT}/lib/catg-dev.jar janala.utils.Runner $@
+else
+  echo "Wrong number of inputs"
+  exit 1
+fi

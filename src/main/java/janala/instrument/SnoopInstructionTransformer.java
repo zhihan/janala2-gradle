@@ -40,7 +40,7 @@ public class SnoopInstructionTransformer implements ClassFileTransformer {
     throws IllegalClassFormatException {
 
     if (classBeingRedefined != null) {
-      return null;
+      return cbuf;
     }
 
     boolean toInstrument = !shouldExclude(cname);
@@ -72,7 +72,8 @@ public class SnoopInstructionTransformer implements ClassFileTransformer {
         }
       }
       return ret;
+    } else {
+      return cbuf;
     }
-    return cbuf;
   }
 }
