@@ -14,10 +14,10 @@ ROOT=`dirname $SCRIPT_DIR`
 source "$SCRIPT_DIR/env.sh"
 
 if [ "$#" -eq 1 ]; then
-  java -cp $CLASSPATH:.:"${ROOT}/build/classes/integration" \
+  java -cp "$CLASSPATH:${ROOT}/build/classes/integration" \
     -javaagent:${ROOT}/lib/catg-dev.jar janala.utils.ClassRunner $@
 elif [ "$#" -eq 2 ]; then
-  java -cp $CLASSPATH:.:"${ROOT}/build/classes/integration" \
+  java -cp "$CLASSPATH:${ROOT}/build/classes/integration" \
     -javaagent:${ROOT}/lib/catg-dev.jar janala.utils.Runner $@
 else
   echo "Wrong number of inputs"

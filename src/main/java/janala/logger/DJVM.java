@@ -2,8 +2,10 @@ package janala.logger;
 
 import janala.config.Config;
 
-public class DJVM {
+public final class DJVM {
   private static Logger intp = Config.instance.getLogger();
+
+  private DJVM() {} 
 
   // For testing purposes
   public static void setInterpreter(Logger logger) {

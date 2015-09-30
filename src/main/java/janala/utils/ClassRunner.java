@@ -1,6 +1,7 @@
 package janala.utils;
 
 import janala.utils.Annotations.Test;
+
 import java.lang.Class;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
@@ -16,9 +17,9 @@ public final class ClassRunner {
   InvocationTargetException, InstantiationException {
     Method[] methods = clazz.getMethods();
     for (Method method: methods) {
-      System.out.println(method.getName());
-      Test annotation = method.getAnnotation(Test.class);
-      if (annotation != null) {
+      // TODO (investigate why annotation cannot be used)
+      if (method.getName().startsWith("test")) {
+        System.out.println("Running " + method.getName());
         new Runner(clazz, method).run();
       }
     }
