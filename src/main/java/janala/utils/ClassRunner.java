@@ -25,12 +25,27 @@ public final class ClassRunner {
     }
   }
 
+  public void runWithAnnotation() throws IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, InstantiationException {
+    Method[] methods = clazz.getMethods();
+    for (Method method: methods) {
+      if (method.getAnnotation(Test.class) != null) {
+        System.out.println("Running (annotation) " + method.getName());
+        new Runner(clazz, method).run();
+      }
+    }
+  }
+
   public static void main(String[] args) throws Exception {
-    if (args.length != 1) {
+    if (args.length != 2) {
       System.out.println("Usage java janala.utils.ClassRunner <test-class>");
     }
 
-    ClassRunner runner = new ClassRunner(args[0]);
-    runner.run();
+    ClassRunner runner = new ClassRunner(args[1]);
+    if (args[0].equals("offline")) {
+      runner.runWithAnnotation();
+    } else {
+      runner.run();
+    }
   }
 }

@@ -1,7 +1,8 @@
 #!/bin/bash
 
 #
-# Run catg to invoke a virtual method on a class. 
+# Run catg to invoke test on a class. The class must already
+# be instrumented.
 #
 # Example 
 #   ./run_concolic.sh examples.IntExample1 test1
@@ -14,11 +15,11 @@ ROOT=`dirname $SCRIPT_DIR`
 source "$SCRIPT_DIR/env.sh"
 
 if [ "$#" -eq 1 ]; then
-  java -cp "$CLASSPATH:${ROOT}/build/classes/integration" \
-    -javaagent:${ROOT}/lib/catg-dev.jar janala.utils.ClassRunner online $@
+  java -cp "$CLASSPATH:${ROOT}/build/classes/integration:${ROOT}/script/instrumented" \
+    janala.utils.ClassRunner offline $@
 elif [ "$#" -eq 2 ]; then
   java -cp "$CLASSPATH:${ROOT}/build/classes/integration" \
-    -javaagent:${ROOT}/lib/catg-dev.jar janala.utils.Runner $@
+    janala.utils.Runner $@
 else
   echo "Wrong number of inputs"
   exit 1
