@@ -1,5 +1,7 @@
 package example;
 
+import static org.junit.Assert.assertEquals;
+
 import janala.utils.Annotations.Test;
 
 public class BooleanExample {
@@ -14,18 +16,10 @@ public class BooleanExample {
   @Test
   public void testAnd() {
     int x = and(true, true);
-    if (x == 1) {
-      System.out.println("Pass");
-    } else {
-      System.out.println("Fail");
-    }
+    assertEquals(1, x);
 
     x = and(false, true);
-    if (x == 0) {
-      System.out.println("Pass");
-    } else {
-      System.out.println("Fail");
-    }
+    assertEquals(0, x);
   }
 
   public int or(boolean x, boolean y) {
@@ -39,17 +33,9 @@ public class BooleanExample {
   @Test
   public void testOr() {
     int x = or(false, true);
-    if (x == 1) {
-      System.out.println("Pass");
-    } else {
-      System.out.println("Fail");
-    }
+    assertEquals(1, x);
 
     x = or(false, false);
-    if (x == 0) {
-      System.out.println("Pass");
-    } else {
-      System.out.println("Fail");
-    }
+    assertEquals(0, x);
   }
 }

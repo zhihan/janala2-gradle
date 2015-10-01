@@ -37,6 +37,7 @@ configurations {
 dependencies {
     compile 'org.ow2.asm:asm-all:5.0.4'  // Bytecode manipulation
     compile 'dk.brics.automaton:automaton:1.11-8' // Used for regex
+    compile 'junit:junit:4.12' // Used for assertions
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.codehaus.groovy:groovy-all:2.4.3'
