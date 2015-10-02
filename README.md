@@ -3,6 +3,9 @@
 
 Migrate CATG (janala2) library to use Gradle and upgrade some dependencies. Branched from https://github.com/ksen007/janala2
 
+Here is more information on the background of the project.
+https://www.youtube.com/watch?v=9lEvPwR7g-Q
+
 ### Major changes
 * Support Java 8
 * Upgrade ASM library to 5.0.4
