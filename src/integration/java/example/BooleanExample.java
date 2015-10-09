@@ -2,6 +2,7 @@ package example;
 
 import static org.junit.Assert.assertEquals;
 
+import catg.CATG;
 import janala.utils.Annotations.Test;
 
 public class BooleanExample {
@@ -37,5 +38,19 @@ public class BooleanExample {
 
     x = or(false, false);
     assertEquals(0, x);
+  }
+  
+  public int not(boolean x) {
+    if (x) {
+      return 0;
+    }
+    return 1;
+  }
+  
+  @Test
+  public void testNot() {
+    boolean input = CATG.readBool(false);
+    int x = not(input);
+    assertEquals(1, x);
   }
 }

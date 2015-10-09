@@ -36,22 +36,13 @@ configurations {
 // In this section you declare the dependencies for your production and test code
 dependencies {
     compile 'org.ow2.asm:asm-all:5.0.4'  // Bytecode manipulation
+    compile 'org.choco-solver:choco-solver:3.3.1'
     compile 'dk.brics.automaton:automaton:1.11-8' // Used for regex
     compile 'junit:junit:4.12' // Used for assertions
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.codehaus.groovy:groovy-all:2.4.3'
     testCompile 'org.mockito:mockito-core:1.10.19'
-}
-
-repositories { // Unmanaged dependencies
-   flatDir {
-       dirs 'lib'
-   }
-}
-
-dependencies {
-   compile name: 'choco-solver-2.1.4'
 }
 
 apply plugin: "jacoco"

@@ -19,8 +19,6 @@ import groovy.transform.CompileStatic
 class ChocoSolverTest {
   @Before
   void setup() {
-    Config.instance.formulaFile = "formula_test.dat"
-    Config.instance.inputs = "inputs.dat"
     Config.instance.printFormulaAndSolutions = true
   }
 
@@ -39,7 +37,9 @@ class ChocoSolverTest {
     Solver solver = new ChocoSolver()
     solver.setInputs(inputs)
     solver.setPathConstraint(constraints)
+    solver.visitSymbolicInt(x1)
     def x = solver.solve()
-    assertFalse(x)
+    assertTrue(x)
   }
+  
 }

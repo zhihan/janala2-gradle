@@ -1,12 +1,12 @@
 package janala.solvers;
 
-import choco.Choco;
-import choco.cp.model.CPModel;
-import choco.cp.solver.CPSolver;
-import choco.kernel.model.variables.integer.IntegerConstantVariable;
-import choco.kernel.model.variables.integer.IntegerExpressionVariable;
-import choco.kernel.model.variables.integer.IntegerVariable;
-import choco.kernel.solver.variables.integer.IntDomainVar;
+import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.solver.variables.VariableFactory;
+import org.chocosolver.solver.constraints.IntConstraintFactory;
+import org.chocosolver.solver.constraints.LogicalConstraintFactory;
+import org.chocosolver.util.ESat;
+
 import janala.config.Config;
 import janala.interpreters.*;
 import janala.utils.MyLogger;
@@ -21,11 +21,11 @@ import java.util.logging.Logger;
 
 import janala.interpreters.COMPARISON_OPS;
 
-public class ChocoSolver implements Solver {
+public class ChocoSolver implements janala.solvers.Solver {
   boolean first = true;
   List<InputElement> inputs;
-  IntegerVariable[] vars;
-  CPModel m;
+  IntVar[] vars;
+  Solver solver; 
   private final static Logger logger = MyLogger.getLogger(ChocoSolver.class.getName());
 
   public void setInputs(List<InputElement> inputs) {
@@ -41,15 +41,15 @@ public class ChocoSolver implements Solver {
     //To change body of implemented methods use File | Settings | File Templates.
   }
 
-  private Constraint initSolver(Constraint c) {
+  private SymbolicInt initSolver(SymbolicInt c) {
     if (first) {
       first = false;
-      this.m = new CPModel();
+      solver = new Solver();
       int len = inputs.size();
-      vars = new IntegerVariable[len];
+      vars = new IntVar[len];
       for (int i = 0; i < len; i++) {
-        vars[i] = Choco.makeIntVar("x" + i);
-        //m.addVariable(vars[i]);
+        vars[i] = VariableFactory.integer("x" + i, 
+            VariableFactory.MIN_INT_BOUND, VariableFactory.MAX_INT_BOUND, solver);
       }
       return c.not();
     }
@@ -57,63 +57,46 @@ public class ChocoSolver implements Solver {
   }
 
   public void visitSymbolicInt(SymbolicInt c) {
-    Constraint tmp = initSolver(c);
-    m.addConstraint(createSymbolicInt((SymbolicInt) tmp));
+    SymbolicInt tmp = initSolver(c);
+    solver.post(createConstraintForSymbolicInt(tmp));
   }
 
   public void visitSymbolicIntCompare(SymbolicIntCompareConstraint c) {
     throw new RuntimeException("Unimplemented feature");
   }
 
-  public choco.kernel.model.constraints.Constraint createSymbolicInt(SymbolicInt c) {
+  private org.chocosolver.solver.constraints.Constraint createConstraintForSymbolicInt(SymbolicInt c) {
     logger.log(Level.INFO, "{0}", c);
-    boolean first2 = true;
-    IntegerExpressionVariable old = null;
+    
+    int n = c.getLinear().size();
+    IntVar[] variables = new IntVar[n];
+    int[] coeff = new int[n];
+    
+    int idx = 0;
     for (Map.Entry<Integer, Long> it : c.getLinear().entrySet()) {
-      int integer = it.getKey();
-      long l = it.getValue();
-      if (first2) {
-        first2 = false;
-        old = Choco.mult((int) l, vars[integer - 1]);
-      } else {
-        old = Choco.sum(old, Choco.mult((int) l, vars[integer - 1]));
-      }
+      int varIdx = it.getKey() - 1;
+      variables[idx] = vars[varIdx]; 
+      coeff[idx] = it.getValue().intValue();
+      idx++;
     }
-    if (c.getConstant() != 0) {
-      old = Choco.sum(new IntegerConstantVariable((int) c.getConstant()), old);
-    }
-    choco.kernel.model.constraints.Constraint ret = null;
-    if (c.getOp() == COMPARISON_OPS.EQ) {
-      ret = Choco.eq(old, 0);
-    } else if (c.getOp() == COMPARISON_OPS.NE) {
-      ret = Choco.not(Choco.eq(old, 0));
-    } else if (c.getOp() == COMPARISON_OPS.LE) {
-      ret = Choco.leq(old, 0);
-    } else if (c.getOp() == COMPARISON_OPS.LT) {
-      ret = Choco.lt(old, 0);
-    } else if (c.getOp() == COMPARISON_OPS.GE) {
-      ret = Choco.geq(old, 0);
-    } else if (c.getOp() == COMPARISON_OPS.GT) {
-      ret = Choco.gt(old, 0);
-    }
-    return ret;
+    // Create a fixed variable for the right-hand side
+    IntVar rhs = VariableFactory.fixed(-(int) c.getConstant(), solver);
+    String op = c.getOp().toString();
+    
+    return IntConstraintFactory.scalar(variables, coeff, op, rhs);
   }
 
   public void visitSymbolicOr(SymbolicOrConstraint or) {
-
-    choco.kernel.model.constraints.Constraint old = null;
-    boolean first2 = true;
+    org.chocosolver.solver.constraints.Constraint[] con = 
+        new org.chocosolver.solver.constraints.Constraint[or.constraints.size()];
+    int idx = 0;
     for (Constraint c : or.constraints) {
-      if (first2) {
-        first2 = false;
-        Constraint tmp = initSolver(c);
-        old = createSymbolicInt((SymbolicInt) tmp);
-      } else {
-        Constraint tmp = initSolver(c);
-        old = Choco.or(old, createSymbolicInt((SymbolicInt) tmp));
-      }
+      SymbolicInt tmp = initSolver((SymbolicInt)c);
+      con[idx] = createConstraintForSymbolicInt(tmp);
+      idx++;
     }
-    m.addConstraint(old);
+    
+    solver.post(LogicalConstraintFactory.or(con));
   }
 
   public void visitSymbolicStringPredicate(SymbolicStringPredicate symbolicStringPredicate) {
@@ -138,32 +121,27 @@ public class ChocoSolver implements Solver {
   }
 
   public boolean solve() {
-    if (m != null) {
-      CPSolver s = new CPSolver();
-      s.read(m);
+    if (solver != null) {
       System.out.println("Running choco solver ...");
       logger.log(Level.INFO, "Running Choco Solver ...");
-      s.solve();
+      solver.findSolution();
       logger.log(Level.INFO, "end running Choco Solver ");
 
-      if (s.isFeasible()) {
+      if (solver.isFeasible() == ESat.TRUE) {
         try {
           PrintStream out =
               new PrintStream(
                   new BufferedOutputStream(new FileOutputStream(Config.instance.inputs)));
           for (int i = 0; i < vars.length; i++) {
-            IntDomainVar var = s.getVar(vars[i]);
+            int var = vars[i].getValue();
 
             Value input = inputs.get(i).value;
-            if (var != null) {
-              if (input instanceof janala.interpreters.StringValue) {
-                out.println(StringConstants.instance.get(var.getVal()));
-              } else {
-                out.println(var.getVal());
-              }
+            if (input instanceof janala.interpreters.StringValue) {
+              out.println(StringConstants.instance.get(var));
             } else {
-              out.println(input.getConcrete());
+              out.println(var);
             }
+            
           }
           out.close();
         } catch (Exception e) {
