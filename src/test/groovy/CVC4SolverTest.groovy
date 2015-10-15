@@ -177,10 +177,10 @@ class CVC4SolverTest {
     InputElement in2 = new InputElement(2, s)
     solver.setInputs([in1, in2])
     def bytes = new ByteArrayOutputStream()
-    solver.printInputs(new PrintStream(bytes), new TreeMap<String, Long>())
-    println(bytes.toString())
-    assertTrue(bytes.toString().contains("2"))
-    assertTrue(bytes.toString().contains("xy"))
+    List<String> result = solver.getSolution(new TreeMap<String, Long>())
+    String joined = result.join("")
+    assertTrue(joined.contains("2"))
+    assertTrue(joined.contains("xy"))
   }
 
   @Test

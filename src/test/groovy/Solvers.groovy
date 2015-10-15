@@ -34,4 +34,6 @@ class NoopSolver implements Solver {
   void visitSymbolicFalse(SymbolicFalseConstraint c) {}
 
   void visitSymbolicIntCompare(SymbolicIntCompareConstraint c) {}
+  
+  List<String> getSolution() { return null; }
 }

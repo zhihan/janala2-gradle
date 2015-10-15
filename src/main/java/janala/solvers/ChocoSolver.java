@@ -10,10 +10,12 @@ import org.chocosolver.util.ESat;
 import janala.config.Config;
 import janala.interpreters.*;
 import janala.utils.MyLogger;
+import janala.utils.Inputs;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -21,9 +23,11 @@ import java.util.logging.Logger;
 
 import janala.interpreters.COMPARISON_OPS;
 
+/** A solver that uses Choco as backend. */
 public class ChocoSolver implements janala.solvers.Solver {
   boolean first = true;
   List<InputElement> inputs;
+  List<String> solution;
   IntVar[] vars;
   Solver solver; 
   private final static Logger logger = MyLogger.getLogger(ChocoSolver.class.getName());
@@ -31,14 +35,13 @@ public class ChocoSolver implements janala.solvers.Solver {
   public void setInputs(List<InputElement> inputs) {
     this.inputs = inputs;
     this.first = true;
+    solution = null;
   }
 
   public void setPathConstraint(List<Constraint> pathConstraint) {
-    //To change body of implemented methods use File | Settings | File Templates.
   }
 
-  public void setPathConstraintIndex(int pathConstraintIndex) {
-    //To change body of implemented methods use File | Settings | File Templates.
+  public void setPathConstraintIndex(int pathConstraintIndex) {  
   }
 
   private SymbolicInt initSolver(SymbolicInt c) {
@@ -128,25 +131,17 @@ public class ChocoSolver implements janala.solvers.Solver {
       logger.log(Level.INFO, "end running Choco Solver ");
 
       if (solver.isFeasible() == ESat.TRUE) {
-        try {
-          PrintStream out =
-              new PrintStream(
-                  new BufferedOutputStream(new FileOutputStream(Config.instance.inputs)));
-          for (int i = 0; i < vars.length; i++) {
-            int var = vars[i].getValue();
+        solution = new ArrayList<String>();
 
-            Value input = inputs.get(i).value;
-            if (input instanceof janala.interpreters.StringValue) {
-              out.println(StringConstants.instance.get(var));
-            } else {
-              out.println(var);
-            }
-            
+        for (int i = 0; i < vars.length; i++) {
+          int var = vars[i].getValue();
+
+          Value input = inputs.get(i).value;
+          if (input instanceof janala.interpreters.StringValue) {
+            solution.add(StringConstants.instance.get(var));
+          } else {
+            solution.add(Integer.toString(var));
           }
-          out.close();
-        } catch (Exception e) {
-          logger.log(Level.SEVERE, "", e);
-          System.exit(1);
         }
         return true;
       } else {
@@ -155,5 +150,9 @@ public class ChocoSolver implements janala.solvers.Solver {
       }
     }
     return false;
+  }
+  
+  public List<String> getSolution() {
+    return solution;
   }
 }

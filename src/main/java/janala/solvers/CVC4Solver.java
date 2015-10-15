@@ -43,14 +43,21 @@ public class CVC4Solver implements Solver {
   private final Config config;
   private final FileUtil fileUtil;
   
+  private List<String> solution;
+  public List<String> getSolution() {
+    return solution;
+  }
+  
   public CVC4Solver(Config config, FileUtil fileUtil) {
     this.config = config;
     this.fileUtil = fileUtil;
+    this.solution = null;
   }
 
   public CVC4Solver() {
     config = Config.instance;
     fileUtil = new FileUtil();
+    this.solution = null;
   }
   
   List<Constraint> constraints;
@@ -285,19 +292,20 @@ public class CVC4Solver implements Solver {
     }
   }
 
-  public void printInputs(PrintStream out, Map<String, Long> soln) {
+  public List<String> getSolution(Map<String, Long> soln) {
+    List<String> result = new ArrayList<String>();
     for (InputElement ielem : inputs) {
       Integer sym = ielem.symbol;
       Value val = ielem.value;
       if (sym.intValue() == config.scopeBeginSymbol) {
-        out.println(config.scopeBeginMarker);
+        result.add(config.scopeBeginMarker);
       } else if (sym.intValue() == config.scopeEndSymbol) {
-        out.println(config.scopeEndMarker);
+        result.add(config.scopeEndMarker);
       } else {
           //System.out.println("sym "+sym);
         Long l = soln.get("x" + sym);
         if (l != null) {
-          out.println(l);
+          result.add(l.toString());
             //System.out.println("l = " + l);
         } else {
           if (val instanceof StringValue) {
@@ -322,29 +330,18 @@ public class CVC4Solver implements Solver {
               }
               ret.append(c);
             }
-            out.println(ret);
+            result.add(ret.toString());
           } else {
-            out.println(val.getConcrete());
+            result.add(val.getConcrete().toString());
           }
         }
       }
     }
+    return result;
   }
 
-  private void writeInputs(TreeMap<String, Long> soln) {
-    try {
-      fileUtil.moveFile(config.inputs, config.inputs + ".bak");
-      PrintStream out =
-          new PrintStream(new BufferedOutputStream(new FileOutputStream(config.inputs)));
-
-      printInputs(out, soln);
-
-      out.close();
-    } catch (IOException ioe) {
-      ioe.printStackTrace();
-      logger.log(Level.SEVERE, "{0}", ioe);
-      Runtime.getRuntime().halt(1);
-    }
+  private void processResults(TreeMap<String, Long> soln) {
+    solution = getSolution(soln);
   }
 
   public String processInputs(BufferedReader br, Map<String, Long> soln) {
@@ -419,7 +416,7 @@ public class CVC4Solver implements Solver {
       if (negatedSolution != null) {
         String negatedSolution2 = solve(null, CONSTRAINT_TYPE.STR, soln);
         if (negatedSolution2 != null) {
-          writeInputs(soln);
+          processResults(soln);
           tester.log(Level.INFO, "Feasible = true at " + pathConstraintIndex);
           return true;
         } else {

@@ -40,6 +40,9 @@ class ChocoSolverTest {
     solver.visitSymbolicInt(x1)
     def x = solver.solve()
     assertTrue(x)
+    def y = solver.getSolution()
+    assertEquals(1, y.size())
+    assertEquals("0", y.get(0))
   }
   
 }

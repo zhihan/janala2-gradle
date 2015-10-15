@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.List;
 
 public class FileUtil {
   public void moveFile(String src, String dst) {
@@ -46,5 +47,13 @@ public class FileUtil {
       line = reader.readLine();
     }
     reader.close();
+  }
+  
+  public void write(String fileName, List<String> content) throws IOException {
+    PrintStream out = new PrintStream(new FileOutputStream(fileName));
+    for (String e : content) {
+      out.println(e);
+    }
+    out.close();
   }
 }

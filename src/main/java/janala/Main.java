@@ -7,6 +7,7 @@ import janala.config.Config;
 import janala.instrument.Coverage;
 import janala.interpreters.OrValue;
 import janala.utils.MyLogger;
+import janala.utils.Inputs;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -22,46 +23,20 @@ public class Main {
   public static boolean isInPrefix = true;
   public static boolean skipPath = false;
 
-  private static List<String> inputs;
-  private static int index;
+  private static Inputs inputs;
   private static int scopeDepth;
   private static int inputDepth;
 
   static {
-    inputs = new ArrayList<String>();
-    index = 0;
+    
     scopeDepth = 0;
     inputDepth = 0;
-    DataInputStream in = null;
-    try {
-      FileInputStream fstream = new FileInputStream(Config.instance.inputs);
-      in = new DataInputStream(fstream);
-      BufferedReader br = new BufferedReader(new InputStreamReader(in));
-      String strLine;
-      while ((strLine = br.readLine()) != null) {
-        inputs.add(strLine);
-      }
-      in.close();
-    } catch (Exception e) {
-      //System.err.println("Error: " + e.getMessage());
-    } finally {
-      try {
-        if (in != null) {
-          in.close();
-        }
-      } catch (IOException ex) {
-      }
-    }
+    inputs = new Inputs(Config.instance.inputs);
   }
 
   private static boolean isInputAvailable() {
-    if (index < inputs.size() && scopeDepth >= inputDepth) {
-      String tmp = inputs.get(index);
-      if (tmp.equals(Config.instance.scopeBeginMarker)
-          || tmp.equals(Config.instance.scopeEndMarker)) {
-        return false;
-      }
-      return true;
+    if (inputs.isInputAvailable() && scopeDepth >= inputDepth) {
+      return !inputs.isBeginScope() && !inputs.isEndScope();
     }
     return false;
   }
@@ -89,9 +64,9 @@ public class Main {
 
   public static void BeginScope() {
     scopeDepth++;
-    if (index < inputs.size()) {
-      if (inputs.get(index).equals(Config.instance.scopeBeginMarker)) {
-        index++;
+    if (inputs.isInputAvailable()) {
+      if (inputs.isBeginScope()) {
+        inputs.next();
         inputDepth++;
       }
     }
@@ -103,13 +78,13 @@ public class Main {
       if (scopeDepth >= inputDepth) {
         return;
       }
-      if (index < inputs.size()) {
-        String tmp = inputs.get(index++);
-        if (tmp.equals(Config.instance.scopeBeginMarker)) {
+      if (inputs.isInputAvailable()) {
+        if (inputs.isBeginScope()) {
           inputDepth++;
-        } else if (tmp.equals(Config.instance.scopeEndMarker)) {
+        } else if (inputs.isEndScope()) {
           inputDepth--;
         }
+        inputs.next();
       }
     }
   }
@@ -152,7 +127,7 @@ public class Main {
 
   public static int readInt(int x) {
     if (isInputAvailable()) {
-      String input = inputs.get(index++);
+      String input = inputs.read();
       return Integer.parseInt(input);
     } else {
       return x;
@@ -161,8 +136,8 @@ public class Main {
 
   public static long readLong(long x) {
     if (isInputAvailable()) {
-      String input = inputs.get(index++);
-      //System.out.println(input);
+      String input = inputs.read();
+       //System.out.println(input);
       return Long.parseLong(input);
     } else {
       //System.out.println(x);
@@ -172,8 +147,7 @@ public class Main {
 
   public static char readChar(char x) {
     if (isInputAvailable()) {
-      String input = inputs.get(index++);
-      //            System.out.println("ReadChar:"+input);
+      String input = inputs.read();
       return (char) Integer.parseInt(input);
     } else {
       //System.out.println(x);
@@ -183,7 +157,7 @@ public class Main {
 
   public static short readShort(short x) {
     if (isInputAvailable()) {
-      String input = inputs.get(index++);
+      String input = inputs.read();
       return Short.parseShort(input);
     } else {
       return x;
@@ -192,7 +166,7 @@ public class Main {
 
   public static byte readByte(byte x) {
     if (isInputAvailable()) {
-      String input = inputs.get(index++);
+      String input = inputs.read();
       return Byte.parseByte(input);
     } else {
       return x;
@@ -201,7 +175,7 @@ public class Main {
 
   public static boolean readBool(boolean x) {
     if (isInputAvailable()) {
-      String input = inputs.get(index++);
+      String input = inputs.read();
       boolean ret = Integer.parseInt(input) != 0;
       return ret;
     } else {
@@ -211,8 +185,7 @@ public class Main {
 
   public static String readString(String x) {
     if (isInputAvailable()) {
-      String input = inputs.get(index++);
-      //System.out.println(input);
+      String input = inputs.read();
       return new String(input);
     } else {
       //System.out.println(x);

@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface Solver extends ConstraintVisitor {
   public boolean solve();
+  
+  public List<String> getSolution();
 
   public void setInputs(List<InputElement> inputs);
 

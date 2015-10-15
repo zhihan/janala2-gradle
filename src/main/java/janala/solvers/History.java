@@ -360,7 +360,11 @@ public static History readHistory(Solver solver, InputStream is) {
     for (int i = pathConstraintIndex; i >= 0; i--) {
       pathConstraint.get(i).accept(solver);
     }
-    return solver.solve();
+    boolean solved = solver.solve();
+    if (solved) {
+      writeInputFile();
+    }
+    return solved;
   }
 
 
@@ -377,9 +381,22 @@ public static History readHistory(Solver solver, InputStream is) {
     for (int i = pathConstraint.size() - 1; i >= 0; i--) {
       pathConstraint.get(i).accept(solver);
     }
-    return solver.solve();
+    boolean solved = solver.solve();
+    if (solved) {
+      writeInputFile();
+    }
+    return solved;
   }
 
+  private void writeInputFile() {
+    fileUtil.moveFile(config.inputs, config.inputs + ".bak");
+    try {
+      fileUtil.write(config.inputs, solver.getSolution());
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
   private ArrayList<Constraint> collectPathConstraints(int head, int n) {
     ArrayList<Constraint> ret = new ArrayList<Constraint>();
     for (int i = 0; i <= head; i++) {
