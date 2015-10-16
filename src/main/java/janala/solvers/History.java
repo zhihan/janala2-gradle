@@ -279,7 +279,7 @@ public static History readHistory(Solver solver, InputStream is) {
         current = new BranchElement(result, false, -1, iid);
         history.add(index, current);
       } else if (!ignore
-          && (!(tmp instanceof BranchElement) || ((BranchElement) tmp).branch != result)) {
+          && (!(tmp instanceof BranchElement) || ((BranchElement) tmp).getBranch() != result)) {
         predictionFailed = true;
         tester.log(Level.INFO, "Prediction failed " + ignore);
         logger.log(
@@ -439,7 +439,7 @@ public static History readHistory(Solver solver, InputStream is) {
       BranchElement current = (BranchElement) history.get(i);
       // Set the last branch to done.
       current.setDone (true);
-      current.branch = !current.branch;
+      current.setBranch(!current.getBranch());
 
       int len = history.size();
       for (int j = len - 1; j > i; j--) {

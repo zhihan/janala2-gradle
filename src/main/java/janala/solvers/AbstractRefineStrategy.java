@@ -6,29 +6,29 @@ import janala.instrument.Coverage;
 import java.util.List;
 import java.util.LinkedList;
 
-public class AbstractRefineStrategy extends Strategy {
+public class AbstractRefineStrategy implements Strategy {
   @Override
   public int solve(List<Element> history, int historySize, History solver) {
-    int oldBeginIndex;
-    int beginIndex = oldBeginIndex = findUnsatBeginScopeIndex(history, historySize);
+    int oldBeginIndex = findUnsatBeginScopeIndex(history, historySize);
+    int beginIndex = oldBeginIndex;
     if (Main.skipPath) {
       beginIndex = -1;
     }
     int endIndex = findMatchingEndScopeIndex(history, historySize, beginIndex);
-    int ret;
     if (oldBeginIndex == -1 && !Main.skipPath) {
       Coverage.instance.commitBranches(false);
       Main.setRealInput(true);
     } else {
       Main.setRealInput(false);
     }
-    while ((ret = searchWithIfPossibleAssert(history, beginIndex, endIndex, historySize, solver))
-        == -1) {
+    int ret = searchWithIfPossibleAssert(history, beginIndex, endIndex, historySize, solver);
+    while (ret == -1) {
       if (beginIndex == -1) {
         return ret;
       }
       beginIndex = findPreviousBeginScopeIndex(history, beginIndex);
       endIndex = findMatchingEndScopeIndex(history, historySize, beginIndex);
+      ret = searchWithIfPossibleAssert(history, beginIndex, endIndex, historySize, solver);
     }
     return ret;
   }
@@ -84,7 +84,8 @@ public class AbstractRefineStrategy extends Strategy {
   }
 
   class RemovalPair {
-    int b, e;
+    final int b;
+    final int e;
 
     RemovalPair(int b, int e) {
       this.b = b;
@@ -138,12 +139,16 @@ public class AbstractRefineStrategy extends Strategy {
       BranchElement current;
       if (tmp instanceof BranchElement) {
         current = (BranchElement) tmp;
-        if (current.isForceTruth && !current.branch) {
-          if ((ret = dfs(history, from, to + 1, high, historySize, solver)) != -1) {
-            return ret;
+        if (current.isForceTruth) {
+          if (!current.getBranch()) {
+            ret = dfs(history, from, to + 1, high, historySize, solver);
+            if (ret != -1) {
+              // Found a solution to satisfy the ForceTruth
+              return ret;
+            }
           }
-          from = to;
-        } else if (current.isForceTruth) {
+          // Do not solve for any path that is no deeper than the 
+          // ForceTruth
           from = to;
         }
       }
@@ -152,20 +157,23 @@ public class AbstractRefineStrategy extends Strategy {
     return dfs(history, from, to, high, historySize, solver);
   }
 
-  private int dfs(
-      List<Element> history, int low, int start, int high, int historySize, History solver) {
+  private int dfs(List<Element> history, int low, int start, int high, int historySize, History solver) {
     LinkedList<Integer> indices = new LinkedList<Integer>();
     int skip = 0;
     for (int i = start - 1; i > low; i--) {
       Element tmp = history.get(i);
       if (tmp instanceof MethodElement) {
-        if (((MethodElement) tmp).isBegin) skip++;
-        else skip--;
+        if (((MethodElement) tmp).isBegin) {
+          skip++;
+        } else {
+          skip--;
+        }
       }
       if (tmp instanceof BranchElement && skip == 0) {
         indices.addLast(i);
       }
     }
+    
     for (int i : indices) {
       Element tmp = history.get(i);
       if (tmp instanceof BranchElement) {
@@ -173,7 +181,7 @@ public class AbstractRefineStrategy extends Strategy {
         if (!current.getDone() && current.pathConstraintIndex != -1) {
           if (solver.solveAt(low, i)) {
             current.setDone(true);
-            current.branch = !current.branch;
+            current.setBranch(!current.getBranch());
             removeElements(history, low, high, i, historySize);
             return Integer.MAX_VALUE;
           }

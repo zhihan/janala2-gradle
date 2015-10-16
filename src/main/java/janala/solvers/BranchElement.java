@@ -5,8 +5,9 @@ public class BranchElement extends Element {
   @Override
   public int getIid() { return iid; }
   
-  boolean branch;
+  private boolean branch;
   public boolean getBranch() { return branch; }
+  public void setBranch(boolean b) { branch = b; }
   
   private boolean done;
   public void setDone(boolean val) { done = val; }

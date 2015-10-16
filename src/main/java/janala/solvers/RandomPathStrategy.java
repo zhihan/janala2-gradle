@@ -7,7 +7,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RandomPathStrategy extends Strategy {
+public class RandomPathStrategy implements Strategy {
   Random rand = new Random();
   public final static int BOUND = 2;
   private final static Logger logger = MyLogger.getLogger(RandomPathStrategy.class.getName());
