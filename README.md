@@ -12,7 +12,7 @@ https://www.youtube.com/watch?v=9lEvPwR7g-Q
 * Remove dependency on GNU trove
 * Unit tests.
 
-This is a working repository. I am still hoping to merge it back to the main repository once the code changes are stable.
+This is a working repository. The changes will be merged back to the main repository. I will keep this repository updated to experiment some ideas with.
 
 ## Requirements
 * Gradle 2
