@@ -1,7 +1,0 @@
-#!/bin/bash
-
-#
-# Run catg to invoke a virtual method on a class. 
-#
-# Example 
-#   ./run_concolic.sh examples.IntExample test1
