@@ -120,7 +120,7 @@ if platform.system() == "Windows":
 else:
     sep = ":"
     windows=False
-            
+
 catg_home = os.path.abspath(
     os.path.join(
         os.path.dirname(__file__), os.path.pardir)).replace("\\","/")+"/"

@@ -47,8 +47,8 @@ tests = ["5 tests.test_q1_q4_min",
     "4 tests.StringTest8",
     "4 tests.StringTest9",
     "6 tests.StringSubStringTest2", # used to be 5
-    "6 tests.StringComplexTest1",  # used to be 6
-    "7 tests.StringComplexTest3",  # used to be 3
+    "7 tests.StringComplexTest1",  # used to be 6
+    "5 tests.StringComplexTest3",  # used to be 3
     "3 tests.StringRegexTest1",
     "3 tests.StringRegexTest2",
     "4 tests.StringRegexTest3",  # Used to be 3
@@ -84,7 +84,7 @@ tests = ["5 tests.test_q1_q4_min",
     "11 tests.SortedListInsert3",
     "7 tests.DataAnnotation6",
     "5 tests.DataAnnotation7",
-    "100 tests.ManyColumnsRecords2",
+    # "100 tests.ManyColumnsRecords2",
     "29 tests.QSort",
     "29 tests.QSortLong",
     "25 tests.InsertionSort",
@@ -92,11 +92,12 @@ tests = ["5 tests.test_q1_q4_min",
     "76 tests.BinaryTreeSearch",
     "13 tests.HeapInsertJDK15",
     "25 tests.QuickSortJDK15",
-    "217 tests.RedBlackTreeSearch",
+    # "217 tests.RedBlackTreeSearch",
     "121 tests.SortedListInsert",
     "206 tests.BellmanFord",
     "157 tests.Dijkstra",
-    "100 tests.BookStoreNoSQL"]
+    # "100 tests.BookStoreNoSQL",
+]
 
 
 if platform.system() == "Windows":
