@@ -7,7 +7,8 @@ import janala.interpreters.OrValue;
 import java.io.Serializable;
 
 public class CATG {
-  public static int abstractInt(String test, int value) {
+  /** */
+  public static int abstractInt(int value) {
     int inputValue = readInt(value);
     Main.AbstractEqualsConcrete(Main.compare(inputValue, value));
     return inputValue;

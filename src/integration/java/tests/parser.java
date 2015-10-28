@@ -158,7 +158,7 @@ public class parser {
             CATG.EndScope();
             System.out.print("<");
             System.out.println(sym);
-            sym = CATG.abstractInt("test1", sym);
+            sym = CATG.abstractInt(sym);
             System.out.print(sym);
             System.out.println(">");
         } else {

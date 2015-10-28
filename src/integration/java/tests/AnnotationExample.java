@@ -54,7 +54,7 @@ public class AnnotationExample {
         System.out.println(count1);
 
         CATG.EndScope();
-        count1 = CATG.abstractInt("test3", count1);
+        count1 = CATG.abstractInt(count1);
         System.out.print("count1 = ");
         System.out.println(count1);
         CATG.equivalent("test2", "loc1", count1>0);
@@ -66,7 +66,7 @@ public class AnnotationExample {
         System.out.println(count2);
 
         CATG.EndScope();
-        count2 = CATG.abstractInt("test3", count2);
+        count2 = CATG.abstractInt(count2);
         System.out.print("count2 = ");
         System.out.println(count2);
 

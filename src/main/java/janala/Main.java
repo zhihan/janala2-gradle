@@ -91,6 +91,7 @@ public class Main {
     }
   }
 
+  /** Insert a check that an abstract value is equal to the concrete value. */
   public static void AbstractEqualsConcrete(boolean b) {}
 
   public static boolean compare(Object a, Object b) {

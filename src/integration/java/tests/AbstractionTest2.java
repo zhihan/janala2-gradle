@@ -94,7 +94,7 @@ public class AbstractionTest2 {
         if (foo()) sum++;
         if (foo()) sum++;
         CATG.EndScope();
-        sum = CATG.abstractInt("test", sum);
+        sum = CATG.abstractInt(sum);
 
         System.out.print("sum = ");
         System.out.println(sum);

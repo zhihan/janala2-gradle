@@ -197,7 +197,7 @@ public class parser2 {
             CATG.BeginScope();
             sym = gettoken(token);
             CATG.EndScope();
-            sym = CATG.abstractInt("test1", sym);
+            sym = CATG.abstractInt(sym);
             System.out.println("Token:"+token+":");
         } else {
             sym = period;

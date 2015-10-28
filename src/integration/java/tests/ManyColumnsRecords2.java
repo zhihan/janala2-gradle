@@ -65,7 +65,7 @@ public class ManyColumnsRecords2 {
         result = t.size();
 
         CATG.EndScope();
-        result = CATG.abstractInt("test", result);
+        result = CATG.abstractInt(result);
 
         System.out.println(result + " record(s) are selected.");
 
