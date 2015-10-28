@@ -48,24 +48,24 @@ public class AnnotationExample {
         CATG.pathRegex("test1", "a?ba?");
         int[] input = CATG.readIntArray(7, 0);
 
-        CATG.BeginScope("test3");
+        CATG.BeginScope();
         int count1 = count(input, 3);
         System.out.print("count1 = ");
         System.out.println(count1);
 
-        CATG.EndScope("test3");
+        CATG.EndScope();
         count1 = CATG.abstractInt("test3", count1);
         System.out.print("count1 = ");
         System.out.println(count1);
         CATG.equivalent("test2", "loc1", count1>0);
         CATG.event("test1", "b");
 
-        CATG.BeginScope("test3");
+        CATG.BeginScope();
         int count2 = count(input, 7);
         System.out.print("count2 = ");
         System.out.println(count2);
 
-        CATG.EndScope("test3");
+        CATG.EndScope();
         count2 = CATG.abstractInt("test3", count2);
         System.out.print("count2 = ");
         System.out.println(count2);
