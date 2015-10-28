@@ -10,8 +10,6 @@ import janala.utils.MyLogger;
 import janala.utils.Inputs;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -28,10 +26,14 @@ public class Main {
   private static int inputDepth;
 
   static {
-    
     scopeDepth = 0;
     inputDepth = 0;
     inputs = new Inputs(Config.instance.inputs);
+  }
+  
+  /** Set the inputs of the system. */
+  static void setInput(Inputs inputsOverride) {
+    inputs = inputsOverride;
   }
 
   private static boolean isInputAvailable() {
@@ -111,9 +113,9 @@ public class Main {
   }
 
   // These functions will be handled in the concolic interpreter.
-  public static void MakeSymbolic(int x) {}
+  public static void MakeSymbolic(int unused) {}
 
-  public static void MakeSymbolic(long x) {}
+  public static void MakeSymbolic(long unused) {}
 
   public static void MakeSymbolic(char x) {}
 

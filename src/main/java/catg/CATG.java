@@ -132,7 +132,7 @@ public class CATG {
     Main.EndScope();
   }
 
-  public static void event(String test, String eventName) {
+  public static void event(String eventName) {
     Main.event(eventName);
   }
 
