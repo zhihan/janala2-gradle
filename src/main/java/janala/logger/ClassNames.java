@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class ClassNames implements Serializable {
+  public final static long serialVersionUID = 1L;
+  
   private Map<String, Integer> nameToIndex;
   private List<ObjectInfo> classList;
 

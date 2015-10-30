@@ -16,11 +16,12 @@ import java.util.TreeMap;
  * static fields. 
  */
 public class ObjectInfo implements Serializable {
-  Map<String, Integer> fieldNameToIndex;
-  ArrayList<FieldInfo> fieldList;
+  private static final long serialVersionUID = 1L;
+  private Map<String, Integer> fieldNameToIndex;
+  private List<FieldInfo> fieldList;
 
-  Map<String, Integer> staticFieldNameToIndex;
-  ArrayList<FieldInfo> staticFieldList;
+  private Map<String, Integer> staticFieldNameToIndex;
+  private List<FieldInfo> staticFieldList;
 
   int nStaticFields;
   private int nFields;
@@ -41,7 +42,7 @@ public class ObjectInfo implements Serializable {
   private int get(String fieldName,
       boolean isStatic,
       Map<String, Integer> fieldNameToIndex,
-      ArrayList<FieldInfo> fieldList) {
+      List<FieldInfo> fieldList) {
     Integer i = fieldNameToIndex.get(fieldName);
     if (i == null) {
       i = fieldList.size();
@@ -58,7 +59,7 @@ public class ObjectInfo implements Serializable {
      return fieldNameToIndex;
   }
 
-  private static ArrayList<FieldInfo> createList(ArrayList<FieldInfo> f) {
+  private static List<FieldInfo> createList(List<FieldInfo> f) {
     if (f == null) {
       return new ArrayList<FieldInfo>();
     }

@@ -5,6 +5,8 @@ import janala.interpreters.ClassDepot;
 import java.io.Serializable;
 
 public class FieldInfo implements Serializable {
+  private static final long serialVersionUID = 1L;
+  
   private final String className;
   private final String fieldName;
   private final boolean isStatic;

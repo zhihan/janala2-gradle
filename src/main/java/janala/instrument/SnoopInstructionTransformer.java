@@ -20,7 +20,6 @@ public class SnoopInstructionTransformer implements ClassFileTransformer {
     instDir = "instrumented";
   }
   
-  @SuppressWarnings("unused")
   public static void premain(String agentArgs, Instrumentation inst) {
     inst.addTransformer(new SnoopInstructionTransformer());
   }
