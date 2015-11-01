@@ -9,17 +9,19 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class ClassNames implements Serializable {
-  public final static long serialVersionUID = 1L;
+  public static final long serialVersionUID = 1L;
   
   private Map<String, Integer> nameToIndex;
   private List<ObjectInfo> classList;
 
   private static ClassNames instance = new ClassNames();
+  
   public static ClassNames getInstance() {
     return instance;
   }
 
   private final ClassDepot classDepot;
+  
   public ClassNames(ClassDepot classDepot) {
     this.classDepot = classDepot;
   }
@@ -29,8 +31,8 @@ public class ClassNames implements Serializable {
   }
 
   //VisibleForTesting
-  public static void setInstance(ClassNames c) {
-    instance = c;
+  public static void setInstance(ClassNames classNames) {
+    instance = classNames;
   }
 
   public int get(String className) {
@@ -49,8 +51,8 @@ public class ClassNames implements Serializable {
     return i;
   }
 
-  public ObjectInfo get(int i) {
-    return classList.get(i);
+  public ObjectInfo get(int index) {
+    return classList.get(index);
   }
 
   @Override
