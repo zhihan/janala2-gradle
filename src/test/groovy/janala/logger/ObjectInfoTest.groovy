@@ -23,10 +23,10 @@ class ObjectInfoTest {
     }
 
     @Override
-    public int nFields(String cname) { 1 }
+    public int numFields(String cname) { 1 }
 
     @Override
-    public int nStaticFields(String cname) { 1 }
+    public int numStaticFields(String cname) { 1 }
   }
 
   @Test

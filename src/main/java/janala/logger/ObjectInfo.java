@@ -123,8 +123,8 @@ public class ObjectInfo implements Serializable {
 
   private void initialize() {
     if (nFields == -1) {
-      nFields = classDepot.nFields(className);
-      nStaticFields = classDepot.nStaticFields(className);
+      nFields = classDepot.numFields(className);
+      nStaticFields = classDepot.numStaticFields(className);
       statics = new Value[nStaticFields];
     }
   }

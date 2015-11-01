@@ -28,11 +28,11 @@ class ClassDepotTest {
   @Test
   void testCreateTemplate() {
     ClassDepot a = new ClassDepot()
-    int ct = a.nFields("janala.interpreters.TestClassForDepot")
+    int ct = a.numFields("janala.interpreters.TestClassForDepot")
     println("Test class has " + ct + " fields")
     assertTrue(ct > 0)
 
-    int st = a.nStaticFields("janala.interpreters.TestClassForDepot")
+    int st = a.numStaticFields("janala.interpreters.TestClassForDepot")
     println("Test class has " + st + " static fields")
     assertTrue(st > 0)
 

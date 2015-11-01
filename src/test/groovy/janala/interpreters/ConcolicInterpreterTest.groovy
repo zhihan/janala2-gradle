@@ -1467,7 +1467,7 @@ class ConcolicInterpreterTest {
   @Test
   void testGETFIELD() {
     when(classDepot.getFieldIndex("MyClass", "myField")).thenReturn(0)
-    when(classDepot.nFields("MyClass")).thenReturn(1)
+    when(classDepot.numFields("MyClass")).thenReturn(1)
     int classIdx = classNames.get("MyClass")
     ObjectInfo oi = classNames.get(classIdx)
     int fIdx = oi.getIdx("myField", false)
@@ -1484,7 +1484,7 @@ class ConcolicInterpreterTest {
   @Test
   void testGETSTATIC() {
     when(classDepot.getStaticFieldIndex("MyClass", "myField")).thenReturn(0)
-    when(classDepot.nStaticFields("MyClass")).thenReturn(1)
+    when(classDepot.numStaticFields("MyClass")).thenReturn(1)
     int classIdx = classNames.get("MyClass")
     ObjectInfo oi = classNames.get(classIdx)
     int fIdx = oi.getIdx("myField", true)
@@ -1499,7 +1499,7 @@ class ConcolicInterpreterTest {
   @Test
   void testPUTFIELD() {
     when(classDepot.getFieldIndex("MyClass", "myField")).thenReturn(0)
-    when(classDepot.nFields("MyClass")).thenReturn(1)
+    when(classDepot.numFields("MyClass")).thenReturn(1)
     int classIdx = classNames.get("MyClass")
     ObjectInfo oi = classNames.get(classIdx)
     int fIdx = oi.getIdx("myField", false)
@@ -1516,7 +1516,7 @@ class ConcolicInterpreterTest {
   @Test
   void testPUTSTATIC() {
     when(classDepot.getStaticFieldIndex("MyClass", "myField")).thenReturn(0)
-    when(classDepot.nStaticFields("MyClass")).thenReturn(1)
+    when(classDepot.numStaticFields("MyClass")).thenReturn(1)
     int classIdx = classNames.get("MyClass")
     ObjectInfo oi = classNames.get(classIdx)
     int fIdx = oi.getIdx("myField", true)
@@ -1913,7 +1913,7 @@ class ConcolicInterpreterTest {
   @Test
   void testNEW() {
     when(classDepot.getFieldIndex("MyClass", "myField")).thenReturn(0)
-    when(classDepot.nFields("MyClass")).thenReturn(1)
+    when(classDepot.numFields("MyClass")).thenReturn(1)
     int classIdx = classNames.get("MyClass")
     ObjectInfo oi = classNames.get(classIdx)
     interpreter.visitNEW(new NEW(0, 0, "MyClass", classIdx))
