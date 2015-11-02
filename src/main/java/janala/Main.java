@@ -102,15 +102,15 @@ public class Main {
     return valueA.equals(valueB);
   }
 
-  public static OrValue AssumeOrBegin(int b) {
+  public static OrValue assumeOrBegin(int b) {
     return new OrValue(b != 0);
   }
 
-  public static OrValue AssumeOr(int b, OrValue b2) {
+  public static OrValue assumeOr(int b, OrValue b2) {
     return new OrValue(b != 0 || b2.boolValue());
   }
 
-  public static void AssumeOrEnd(OrValue b) {
+  public static void assumeOrEnd(OrValue b) {
     if (!b.boolValue()) {
       System.out.println("Assumption (OR) failed!");
       System.exit(0);

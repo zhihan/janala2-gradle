@@ -19,10 +19,6 @@ public class SymbolicOrConstraint extends Constraint {
     }
   }
 
-  private SymbolicOrConstraint(SymbolicOrConstraint c) {
-    this(c.constraints);
-  }
-
   public SymbolicOrConstraint OR(Constraint c) {
     if (c != null) {
       SymbolicOrConstraint ret = new SymbolicOrConstraint(constraints);

@@ -52,9 +52,9 @@ public class OrAssumptionTest {
         if (y < 0) {
 
             Main.ignore();
-            OrValue tmp = Main.AssumeOrBegin(x < -100?1:0);
+            OrValue tmp = Main.assumeOrBegin(x < -100?1:0);
             Main.ignore();
-            Main.AssumeOrEnd(Main.AssumeOr(x>100?1:0,tmp));
+            Main.assumeOrEnd(Main.assumeOr(x>100?1:0,tmp));
             if (y+x==300) {
                 System.out.println("then");
             } else {

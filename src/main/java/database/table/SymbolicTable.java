@@ -85,14 +85,14 @@ public class SymbolicTable {
               Row otherRow = iter.next();
               if (tmp == null) {
                 Main.ignore();
-                tmp = Main.AssumeOrBegin(row[j].equals(otherRow.get(foreignKeys[j].key)) ? 1 : 0);
+                tmp = Main.assumeOrBegin(row[j].equals(otherRow.get(foreignKeys[j].key)) ? 1 : 0);
               } else {
                 Main.ignore();
-                tmp = Main.AssumeOr(row[j].equals(otherRow.get(foreignKeys[j].key)) ? 1 : 0, tmp);
+                tmp = Main.assumeOr(row[j].equals(otherRow.get(foreignKeys[j].key)) ? 1 : 0, tmp);
               }
             }
             if (tmp != null) {
-              Main.AssumeOrEnd(tmp);
+              Main.assumeOrEnd(tmp);
             }
           }
         }

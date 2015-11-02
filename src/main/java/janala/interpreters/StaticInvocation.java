@@ -11,8 +11,15 @@ public final class StaticInvocation {
   public StaticInvocation(Config config) {
     this.config = config;
   }
+  
+  private boolean knownMethod = false;
+  
+  public boolean getKnownMethod() {
+    return knownMethod;
+  }
 
   public Value invokeMethod(int iid, String owner, String name, Value[] args, History history) {
+    knownMethod = true;
     if (owner.equals("java/lang/Integer") && name.equals("valueOf")) {
       if (args[0] instanceof IntValue) {
         IntValue intValue = (IntValue) args[0];
@@ -72,16 +79,16 @@ public final class StaticInvocation {
         && args.length == 1) {
       history.abstractData(((IntValue) args[0]).concrete != 0);
       return PlaceHolder.instance;
-    } else if (owner.equals("janala/Main") && name.equals("AssumeOrBegin") && args.length == 1) {
+    } else if (owner.equals("janala/Main") && name.equals("assumeOrBegin") && args.length == 1) {
       return history.assumeOrBegin((IntValue) args[0]);
-    } else if (owner.equals("janala/Main") && name.equals("AssumeOr") && args.length == 2) {
+    } else if (owner.equals("janala/Main") && name.equals("assumeOr") && args.length == 2) {
       return history.assumeOr((IntValue) args[0], (SymbolicOrValue) args[1]);
-    } else if (owner.equals("janala/Main") && name.equals("AssumeOrEnd") && args.length == 1) {
+    } else if (owner.equals("janala/Main") && name.equals("assumeOrEnd") && args.length == 1) {
       return history.assumeOrEnd(iid, (SymbolicOrValue) args[0]);
      } else if (owner.equals("janala/Main") && name.equals("ignore") && args.length == 0) {
       return history.ignore();
     }
-
+    knownMethod = false;
     return PlaceHolder.instance;
   }
 }

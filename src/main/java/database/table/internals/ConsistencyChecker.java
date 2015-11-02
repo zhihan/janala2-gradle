@@ -145,15 +145,15 @@ public class ConsistencyChecker {
             Row otherRow = iter.next();
             if (tmp == null) {
               Main.ignore();
-              Main.AssumeOrBegin(value.equals(otherRow.get(foreignKeys[j].key)) ? 1 : 0);
+              Main.assumeOrBegin(value.equals(otherRow.get(foreignKeys[j].key)) ? 1 : 0);
             } else {
               Main.ignore();
-              Main.AssumeOr(value.equals(otherRow.get(foreignKeys[j].key)) ? 1 : 0, tmp);
+              Main.assumeOr(value.equals(otherRow.get(foreignKeys[j].key)) ? 1 : 0, tmp);
             }
             if (found) break;
           }
           if (tmp != null) {
-            Main.AssumeOrEnd(tmp);
+            Main.assumeOrEnd(tmp);
           }
         }
       }

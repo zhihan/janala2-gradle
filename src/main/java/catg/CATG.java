@@ -103,11 +103,11 @@ public class CATG {
     Main.MakeSymbolic(y);
     OrValue tmp;
     Main.ignore();
-    tmp = Main.AssumeOrBegin(y == true ? 1 : 0);
+    tmp = Main.assumeOrBegin(y == true ? 1 : 0);
     Main.ignore();
-    tmp = Main.AssumeOr(!y ? 1 : 0, tmp);
+    tmp = Main.assumeOr(!y ? 1 : 0, tmp);
     if (tmp != null) {
-      Main.AssumeOrEnd(tmp);
+      Main.assumeOrEnd(tmp);
     }
     return y;
   }
