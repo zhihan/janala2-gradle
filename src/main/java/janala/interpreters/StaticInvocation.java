@@ -45,30 +45,30 @@ public final class StaticInvocation {
                 (java.sql.Timestamp.valueOf(((StringValue) args[0]).getConcrete()).getTime()));
         return ret;
       }
-    } else if (owner.equals("janala/Main") && name.equals("Assume") && args.length == 1) {
+    } else if (owner.equals("janala/Main") && name.equals("assume") && args.length == 1) {
       if (((IntValue) args[0]).concrete != 0) {
         history.setLastBranchDone();
       }
       return PlaceHolder.instance;
-    } else if (owner.equals("janala/Main") && name.equals("ForceTruth") && args.length == 1) {
+    } else if (owner.equals("janala/Main") && name.equals("forceTruth") && args.length == 1) {
       history.setLastForceTruth();
       return PlaceHolder.instance;
     } else if (owner.equals("janala/Main") && name.equals("MakeSymbolic") && args.length == 1) {
       int symbol = args[0].MAKE_SYMBOLIC(history);
       history.addInput(symbol, args[0]);
       return PlaceHolder.instance;
-    } else if (owner.equals("janala/Main") && name.equals("BeginScope") && 
+    } else if (owner.equals("janala/Main") && name.equals("beginScope") && 
       (args == null || args.length == 0)) {
       history.addInput(config.scopeBeginSymbol, null);
       history.beginScope(iid);
       return PlaceHolder.instance;
-    } else if (owner.equals("janala/Main") && name.equals("EndScope") && 
+    } else if (owner.equals("janala/Main") && name.equals("endScope") && 
       (args == null || args.length == 0)) {
       history.addInput(config.scopeEndSymbol, null);
       history.endScope(iid);
       return PlaceHolder.instance;
     } else if (owner.equals("janala/Main")
-        && name.equals("AbstractEqualsConcrete")
+        && name.equals("abstractEqualsConcrete")
         && args.length == 1) {
       history.abstractData(((IntValue) args[0]).concrete != 0);
       return PlaceHolder.instance;
@@ -78,7 +78,7 @@ public final class StaticInvocation {
       return history.assumeOr((IntValue) args[0], (SymbolicOrValue) args[1]);
     } else if (owner.equals("janala/Main") && name.equals("AssumeOrEnd") && args.length == 1) {
       return history.assumeOrEnd(iid, (SymbolicOrValue) args[0]);
-     } else if (owner.equals("janala/Main") && name.equals("Ignore") && args.length == 0) {
+     } else if (owner.equals("janala/Main") && name.equals("ignore") && args.length == 0) {
       return history.ignore();
     }
 
