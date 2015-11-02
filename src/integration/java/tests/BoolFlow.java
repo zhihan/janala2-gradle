@@ -44,6 +44,6 @@ public class BoolFlow {
     public static void main(String[] args) {
         int x = Main.readInt(10);
         Main.MakeSymbolic(x);
-        Main.Assume(x < 5?1:0);
+        Main.assume(x < 5?1:0);
     }
 }

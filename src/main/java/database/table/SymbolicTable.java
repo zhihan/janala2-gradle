@@ -44,19 +44,19 @@ public class SymbolicTable {
         } else if (types[j] == Table.DATE) {
           long x = Main.readLong(i + 1);
           Main.MakeSymbolic(x);
-          Main.Assume(x > 0 ? 1 : 0);
+          Main.assume(x > 0 ? 1 : 0);
           java.sql.Date k = new java.sql.Date(x);
           row[j] = k;
         } else if (types[j] == Table.TIME) {
           long x = Main.readLong(i + 1);
           Main.MakeSymbolic(x);
-          Main.Assume(x > 0 ? 1 : 0);
+          Main.assume(x > 0 ? 1 : 0);
           java.sql.Time k = new java.sql.Time(x);
           row[j] = k;
         } else if (types[j] == Table.TIMESTAMP) {
           long x = Main.readLong(i + 1);
           Main.MakeSymbolic(x);
-          Main.Assume(x > 0 ? 1 : 0);
+          Main.assume(x > 0 ? 1 : 0);
           java.sql.Timestamp k = new java.sql.Timestamp(x);
           row[j] = k;
         } else if (types[j] == Table.STRING) {
@@ -73,7 +73,7 @@ public class SymbolicTable {
             TableIterator iter = table.iterator();
             while (iter.hasNext()) {
               Row otherRow = iter.next();
-              Main.Assume(row[j].equals(otherRow.get(columnNames[j])) ? 0 : 1);
+              Main.assume(row[j].equals(otherRow.get(columnNames[j])) ? 0 : 1);
             }
           }
 
@@ -84,10 +84,10 @@ public class SymbolicTable {
             while (iter.hasNext()) {
               Row otherRow = iter.next();
               if (tmp == null) {
-                Main.Ignore();
+                Main.ignore();
                 tmp = Main.AssumeOrBegin(row[j].equals(otherRow.get(foreignKeys[j].key)) ? 1 : 0);
               } else {
-                Main.Ignore();
+                Main.ignore();
                 tmp = Main.AssumeOr(row[j].equals(otherRow.get(foreignKeys[j].key)) ? 1 : 0, tmp);
               }
             }

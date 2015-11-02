@@ -427,8 +427,8 @@ public class BookStoreNoSQL {
 
 	public int s01_loginScreen() throws SQLException {
 
-		Main.Assume(cis.customerId >= 0 ? 1 : 0);
-		Main.Assume(cis.customerId <= 1000 ? 1 : 0);
+		Main.assume(cis.customerId >= 0 ? 1 : 0);
+		Main.assume(cis.customerId <= 1000 ? 1 : 0);
 
 		// ResultSet rs =
 		// statement.executeQuery("select Id from Customers where Id="+customerId+" and PasswordHash="
@@ -464,7 +464,7 @@ public class BookStoreNoSQL {
 
 	private int s03_menuScreen() throws SQLException {
 
-		Main.Assume((cis.whereGoto == BookStoreScreenInputs.GOTO_ORDER || cis.whereGoto == BookStoreScreenInputs.GOTO_CANCEL) ? 1
+		Main.assume((cis.whereGoto == BookStoreScreenInputs.GOTO_ORDER || cis.whereGoto == BookStoreScreenInputs.GOTO_CANCEL) ? 1
 				: 0);
 
 		if (cis.whereGoto == BookStoreScreenInputs.GOTO_ORDER) {
@@ -503,14 +503,14 @@ public class BookStoreNoSQL {
 			return S03_MENU_SCREEN;
 		}
 
-		Main.Assume(cis.title.length() >= 0 ? 1 : 0);
-		Main.Assume(cis.title.length() <= 20 ? 1 : 0);
-		Main.Assume(cis.publisherName.length() >= 0 ? 1 : 0);
-		Main.Assume(cis.publisherName.length() <= 20 ? 1 : 0);
-		Main.Assume(cis.minYear >= 1950 ? 1 : 0);
-		Main.Assume(cis.minYear <= 2050 ? 1 : 0);
-		Main.Assume(cis.maxYear >= 1950 ? 1 : 0);
-		Main.Assume(cis.maxYear <= 2050 ? 1 : 0);
+		Main.assume(cis.title.length() >= 0 ? 1 : 0);
+		Main.assume(cis.title.length() <= 20 ? 1 : 0);
+		Main.assume(cis.publisherName.length() >= 0 ? 1 : 0);
+		Main.assume(cis.publisherName.length() <= 20 ? 1 : 0);
+		Main.assume(cis.minYear >= 1950 ? 1 : 0);
+		Main.assume(cis.minYear <= 2050 ? 1 : 0);
+		Main.assume(cis.maxYear >= 1950 ? 1 : 0);
+		Main.assume(cis.maxYear <= 2050 ? 1 : 0);
 
 		ResultSet rs = Books.select(new Where() {
 			public boolean where(Row[] rows) {

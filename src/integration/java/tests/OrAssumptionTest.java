@@ -51,9 +51,9 @@ public class OrAssumptionTest {
 
         if (y < 0) {
 
-            Main.Ignore();
+            Main.ignore();
             OrValue tmp = Main.AssumeOrBegin(x < -100?1:0);
-            Main.Ignore();
+            Main.ignore();
             Main.AssumeOrEnd(Main.AssumeOr(x>100?1:0,tmp));
             if (y+x==300) {
                 System.out.println("then");

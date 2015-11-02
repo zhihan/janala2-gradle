@@ -96,7 +96,7 @@ public class ConsistencyChecker {
         for (int j = 0; j < columnNames.length; j++) {
           if (primaries != null && primaries[j]) {
             thisPrimary[i] = row.get(columnNames[j]);
-            Main.Assume(thisPrimary[i] == null ? 0 : 1);
+            Main.assume(thisPrimary[i] == null ? 0 : 1);
             i++;
           }
         }
@@ -115,7 +115,7 @@ public class ConsistencyChecker {
               }
             }
             ArrayBasedTuple otherArray = new ArrayBasedTuple(otherPrimary);
-            Main.Assume(thisArray.equals(otherArray) ? 0 : 1);
+            Main.assume(thisArray.equals(otherArray) ? 0 : 1);
           }
         }
       }
@@ -126,7 +126,7 @@ public class ConsistencyChecker {
           TableIterator iter = table.iterator();
           while (iter.hasNext()) {
             Row otherRow = iter.next();
-            if (row != otherRow) Main.Assume(value.equals(otherRow.get(columnNames[j])) ? 0 : 1);
+            if (row != otherRow) Main.assume(value.equals(otherRow.get(columnNames[j])) ? 0 : 1);
           }
         }
         if (nonnulls != null && nonnulls[j]) {
@@ -138,16 +138,16 @@ public class ConsistencyChecker {
         if (foreignKeys != null && foreignKeys[j] != null) {
           OrValue tmp = null;
           Object value = row.get(columnNames[j]);
-          Main.Assume(value == null ? 0 : 1);
+          Main.assume(value == null ? 0 : 1);
           TableIterator iter = foreignKeys[j].table.iterator();
           boolean found = false;
           while (iter.hasNext()) {
             Row otherRow = iter.next();
             if (tmp == null) {
-              Main.Ignore();
+              Main.ignore();
               Main.AssumeOrBegin(value.equals(otherRow.get(foreignKeys[j].key)) ? 1 : 0);
             } else {
-              Main.Ignore();
+              Main.ignore();
               Main.AssumeOr(value.equals(otherRow.get(foreignKeys[j].key)) ? 1 : 0, tmp);
             }
             if (found) break;

@@ -17,7 +17,8 @@ import java.util.logging.Logger;
 
 /** Main runtime environment for parsing inputs and writing state files. */
 public class Main {
-  private final static Logger logger = MyLogger.getLogger(Coverage.class.getName());
+  private static final Logger logger = MyLogger.getLogger(Coverage.class.getName());
+  
   public static boolean isInPrefix = true;
   public static boolean skipPath = false;
 
@@ -43,28 +44,30 @@ public class Main {
     return false;
   }
 
-  public static void SkipPath() {
+  public static void skipPath() {
     skipPath = true;
   }
 
-  public static void Ignore() {}
+  public static void ignore() {}
 
-  public static void Assume(int b) {
-    if (b == 0) {
+  /** Assume a boolean value is true. */
+  public static void assume(int value) {
+    if (value == 0) {
       System.out.println("Assumption failed!");
       System.exit(0);
     }
   }
 
-  public static void ForceTruth(int b) {
-    if (b == 0) {
+  /** Make the boolean value truth, if possible. */
+  public static void forceTruth(int value) {
+    if (value == 0) {
       System.out.print("f,");
     } else {
       System.out.print("t,");
     }
   }
 
-  public static void BeginScope() {
+  public static void beginScope() {
     scopeDepth++;
     if (inputs.isInputAvailable()) {
       if (inputs.isBeginScope()) {
@@ -74,7 +77,7 @@ public class Main {
     }
   }
 
-  public static void EndScope() {
+  public static void endScope() {
     scopeDepth--;
     while (true) {
       if (scopeDepth >= inputDepth) {
@@ -93,10 +96,10 @@ public class Main {
 
   /** Insert a check that an abstract value is equal to the concrete value. 
    * @param predicate */
-  public static void AbstractEqualsConcrete(boolean predicate) {}
+  public static void abstractEqualsConcrete(boolean predicate) {}
 
-  public static boolean compare(Object a, Object b) {
-    return a.equals(b);
+  public static boolean compare(Object valueA, Object valueB) {
+    return valueA.equals(valueB);
   }
 
   public static OrValue AssumeOrBegin(int b) {
