@@ -48,7 +48,7 @@ class StaticInvocationTest {
   void testAssume() {
     Value[] x = new Value[1]
     x[0] = new IntValue(1)
-    Value v = context.invokeMethod(0, "janala/Main", "Assume", x, history)
+    Value v = context.invokeMethod(0, "janala/Main", "assume", x, history)
     verify(history).setLastBranchDone()
   }
 
@@ -56,7 +56,7 @@ class StaticInvocationTest {
   void testForceTruth() {
     Value[] x = new Value[1]
     x[0] = new IntValue(1)
-    Value v = context.invokeMethod(0, "janala/Main", "ForceTruth", x, history)
+    Value v = context.invokeMethod(0, "janala/Main", "forceTruth", x, history)
     verify(history).setLastForceTruth()
   }
 
@@ -73,7 +73,7 @@ class StaticInvocationTest {
   @Test
   void testBeginScope() {
     Value[] x = new Value[0]
-    Value v = context.invokeMethod(0, "janala/Main", "BeginScope", x, history)
+    Value v = context.invokeMethod(0, "janala/Main", "beginScope", x, history)
     verify(history).addInput(config.scopeBeginSymbol, null)
     verify(history).beginScope(0)
   }
@@ -81,7 +81,7 @@ class StaticInvocationTest {
   @Test
   void testEndScope() {
     Value[] x = new Value[0]
-    Value v = context.invokeMethod(0, "janala/Main", "EndScope", x, history)
+    Value v = context.invokeMethod(0, "janala/Main", "endScope", x, history)
     verify(history).addInput(config.scopeEndSymbol, null)
     verify(history).endScope(0)
   }
