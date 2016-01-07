@@ -51,6 +51,7 @@ def concolic ():
             except:
                 data = "true"
             if data != "false":
+                print "Iter %d, Data is %s" % (i, data)
                 shutil.copy("inputs", "inputs{}".format(i))
             shutil.copy("inputs", "inputs.old")
         except:

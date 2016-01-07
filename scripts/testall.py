@@ -106,7 +106,7 @@ else:
     windows=False
 
 for test in tests:
-    subprocess.call(shlex.split("python concolic.py "+argument+" "+test), shell=windows)
+    subprocess.call(shlex.split("./concolic.sh "+argument+" "+test), shell=windows)
 
 f = open('test.log', 'r')
 print f.read()
