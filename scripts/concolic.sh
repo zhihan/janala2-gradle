@@ -54,7 +54,7 @@ function loop() {
         iter+=1
 
         if [[ -f "history" ||  -f "backtrackFlag" ]]; then
-            echo "continue"
+            :
         elif (( $iter == $MAX_ITERATIONS )); then
             echo "${CLASS_NAME} (${MAX_ITERATIONS}) passed" >> ../test.log
             return
