@@ -1,8 +1,11 @@
 package com.google.testing
 
+import org.slf4j.{Logger, LoggerFactory}
+
 import org.scalatra.ScalatraServlet
 
 class JanalaTestServlet extends ScalatraServlet {
+  val logger = LoggerFactory.getLogger(getClass)
 
   get("/") {
     contentType = "text/html"

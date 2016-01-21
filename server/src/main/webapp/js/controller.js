@@ -22,6 +22,4 @@ testApp.controller("mainController", function($scope) {
         }
         
     }
-    
-
 });
