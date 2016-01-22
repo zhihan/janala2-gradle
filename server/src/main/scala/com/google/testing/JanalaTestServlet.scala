@@ -15,6 +15,7 @@ class JanalaTestServlet extends ScalatraServlet {
       <title>Janala Test Service</title>
       <link rel="stylesheet" href="css/bootstrap.css"></link>
       <script src="js/angular.min.js"> </script>
+      <script src="js/angular-resource.min.js"></script>
       <script src="js/controller.js"></script>
       </head>
       <body>
