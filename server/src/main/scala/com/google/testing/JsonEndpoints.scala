@@ -9,7 +9,6 @@ import org.scalatra.json._
 
 import org.scalatra._
 
-case class Test(ID: Integer,  url: String, state: String)
 
 class JsonEndpoints extends ScalatraServlet with JacksonJsonSupport {
   // Sets up automatic case class to JSON output serialization, required by
@@ -24,7 +23,7 @@ class JsonEndpoints extends ScalatraServlet with JacksonJsonSupport {
 
   get("/test") {
     logger.info("Getting all tests")
-    List(Test(0, "base", "N/A"))
+    Store.getTests
   }
 
   get("/test/:id") {
@@ -33,7 +32,8 @@ class JsonEndpoints extends ScalatraServlet with JacksonJsonSupport {
   }
 
   post("/test/:id") {
-    logger.info("Saving a test for id {}", params("id"))
+    logger.info("Saving a test for id {}: {}", params("id"))
+    Store.addTest(parsedBody.extract[Test])
   }
 
   delete("/test/:id") {
