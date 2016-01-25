@@ -4,7 +4,11 @@ import org.slf4j.LoggerFactory
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global // default
 
+import scala.sys.env
 import scala.sys.process._
+
+import java.nio.file.Paths
+import java.nio.file.Files
 
 object Worker {
 
@@ -12,10 +16,17 @@ object Worker {
 
   def work(t: TestState): Future[TestState] = Future {
     logger.info("Running command")
-    Seq("/bin/sleep", "5").!
-    val result = Seq("/bin/echo", "done").!!
+
+    val tmpDir = Paths.get("/tmp")
+    val workingDir = Files.createTempDirectory(tmpDir,
+      "working_" + t.ID)
+    logger.info("Created working directory {}", workingDir.toString())
+    val t1 = t.copy(dir=workingDir.toString())
+
+    Seq("sleep", "5").!
+    val result = Seq("echo", "done").!!
     logger.info("Getting result {}", result)
-    t.copy(state="COMPLETED", log=result)
+    t1.copy(state="COMPLETED", log=result)
   }
   
 
