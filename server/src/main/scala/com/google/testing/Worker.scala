@@ -15,13 +15,13 @@ object Worker {
     Seq("/bin/sleep", "5").!
     val result = Seq("/bin/echo", "done").!!
     logger.info("Getting result {}", result)
-    t.copy(state="Completed", log=result)
+    t.copy(state="COMPLETED", log=result)
   }
   
 
   def workOn(t: TestState) {
     logger.info("Work on {}", t)
-    val newT = t.copy(state="working")
+    val newT = t.copy(state="WORKING")
     Store.updateTest(newT)
 
     val result = work(newT)
