@@ -22,7 +22,8 @@ class JsonEndpoints extends ScalatraServlet with JacksonJsonSupport {
   }
 
   get("/test") {
-    logger.info("Getting all tests")
+    Worker.run
+
     Store.getTests
   }
 
@@ -34,6 +35,7 @@ class JsonEndpoints extends ScalatraServlet with JacksonJsonSupport {
   post("/test/:id") {
     logger.info("Saving a test for id {}: {}", params("id"))
     Store.addTest(parsedBody.extract[Test])
+    Worker.run
   }
 
   delete("/test/:id") {

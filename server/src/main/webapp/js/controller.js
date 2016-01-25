@@ -2,8 +2,8 @@ var testApp = angular.module("testApp", ["ngResource"]);
 
 testApp.controller(
     "mainController", 
-    ["$scope", "$resource", 
-     function($scope, $resource) {
+    ["$scope", "$resource", "$interval",  
+     function($scope, $resource, $interval) {
 	 var TestResource = $resource('/json/test/:ID', 
 				      {ID: "@ID"}); 
 
@@ -23,7 +23,7 @@ testApp.controller(
 
 		 var newTest = {"ID": id,
 				"url": url,
-				"state": "START"};
+				"state": "READY"};
 		 $scope.tests.push(newTest);
 		 $scope.url = "";
 
@@ -35,11 +35,35 @@ testApp.controller(
 
 	 $scope.loadData = function() {
 	     TestResource.query(function(tests) {
-		 console.log(tests);
 		 $scope.tests = tests;
+
+                 function getMaxOfArray(numArray) {
+                     return Math.max.apply(null, numArray);
+                 }
+
+                 if (tests.length >= 1) {
+                     $scope.nextID = getMaxOfArray(tests.map(function(test) {
+                         return test.ID;
+                     })) + 1;
+                 } else {
+                     $scope.nextID = 1;
+                 }
 	     })
-	     $scope.nextID = 1;
 	 }
 	 
-	$scope.loadData();			  
+	 $scope.loadData();
+
+         var stop = $interval($scope.loadData, 1000); // Update every second
+
+         $scope.stopInteval = function() {
+             if (angular.isDefined(stop)) {
+                 $interval.cancel(stop);
+                 stop = undefined;
+             }
+         }
+
+         $scope.$on("$destroy", function() {
+             $scope.stopInterval();
+         });
+         
 }]);

@@ -6,7 +6,7 @@ import scala.collection.mutable.Map
 
 case class Test(val ID: Int, val url: String, val state: String)
 
-class TestState(val ID: Int,
+case class TestState(val ID: Int,
   val url: String,
   val dir: String,
   val state: String,
@@ -32,7 +32,17 @@ object Store {
 
   def addTest(t: Test) {
     testStates += (t.ID -> TestState.fromTest(t))
-    logger.info("Store are {}", testStates)
+    logger.info("{} added to store", t)
   }
+
+  def updateTest(ts: TestState) {
+    testStates(ts.ID) = ts
+    logger.info("{} updated", ts)
+  }
+
+  def nextReady: Option[TestState] =
+    testStates.find{
+      case(id, y) => y.state == "READY"
+    }.flatMap{ case (id, y) => Some(y) }
 
 }

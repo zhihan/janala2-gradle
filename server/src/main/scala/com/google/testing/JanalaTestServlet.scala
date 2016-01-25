@@ -27,7 +27,7 @@ class JanalaTestServlet extends ScalatraServlet {
         </div>
 
         <div ng-model="tests">
-          <div ng-repeat="test in tests track by test.ID">
+          <div ng-repeat="test in tests | orderBy:'+ID' track by test.ID">
             {{ test }}
           </div>
         </div>
