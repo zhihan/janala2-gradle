@@ -14,15 +14,17 @@ class JanalaTestServlet extends ScalatraServlet {
       <head>
       <title>Janala Test Service</title>
       <meta name="viewport" content="width=device-width, initial-scale=1">
+      
       <link rel="stylesheet" href="css/bootstrap.css"></link>
       <link rel="stylesheet" href="css/testservice.css"></link>
+
       <script src="js/angular.min.js"> </script>
       <script src="js/angular-resource.min.js"></script>
       <script src="js/controller.js"></script>
       </head>
       <body>
         <div class="container-fluid">
-        <div class="jumbotron">
+        <div class="jumbotron bg-primary">
         <h1>Concolic Testing Service</h1>
         <p>Upload your jar file to run the concolic tests.</p>
         </div>
@@ -38,7 +40,12 @@ class JanalaTestServlet extends ScalatraServlet {
         <div ng-model="tests" class="panel">
           <ul class="list-group">
             <li class="list-group-item" ng-repeat="test in tests | orderBy:'+ID' track by test.ID">
-            <span class="id-width">{{ test.ID }}</span> <span class="url-width">{{ test.url }}</span> <span><strong>{{ test.state }}</strong></span>
+            <span class="id-width">{{ test.ID }}</span> <span class="url-width">{{ test.url }}</span> 
+            <span ng-switch="test.state">
+              <span class="text-primary" ng-switch-when="WORKING"><strong>{{ test.state }}</strong></span>
+              <span class="text-success" ng-switch-when="COMPLETED"><strong>{{ test.state }}</strong></span>
+              <span ng-switch-default><strong>{{ test.state }}</strong></span>
+            </span>
            </li>
           </ul>
         </div>

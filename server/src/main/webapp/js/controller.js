@@ -17,7 +17,7 @@ testApp.controller(
 	 }
 	 
 	 $scope.addTest = function() {
-             if ($scope.url) {
+        if ($scope.url) {
 		 var url = $scope.url;
 		 var id = $scope.newID();
 
@@ -29,7 +29,7 @@ testApp.controller(
 
 		 var newTestResource = new TestResource(newTest);
 		 newTestResource.$save();
-             }
+        }
 	 }
 
 
